@@ -107,7 +107,7 @@ public class ToDoActivity extends Activity {
         try {
             // Create the client instance, using the provided mobile app URL.
             mClient = new MobileServiceClient(
-                    "https://menowattgeqrcodescanner.azurewebsites.net", // fondamentale
+                    "https://xxxxxxxxxxxxxxx.azurewebsites.net", // fondamentale
                     this).withFilter(new ProgressFilter());
 
             // Extend timeout from default of 10s to 20s
