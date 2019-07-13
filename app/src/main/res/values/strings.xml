@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Censimento Punti Luce</string>
+    <string name="add_textbox_hint">Add a ToDo item</string>
+    <string name="add_button_text">OK</string>
+    <string name="service_title">Riepilogo Dati Palo </string>
+    <string name="menu_refresh">Aggiorna</string>
+    <string name="checkbox_text">Elemento nel DB</string>
+    <string name="sto_registrando_le_coordinate">Sto registrando le coordinate ...</string>
+
+</resources>
