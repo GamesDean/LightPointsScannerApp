@@ -55,6 +55,8 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
     public String city,address="";
     double latitude,longitude;
+    private  int x = 0;
+
 
 
 
@@ -91,8 +93,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
         // riempio file di testo con coordinate,poi una volta riempito, lancio QrCodeActivity
         textCoordinate = (findViewById(R.id.textViewcoordinate));
-
-
 
     }
 
@@ -158,7 +158,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
 
 
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this,
@@ -179,49 +178,100 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
             // le mostro a video per una frazione di secondo
             textCoordinate.setText("Latitudine : " + latitude + "\nLongitudine : " + longitude);
-
-            // mi serve per prendere l'indirizzo, la città ed altri dati
-            Geocoder gcd = new Geocoder(this, Locale.getDefault());
-
-            List<Address> addresses = null;
-            try {
-                addresses = gcd.getFromLocation(latitude, longitude, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (addresses.size() > 0) {
-
-
-                address = addresses.get(0).getAddressLine(0);
-                city = addresses.get(0).getLocality();
-
-                //mostra a video sotto le coordinate anche la città. Il tutto per una fraz di secondo, cambiare con pulsante
-                // dato che spesso fa i calzetti cioè ci mette un po' per prendere la posizione corretta.
-                textCoordinate.append("\ncittà : " + city);
-
-            }
-            else {
-                // do your stuff
-            }
+            x++;
+            // passando il valore di k uguale a 0 faccio eseguire immediatamente l'operazione poichè il GPS essendo già attivo
+            // è di conseguenza preciso e non devo attendere che azzecchi la posizione.
+            getFromCoordinate(x,0);
 
         }
 
-        // quando vengono correttamente rilevate le coordinate, parte l'activity che scansiona il qrcode
-        // TODO : rivedere questa parte, meglio inserire un pulsante cosicchè il gps rilevi meglio la posizione
-        if(textCoordinate.getText().toString().length()>1) {
 
-            // intent che lancia l'activity e gli passa i valori rilevati.
-            // li passo a QrCodeActivity come classe intermedia dato che il vero destinatario è ToDoActivity
-            Intent intentQr = new Intent(getApplicationContext(), QrCodeActivity.class);
-            intentQr.putExtra("citta",city);
-            intentQr.putExtra("indirizzo",address);
-            intentQr.putExtra("latitudine",latitude);
-            intentQr.putExtra("longitudine",longitude);
+        startLocationUpdates();
+    }
 
-            startActivity(intentQr);
+
+
+
+    // aggiorna la posizione
+
+    /**
+        Clone di OnConnected con qualche variante. Richiamata quando l'utente avvia l'app ed ha il GPS non
+        ancora attivo
+
+     **/
+    private  void refreshCoordinate(){
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // Permissions ok, we get last location
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        if (location != null) {
+            // prelevo lat e long
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            textCoordinate.setText("Latitudine : " + latitude + "\nLongitudine : " + longitude);
+            x++;
+            // k = 400 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
+            // la posizione corretta
+            getFromCoordinate(x,400);
+
         }
 
         startLocationUpdates();
+
+
+    }
+
+    /**
+     *
+     * @param x contatore
+     * @param k iterazioni, 400 sono circa 30 secondi durante i quali avviene il refresh della posizione GPS corretta
+     */
+
+
+    public void getFromCoordinate(int x, int k){
+        // mi serve per prendere l'indirizzo, la città ed altri dati
+        Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+        List<Address> addresses = null;
+
+        try {
+            addresses = gcd.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+
+
+            address = addresses.get(0).getAddressLine(0);
+            city = addresses.get(0).getLocality();
+
+            //mostra a video sotto le coordinate anche la città.
+            textCoordinate.append("\ncittà : " + city);
+            textCoordinate.append("\nindirizzo : " + address);
+
+        }
+
+        if(textCoordinate.getText().toString().length()>1&& (x>=k)) {
+            // intent che lancia l'activity e gli passa i valori rilevati.
+            // li passo a QrCodeActivity come classe intermedia dato che il vero destinatario è ToDoActivity
+            Intent intentQr = new Intent(getApplicationContext(), QrCodeActivity.class);
+            intentQr.putExtra("citta", city);
+            intentQr.putExtra("indirizzo", address);
+            intentQr.putExtra("latitudine", latitude);
+            intentQr.putExtra("longitudine", longitude);
+
+            startActivity(intentQr);
+
+
+
+        }
+
     }
 
 
@@ -243,33 +293,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
     }
 
 
-    // aggiorna la posizione
-   private  void refreshCoordinate(){
-
-       if (ActivityCompat.checkSelfPermission(this,
-               Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-               && ActivityCompat.checkSelfPermission(this,
-               Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           return;
-       }
-
-       // Permissions ok, we get last location
-       location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-       if (location != null) {
-           System.out.println("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
-           textCoordinate.setText("Latitudine : " + location.getLatitude() + "\nLongitudine : " + location.getLongitude());
-       }
-
-       if(textCoordinate.getText().toString().length()>1) {
-
-           Intent intentQr = new Intent(getApplicationContext(), QrCodeActivity.class);
-           startActivity(intentQr);
-       }
-
-       startLocationUpdates();
-
-   }
 
 
 
@@ -279,6 +302,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
     public void onConnectionSuspended(int i) {
 
         refreshCoordinate();
+
 
 
     }

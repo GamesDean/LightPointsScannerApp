@@ -6,6 +6,7 @@
     <string name="service_title">Riepilogo Dati Palo </string>
     <string name="menu_refresh">Aggiorna</string>
     <string name="checkbox_text">Elemento nel DB</string>
-    <string name="sto_registrando_le_coordinate">Sto registrando le coordinate ...</string>
+    <string name="sto_registrando_le_coordinate">Sto registrando le coordinate aspetta 20 secondi ...</string>
+    <string name="attiva_gps">Ora si apriranno le impostazioni : attiva il GPS</string>
 
 </resources>

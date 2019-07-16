@@ -34,8 +34,27 @@ public class PreQrCodeActivity extends AppCompatActivity {
         boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!statusOfGPS){
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+
+            final Thread timeout = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+
+                    try {
+                        sleep(4000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+
+
+                }
+            };
+
+            timeout.start();
+
         }
         else{
             Intent intent = new Intent(getApplicationContext(), com.example.zumoappname.GetLatLong.class);
