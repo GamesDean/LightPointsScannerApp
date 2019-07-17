@@ -31,6 +31,7 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
 
         mContext = context;
         mLayoutResourceId = layoutResourceId;
+
     }
 
     /**
@@ -39,6 +40,7 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
+
 
         //final ToDoItem currentItem = getItem(position);
         final DevicesLightPointsTemp currentItem = getItem(position);
@@ -70,12 +72,17 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                         ToDoActivity activity = (ToDoActivity) mContext;
                         activity.checkItem(currentItem);
                     }
+
+
                 }
             }
         });
 
 
         return row;
+
     }
+
+
 
 }

@@ -2,7 +2,9 @@ package com.example.zumoappname;
 
 /**
  *
- *  Classe che ha il compito di controllare lo stato del GPS e nel caso portare l'utente alla schermata di settings per accenderlo
+ *  Classe che ha il compito di controllare lo stato del GPS e nel caso portare l'utente alla schermata di settings per accenderlo.
+ *  Il controllo avviene in prima battuta cioè all'avvio dell'app, per un monitoraggio costante ho implementato un BR.
+ *  Mantengo comunque questa classe anche perchè ha un Layout essendo un'Activity.
  */
 
 
@@ -24,8 +26,12 @@ public class PreQrCodeActivity extends AppCompatActivity {
 
     }
 
-    //TODO credo sarebbe meglio utilizzare un SERVICE che controlli sempre lo stato del GPS anche nelle altre activity
 
+    /**
+     *  Se il GPS non è attivo, una scritta avvisa che l'utente verrà portato alla schermata delle impostazioni
+     *  che al termine di 4 secondi verranno proposte a video.
+     *  Se il GPS è attivo, viene avviata la classe GetLatLong per inquadrare il Qrcode con la fotocamera.
+     */
     @Override
     protected void onResume(){
         super.onResume();
