@@ -107,7 +107,7 @@ public class ToDoActivity extends Activity {
         try {
             // Create the client instance, using the provided mobile app URL.
             mClient = new MobileServiceClient(
-                    "https://xxxxxxxxxxxxxxx.azurewebsites.net", // fondamentale
+                    "https://menowattgeqrcodescanner.azurewebsites.net", // fondamentale
                     this).withFilter(new ProgressFilter());
 
             // Extend timeout from default of 10s to 20s
@@ -297,7 +297,9 @@ public class ToDoActivity extends Activity {
 
 
         // imposto l'ID TODO decommentare in fase di release o test con qrcode con ID diversi
-      //  item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
+       // item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
+
+        item.setId("D73528DC2B510777");
 
         // imposto il nome
         item.setName(name);
@@ -318,7 +320,7 @@ public class ToDoActivity extends Activity {
             protected Void doInBackground(Void... params) {
                 try {
                    // final ToDoItem entity = addItemInTable(item); -L
-                    final DevicesLightPointsTemp entity = addItemInTable(item);
+                    final DevicesLightPointsTemp entity = updateItemInTable(item);
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -329,7 +331,25 @@ public class ToDoActivity extends Activity {
                         }
                     });
                 } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
+                    createAndShowDialogFromTask(e, "UpdateError");
+
+                    try {
+                        final DevicesLightPointsTemp entity = addItemInTable(item);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!entity.isComplete()){
+                                    mAdapter.add(entity);
+                                }
+                            }
+                        });
+                    } catch (final Exception ex) {
+                        createAndShowDialogFromTask(ex, "InsertError");
+
+                    }
+
+
                 }
                 return null;
             }
@@ -358,14 +378,25 @@ public class ToDoActivity extends Activity {
      * Update an item to the Mobile Service Table
      *
      * @param item
+     *            The item to Update
+     */
+    public DevicesLightPointsTemp updateItemInTable(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
+
+        DevicesLightPointsTemp entity = mDevicesLightPointsTemp.update(item).get();
+
+        return entity;
+    }
+
+
+    /**
+     * Insert an item to the Mobile Service Table
+     *
+     * @param item
      *            The item to Add
      */
     public DevicesLightPointsTemp addItemInTable(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
-        // per fare una insert
-        //DevicesLightPointsTemp entity = mDevicesLightPointsTemp.insert(item).get();
 
-        // per fare un update -> a me serve questo
-        DevicesLightPointsTemp entity = mDevicesLightPointsTemp.update(item).get();
+        DevicesLightPointsTemp entity = mDevicesLightPointsTemp.insert(item).get();
 
         return entity;
     }
@@ -376,10 +407,12 @@ public class ToDoActivity extends Activity {
      */
     private void refreshItemsFromTable() {
 
-        // Get the items that weren't marked as completed and add them in the
-        // adapter
+        /*
+        Get the items that weren't marked as completed and add them in the
+        adapter
+        */
 
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
 

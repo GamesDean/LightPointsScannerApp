@@ -6,12 +6,14 @@ package com.example.zumoappname;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+
 
 
 public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
@@ -31,7 +33,6 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
 
         mContext = context;
         mLayoutResourceId = layoutResourceId;
-
     }
 
     /**
@@ -72,17 +73,14 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                         ToDoActivity activity = (ToDoActivity) mContext;
                         activity.checkItem(currentItem);
                     }
-
+                    Intent intent = new Intent(mContext,com.example.zumoappname.ConnectionClass.class);
+                    mContext.startActivity(intent);
 
                 }
             }
         });
 
-
         return row;
-
     }
-
-
 
 }

@@ -60,6 +60,10 @@
             android:name=".GetLatLong"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"/>
+        <activity
+            android:name=".ConnectionClass"
+            android:screenOrientation="portrait"
+            />
 
         <receiver android:name=".GpsLocationReceiver">
             <intent-filter>

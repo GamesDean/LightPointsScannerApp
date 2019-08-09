@@ -60,7 +60,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
 
 
-
     @Override
     protected void onCreate(Bundle state) {
 
