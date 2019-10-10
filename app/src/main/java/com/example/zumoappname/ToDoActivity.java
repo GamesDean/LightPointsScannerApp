@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -245,9 +246,14 @@ public class ToDoActivity extends Activity {
         Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
 
+        String valoreCorrente = getIntent().getStringExtra("valore_corrente");
+
+
+
+
         // mostro a video i  valori soprastanti
         mTextNewToDo.setText(qrCodeData);
-        mTextNewToDo.append("\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\n");
+        mTextNewToDo.append("\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\ncorrente : "+valoreCorrente+"\n");
 
 
     }
@@ -270,10 +276,14 @@ public class ToDoActivity extends Activity {
 
         // -L
 
+        Random rand = new Random();
+        int value = rand.nextInt(750);
+
         // prelevo ID e nome partendo dalla combinazione dei due
-        String qrCodeData = getIntent().getStringExtra("qrCode");
-        String ID = qrCodeData.substring(0,16);
-        String name = qrCodeData.substring(17,25);
+        //String qrCodeData = getIntent().getStringExtra("qrCode");
+        String ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
+        //String name =  "PL"+value;
+        String name = getIntent().getStringExtra("name_").trim();
         // prelevo la citta
         String qrCitta = getIntent().getStringExtra("qrCitta");
         // prelevo le coordinate
@@ -281,6 +291,25 @@ public class ToDoActivity extends Activity {
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
         // prelevo l'indirizzo
         String qrAddress = getIntent().getStringExtra("qrIndirizzo");
+
+        String valoreCorrente = getIntent().getStringExtra("valore_corrente");
+
+        int valoreCorrente_;
+        int valoreCorrenteCalcolo;
+
+        try {
+            valoreCorrente_ = Integer.parseInt(valoreCorrente);
+            valoreCorrenteCalcolo = valoreCorrente_*36;
+        }
+        catch (NumberFormatException e)
+        {
+            valoreCorrente_ = 0;
+            valoreCorrenteCalcolo=0;
+        }
+
+
+        //String valoreCorrente_ = valoreCorrente *10*36;  TODO
+
         // dato che la forma canonica è "via , civico , etc " divido secondo questa logica
         String[] addressArray = qrAddress.split(",");
 
@@ -297,9 +326,9 @@ public class ToDoActivity extends Activity {
 
 
         // imposto l'ID TODO decommentare in fase di release o test con qrcode con ID diversi
-       // item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
+         item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
 
-        item.setId("D73528DC2B510777");
+        //item.setId("D73528DC2B510777");
 
         // imposto il nome
         item.setName(name);
@@ -311,6 +340,8 @@ public class ToDoActivity extends Activity {
         item.setLongitude(qrLongitudine);
         // via
         item.setVia(viaCompleta);
+        //corrente selezionata dal menù a tendina
+        item.setCorrente(valoreCorrenteCalcolo); //   TODO decommentare prendere valore corretto
 
         item.setComplete(false);
 

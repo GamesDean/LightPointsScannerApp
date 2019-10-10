@@ -51,6 +51,12 @@ public class DevicesLightPointsTemp {
     private Double mLongitude;
 
     /**
+     * Item corrente
+     */
+    @com.google.gson.annotations.SerializedName("corrente")
+    private int mCorrente;
+
+    /**
      * Indicates if the item is completed
      */
     @com.google.gson.annotations.SerializedName("complete")
@@ -202,6 +208,24 @@ public class DevicesLightPointsTemp {
      */
     public final void setLongitude(Double longitude) {
         mLongitude = longitude;
+    }
+
+    /**
+     * Returns the item corrente
+     */
+    public Integer getCorrente() {
+        return mCorrente;
+    }
+
+
+    /**
+     * Sets the item corrente
+     *
+     * @param corrente
+     *            corrente to set
+     */
+    public final void setCorrente(Integer corrente) {
+        mCorrente = corrente;
     }
 
 
