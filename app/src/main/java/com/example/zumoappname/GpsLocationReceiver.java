@@ -19,13 +19,19 @@ public class GpsLocationReceiver extends BroadcastReceiver  {
         if (intent.getAction().equals("android.location.PROVIDERS_CHANGED")) {
             // react on GPS provider change action
 
+
             LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE );
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if(statusOfGPS) {
                 Intent intenT = new Intent(context, com.example.zumoappname.GetLatLong.class);
                 context.startActivity(intenT);
+
             }
+
+
+
+
 
 
         }

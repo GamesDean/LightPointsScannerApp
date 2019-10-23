@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -72,7 +71,7 @@ public class ToDoActivity extends Activity {
     /**
      * Adapter to sync the items list with the view
      */
-    private ToDoItemAdapter mAdapter;
+    // private ToDoItemAdapter mAdapter;
 
 
 
@@ -96,12 +95,12 @@ public class ToDoActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
         mTextNewToDo = (TextView) findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
 
         // Initialize the progress bar
-        mProgressBar.setVisibility(ProgressBar.GONE);
+//        mProgressBar.setVisibility(ProgressBar.GONE);
 
         getQrCodeData();
 
@@ -136,17 +135,17 @@ public class ToDoActivity extends Activity {
             initLocalStore().get();
 
             // Create an adapter to bind the items with the view
-            mAdapter = new ToDoItemAdapter(this, R.layout.row_list_to_do);
-            ListView listViewToDo = (ListView) findViewById(R.id.listViewToDo);
-            listViewToDo.setAdapter(mAdapter);
+            //mAdapter = new ToDoItemAdapter(this, R.layout.row_list_to_do);
+           // ListView listViewToDo = (ListView) findViewById(R.id.listViewToDo);
+            //listViewToDo.setAdapter(mAdapter);
 
             // Load the items from the mobile app backend.
-            refreshItemsFromTable();
+           // refreshItemsFromTable();
 
         } catch (MalformedURLException e) {
-            createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
+            createAndShowDialog(new Exception("C'è un problema con il Mobile Service. Controlla l'URL"), "Error");
         } catch (Exception e){
-            createAndShowDialog(e, "Error");
+      //      createAndShowDialog(e, "Error");
         }
     }
 
@@ -188,7 +187,7 @@ public class ToDoActivity extends Activity {
         // Set the item as completed and update it in the table
         item.setComplete(true);
 
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+     /*   AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
                 try {
@@ -212,6 +211,7 @@ public class ToDoActivity extends Activity {
 
         runAsyncTask(task);
 
+*/
     }
 
     /**
@@ -353,7 +353,7 @@ public class ToDoActivity extends Activity {
                    // final ToDoItem entity = addItemInTable(item); -L
                     final DevicesLightPointsTemp entity = updateItemInTable(item);
 
-                    runOnUiThread(new Runnable() {
+                 /*   runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(!entity.isComplete()){
@@ -361,13 +361,14 @@ public class ToDoActivity extends Activity {
                             }
                         }
                     });
+                    */
                 } catch (final Exception e) {
                     createAndShowDialogFromTask(e, "UpdateError");
 
                     try {
                         final DevicesLightPointsTemp entity = addItemInTable(item);
 
-                        runOnUiThread(new Runnable() {
+                     /*   runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if(!entity.isComplete()){
@@ -375,6 +376,7 @@ public class ToDoActivity extends Activity {
                                 }
                             }
                         });
+                        */
                     } catch (final Exception ex) {
                         createAndShowDialogFromTask(ex, "InsertError");
 
@@ -392,6 +394,10 @@ public class ToDoActivity extends Activity {
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
+
+        //textview che scrive Operazione Completata
+        TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
+        textView_ok.setText("Operazione Completata");
     }
 
     /**
@@ -453,7 +459,7 @@ public class ToDoActivity extends Activity {
                     //Offline Sync
                     //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
 
-                    runOnUiThread(new Runnable() {
+                /*    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mAdapter.clear();
@@ -463,8 +469,9 @@ public class ToDoActivity extends Activity {
                             }
                         }
                     });
+                    */
                 } catch (final Exception e){
-                    createAndShowDialogFromTask(e, "Error");
+             //       createAndShowDialogFromTask(e, "Error");
                 }
 
                 return null;
@@ -473,6 +480,8 @@ public class ToDoActivity extends Activity {
 
         runAsyncTask(task);
     }
+
+
 
     /**
      * Refresh the list with the items in the Mobile Service Table
@@ -539,7 +548,7 @@ public class ToDoActivity extends Activity {
                     syncContext.initialize(localStore, handler).get();
 
                 } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
+                //    createAndShowDialogFromTask(e, "Error");
                 }
 
                 return null;
@@ -585,7 +594,7 @@ public class ToDoActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                createAndShowDialog(exception, "Error");
+            //    createAndShowDialog(exception, "Error");
             }
         });
     }

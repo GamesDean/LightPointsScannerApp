@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
 
@@ -103,9 +102,9 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
         // controllo che sia un palo o cmq un nostro device un qr code che rispecchi dei nostri vincoli es immagine menowatt
         //if (rawResult.getText().equals(menowattCode)) {
 
-            Toast.makeText(getApplicationContext(), "scansione ok", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "scansione ok", Toast.LENGTH_SHORT).show();
 
-           // Intent intent = new Intent(getApplicationContext(), ToDoActivity.class); // TODO cambiare classe con PowerActivity
+           // Intent intent = new Intent(getApplicationContext(), ToDoActivity.class);
             Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
             // prelevo il valore dal qrcode letto
             String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...
@@ -114,7 +113,6 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
             // invio a PowerActivity il valore del qrcode letto ed i valori dei dati acquisiti in GetLatLong
             intent.putExtra("qrCode_", qrCodeData);
             intent.putExtra("name", name);
-            //TODO prodcode da prelevare che verrà usato come NOME del palo sul portale
             intent.putExtra("qrCitta_",qrCitta);
             intent.putExtra("qrIndirizzo_",qrIndirizzo);
             intent.putExtra("qrLatitudine_",qrlatitudine);

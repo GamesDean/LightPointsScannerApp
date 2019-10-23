@@ -6,7 +6,6 @@ package com.example.zumoappname;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,9 +34,13 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
         mLayoutResourceId = layoutResourceId;
     }
 
+
+
+
     /**
      * Returns the view for a specific item on the list
      */
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -73,14 +76,16 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                         ToDoActivity activity = (ToDoActivity) mContext;
                         activity.checkItem(currentItem);
                     }
-                    Intent intent = new Intent(mContext,com.example.zumoappname.ConnectionClass.class);
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext,com.example.zumoappname.ConnectionClass.class);
+//                    mContext.startActivity(intent);
 
                 }
             }
         });
 
         return row;
+
+
     }
 
 }
