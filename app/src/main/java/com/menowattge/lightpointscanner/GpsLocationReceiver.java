@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  *
@@ -24,7 +24,7 @@ public class GpsLocationReceiver extends BroadcastReceiver  {
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if(statusOfGPS) {
-                Intent intenT = new Intent(context, com.example.zumoappname.GetLatLong.class);
+                Intent intenT = new Intent(context, com.menowattge.lightpointscanner.GetLatLong.class);
                 context.startActivity(intenT);
 
             }

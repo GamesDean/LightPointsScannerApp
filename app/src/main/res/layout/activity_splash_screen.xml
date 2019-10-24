@@ -9,7 +9,7 @@
     android:gravity="center|bottom"
 
     android:orientation="vertical"
-    tools:context="com.example.zumoappname.SplashScreenActivity">
+    tools:context="com.menowattge.lightpointscanner.SplashScreenActivity">
 
 
     <ImageView

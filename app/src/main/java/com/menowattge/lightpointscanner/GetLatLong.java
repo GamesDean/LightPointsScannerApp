@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  *

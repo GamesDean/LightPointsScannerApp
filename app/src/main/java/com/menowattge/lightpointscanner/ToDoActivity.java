@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  * Popola la lista con il dato appena salvato sul DB nella tabella DevicesLightPointsTemp
@@ -8,6 +8,7 @@ package com.example.zumoappname;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -643,6 +644,30 @@ public class ToDoActivity extends Activity {
         } else {
             return task.execute();
         }
+    }
+
+    /**
+     * Add a new item
+     *
+     * @param view
+     *            The view that originated the call
+     */
+
+    public void backToScan(View view){
+        Intent intent = new Intent(getApplicationContext(),QrCodeActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Add a new item
+     *
+     * @param view
+     *            The view that originated the call
+     */
+
+    public void quit(View view){
+        finishAffinity();
+        System.exit(0);
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  *
@@ -35,7 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity  {
                     e.printStackTrace();
                 }
 
-                Intent intent = new Intent(getApplicationContext(), com.example.zumoappname.PreQrCodeActivity.class);
+                Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.PreQrCodeActivity.class);
                 startActivity(intent);
 
                 finish();

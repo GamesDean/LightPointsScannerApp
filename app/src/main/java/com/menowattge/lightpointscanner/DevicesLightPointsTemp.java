@@ -1,15 +1,18 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
- * Represents an item in a ToDolist
+ * Rappresenta un elemento che verra inserito nella tabella DevicesLightPointsTemp sul DB Azure Citymonitor
+ *
+ * DevicesLightPointsTemp è il nome della tabella sul Database Citymonitor, gestibile anche sul portale con le easytable
  */
-public class ToDoItem {
+
+public class DevicesLightPointsTemp {
 
     /**
      * Item text
      */
-    @com.google.gson.annotations.SerializedName("text")
-    private String mText;
+  //  @com.google.gson.annotations.SerializedName("text")
+  //  private String mText;
 
     /**
      * Item Id
@@ -36,16 +39,22 @@ public class ToDoItem {
     private String mVia;
 
     /**
-     * Item text
+     * Item latitude
      */
     @com.google.gson.annotations.SerializedName("latitude")
     private Double mLatitude;
 
     /**
-     * Item text
+     * Item longitude
      */
     @com.google.gson.annotations.SerializedName("longitude")
     private Double mLongitude;
+
+    /**
+     * Item corrente
+     */
+    @com.google.gson.annotations.SerializedName("corrente")
+    private int mCorrente;
 
     /**
      * Indicates if the item is completed
@@ -56,34 +65,36 @@ public class ToDoItem {
     /**
      * ToDoItem constructor
      */
-    public ToDoItem() {
+    public DevicesLightPointsTemp() {
 
     }
 
-    @Override
-    public String toString() {
-        return getText();
-    }
+    // non lo uso
+
+   // @Override
+   // public String toString() {
+   //     return getText();
+   // }
 
     /**
      * Initializes a new ToDoItem
      *
-     * @param text
+    // * @param text
      *            The item text
      * @param id
      *            The item id
      */
-    public ToDoItem(String text, String id) {
-        this.setText(text);
+    public DevicesLightPointsTemp(/*String text,*/ String id) { // non lo uso
+    //    this.setText(text);
         this.setId(id);
     }
 
     /**
      * Returns the item text
      */
-    public String getText() {
-        return mText;
-    }
+  //  public String getText() {  // non lo uso
+  //      return mText;
+  //  }
 
     /**
      * Sets the item text
@@ -91,9 +102,12 @@ public class ToDoItem {
      * @param text
      *            text to set
      */
-    public final void setText(String text) {
-        mText = text;
-    }
+  //  public final void setText(String text) { // non lo uso
+  //      mText = text;
+  //  }
+
+
+
 
     /**
      * Returns the item id
@@ -104,10 +118,8 @@ public class ToDoItem {
 
 
 
-
-
     /**
-     * Returns the item text
+     * Returns the item name
      */
     public String getName() {
         return mName;
@@ -125,10 +137,10 @@ public class ToDoItem {
     }
 
     /**
-     * Sets the item name
+     * Sets the item via
      *
      * @param via
-     *            name to set
+     *            via to set
      */
     public final void setVia(String via) {
         mVia = via;
@@ -136,17 +148,17 @@ public class ToDoItem {
 
 
     /**
-     * Returns the item text
+     * Returns the item via
      */
     public String getVia() {
         return mVia;
     }
 
     /**
-     * Sets the item name
+     * Sets the item city
      *
      * @param city
-     *            name to set
+     *            city to set
      */
     public final void setCity(String city) {
         mCity = city;
@@ -165,7 +177,7 @@ public class ToDoItem {
      * Sets the item name
      *
      * @param latitude
-     *            name to set
+     *            latitude to set
      */
     public final void setLatitude(Double latitude) {
         mLatitude = latitude;
@@ -189,13 +201,31 @@ public class ToDoItem {
 
 
     /**
-     * Sets the item name
+     * Sets the item longitude
      *
      * @param longitude
-     *            name to set
+     *            longitude to set
      */
     public final void setLongitude(Double longitude) {
         mLongitude = longitude;
+    }
+
+    /**
+     * Returns the item corrente
+     */
+    public Integer getCorrente() {
+        return mCorrente;
+    }
+
+
+    /**
+     * Sets the item corrente
+     *
+     * @param corrente
+     *            corrente to set
+     */
+    public final void setCorrente(Integer corrente) {
+        mCorrente = corrente;
     }
 
 
@@ -226,6 +256,6 @@ public class ToDoItem {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ToDoItem && ((ToDoItem) o).mId == mId;
+        return o instanceof DevicesLightPointsTemp && ((DevicesLightPointsTemp) o).mId == mId;
     }
 }

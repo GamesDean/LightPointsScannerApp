@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  *
@@ -72,7 +72,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
 
         }
         else{
-            Intent intent = new Intent(getApplicationContext(), com.example.zumoappname.GetLatLong.class);
+            Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.GetLatLong.class);
             startActivity(intent);
         }
 

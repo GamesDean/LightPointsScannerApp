@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 /**
  * Popola la lista con il dato appena salvato sul DB nella tabella DevicesLightPointsTemp
@@ -76,7 +76,7 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                         ToDoActivity activity = (ToDoActivity) mContext;
                         activity.checkItem(currentItem);
                     }
-//                    Intent intent = new Intent(mContext,com.example.zumoappname.ConnectionClass.class);
+//                    Intent intent = new Intent(mContext,com.menowattge.lightpointscanner.ConnectionClass.class);
 //                    mContext.startActivity(intent);
 
                 }

@@ -1,4 +1,4 @@
-package com.example.zumoappname;
+package com.menowattge.lightpointscanner;
 
 import android.content.Intent;
 import android.os.Bundle;
