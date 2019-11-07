@@ -11,15 +11,32 @@ package com.menowattge.lightpointscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+
+
 
 public class PreQrCodeActivity extends AppCompatActivity {
 
     private GpsLocationReceiver gps;
     private IntentFilter filter;
+
+    // lists for permissions
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissions = new ArrayList<>();
+    private static final int ALL_PERMISSIONS_RESULT = 1011;
+
+
 
 
 
@@ -29,8 +46,56 @@ public class PreQrCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pre_activity_qr_code);
 
+
+
+        /////////////  richiedo a video il permesso
+
+        // we add permissions we need to request location of the users
+        /*
+        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        permissionsToRequest = permissionsToRequest(permissions);
+        Log.println(Log.INFO,"permesso",permissionsToRequest.toString());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (permissionsToRequest.size() > 0) {
+                requestPermissions(permissionsToRequest.toArray(
+                        new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+            }
+        }
+
+
+*/
+
+        ////////////
+
         gps = new GpsLocationReceiver();
         filter = new IntentFilter(Context.LOCATION_SERVICE);
+
+
+
+    }
+
+
+    private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (String perm : wantedPermissions) {
+            if (!hasPermission(perm)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean hasPermission(String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        return true;
     }
 
 
@@ -43,10 +108,36 @@ public class PreQrCodeActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
+
+         ConnectivityManager mgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+         NetworkInfo netInfo = mgr.getActiveNetworkInfo();
+
+
+
+
+
+        if (netInfo != null) {
+            if (netInfo.isConnected()) {
+                // Internet Available
+                Toast.makeText(this,"ok",Toast.LENGTH_SHORT);
+            }else {
+                //No internet
+
+            }
+        } else {
+            //No internet
+        }
+
+
+
+
+
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
         final boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!statusOfGPS){
+
+
 
             final Thread timeout = new Thread() {
                 @Override
@@ -70,8 +161,12 @@ public class PreQrCodeActivity extends AppCompatActivity {
 
             timeout.start();
 
+
+
         }
         else{
+
+
             Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.GetLatLong.class);
             startActivity(intent);
         }

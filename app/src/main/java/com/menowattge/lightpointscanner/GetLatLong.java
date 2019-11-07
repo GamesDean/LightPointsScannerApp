@@ -6,16 +6,22 @@ package com.menowattge.lightpointscanner;
  */
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -23,9 +29,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,8 +59,10 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
     // lists for permissions
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissions = new ArrayList<>();
-    // integer for permissions results request
+     //integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
+    private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
+
 
     private TextView textCoordinate;
 
@@ -59,6 +74,102 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
 
 
+    /**
+     * Ask for GPS permission, just once (first install only)
+     */
+
+    public void CheckPermission(final GoogleApiClient gapiClient) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (!prefs.contains("First")) {
+            // if (this.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            builder.setTitle("INFO Geolocalizzazione");
+            builder.setMessage("In applicazione del Regolamento generale sulla protezione dei dati (GDPR)" +
+                    " del 27 aprile 2016 si dichiara all’utilizzatore dell’app, denominata LightPointScanner, che nessun " +
+                    "dato personale verrà archiviato e/o trasferito e/o sarà oggetto di proliferazione." +
+                    " Si dichiara, inoltre, che nessun dato geografico verrà archiviato e/o trasferito e/o" +
+                    " sarà oggetto di proliferazione." +
+                    "Si ricorda che l’uscita dall’app LightPointScanner rende non più necessario l’uso del circuito GPS: " +
+                    "per risparmiare energia si consiglia di disattivarlo");
+            builder.setPositiveButton(R.string.ho_letto, null);
+
+
+
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_FINE_LOCATION);
+
+                    locationChecker(gapiClient, GetLatLong.this);
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("First",true);
+                    editor.commit();
+                    System.out.println("PRIMO AVVIO\n");
+
+                }
+            });
+
+            builder.show();
+        }else{
+            System.out.println("SUCCESSIVI AVVII_\n");
+            if (this.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_FINE_LOCATION);
+            locationChecker(gapiClient, GetLatLong.this);
+        }
+
+    }
+
+
+
+
+
+    /**
+     * Prompt user to enable GPS and Location Services
+     *
+     * @param mGoogleApiClient
+     * @param activity
+     */
+    public static void locationChecker(GoogleApiClient mGoogleApiClient, final Activity activity) {
+        final LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(30 * 1000);
+        locationRequest.setFastestInterval(5 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location requests here.
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                        // Location settings are not satisfied. But could be fixed by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    activity, 1000);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+
 
     @Override
     protected void onCreate(Bundle state) {
@@ -68,19 +179,23 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lat_long);
 
-
+/*
         // we add permissions we need to request location of the users
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
         permissionsToRequest = permissionsToRequest(permissions);
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (permissionsToRequest.size() > 0) {
-                requestPermissions(permissionsToRequest.toArray(
-                        new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
             }
         }
+
+*/
+
 
         // we build google api client
         googleApiClient = new GoogleApiClient.Builder(this).
@@ -93,15 +208,24 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
         // riempio file di testo con coordinate,poi una volta riempito, lancio QrCodeActivity
         textCoordinate = (findViewById(R.id.textViewcoordinate));
 
+        if (googleApiClient != null) {
+            googleApiClient.connect();
+        }
+
+        CheckPermission(googleApiClient);
+
     }
 
     @Override
     protected  void onResume(){
         super.onResume();
 
+
         if (googleApiClient != null) {
             googleApiClient.connect();
         }
+
+        CheckPermission(googleApiClient);
 
 
     }
@@ -159,6 +283,8 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
+
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,
@@ -216,9 +342,10 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             longitude = location.getLongitude();
             textCoordinate.setText("Latitudine : " + latitude + "\nLongitudine : " + longitude);
             x++;
-            // k = 400 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
+            // k = 200 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
+            // ho messo 200 perchè così non da problemi (misteriosi) con l'update nel DB che fa successivamente
             // la posizione corretta
-            getFromCoordinate(x,400);
+            getFromCoordinate(x,100);
 
         }
 

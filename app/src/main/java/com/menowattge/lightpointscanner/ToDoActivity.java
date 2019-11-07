@@ -13,12 +13,14 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -40,7 +42,6 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -86,6 +87,8 @@ public class ToDoActivity extends Activity {
      */
     private ProgressBar mProgressBar;
     private android.widget.Button button;
+    private android.widget.Button buttonAgain;
+    private android.widget.Button buttonExit;
 
 
     /**
@@ -99,6 +102,9 @@ public class ToDoActivity extends Activity {
         //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
         mTextNewToDo = (TextView) findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
+
+        buttonAgain = findViewById(R.id.button3);
+        buttonExit = findViewById(R.id.button4);
 
         // Initialize the progress bar
 //        mProgressBar.setVisibility(ProgressBar.GONE);
@@ -248,13 +254,14 @@ public class ToDoActivity extends Activity {
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
 
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
+        String name = getIntent().getStringExtra("name_").trim();
 
 
 
 
         // mostro a video i  valori soprastanti
         mTextNewToDo.setText(qrCodeData);
-        mTextNewToDo.append("\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\ncorrente : "+valoreCorrente+"\n");
+        mTextNewToDo.append("\ncodice : "+name+"\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\ncorrente : "+valoreCorrente+"\n");
 
 
     }
@@ -277,8 +284,7 @@ public class ToDoActivity extends Activity {
 
         // -L
 
-        Random rand = new Random();
-        int value = rand.nextInt(750);
+
 
         // prelevo ID e nome partendo dalla combinazione dei due
         //String qrCodeData = getIntent().getStringExtra("qrCode");
@@ -307,9 +313,6 @@ public class ToDoActivity extends Activity {
             valoreCorrente_ = 0;
             valoreCorrenteCalcolo=0;
         }
-
-
-        //String valoreCorrente_ = valoreCorrente *10*36;  TODO
 
         // dato che la forma canonica è "via , civico , etc " divido secondo questa logica
         String[] addressArray = qrAddress.split(",");
@@ -342,7 +345,7 @@ public class ToDoActivity extends Activity {
         // via
         item.setVia(viaCompleta);
         //corrente selezionata dal menù a tendina
-        item.setCorrente(valoreCorrenteCalcolo); //   TODO decommentare prendere valore corretto
+        item.setCorrente(valoreCorrenteCalcolo);
 
         item.setComplete(false);
 
@@ -352,7 +355,11 @@ public class ToDoActivity extends Activity {
             protected Void doInBackground(Void... params) {
                 try {
                    // final ToDoItem entity = addItemInTable(item); -L
-                    final DevicesLightPointsTemp entity = updateItemInTable(item);
+                    //final DevicesLightPointsTemp entity = updateItemInTable(item);
+                    //-L non ha valore di ritorno, a me non serve e così non dà Errore
+                    updateItemInTable_(item);
+                    //sendMail("Mail operatore-update","dati inseriti nel DB");
+                    Log.println(Log.INFO,"database","update_ok");
 
                  /*   runOnUiThread(new Runnable() {
                         @Override
@@ -365,11 +372,15 @@ public class ToDoActivity extends Activity {
                     */
                 } catch (final Exception e) {
                     createAndShowDialogFromTask(e, "UpdateError");
+                    Log.println(Log.INFO,"database","update_KO!");
 
+                    /*
                     try {
                         final DevicesLightPointsTemp entity = addItemInTable(item);
+                        Log.println(Log.INFO,"database","insert_ok");
 
-                     /*   runOnUiThread(new Runnable() {
+
+                       runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if(!entity.isComplete()){
@@ -377,12 +388,13 @@ public class ToDoActivity extends Activity {
                                 }
                             }
                         });
-                        */
+
                     } catch (final Exception ex) {
                         createAndShowDialogFromTask(ex, "InsertError");
 
                     }
 
+                    */
 
                 }
                 return null;
@@ -396,9 +408,49 @@ public class ToDoActivity extends Activity {
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
 
+        // ad inserimento completato rendo il pulsante cliccabile e visibile
+        buttonAgain.setVisibility(View.VISIBLE);
+        buttonAgain.setClickable(true);
+
+        buttonExit.setVisibility(View.VISIBLE);
+        buttonExit.setClickable(true);
+
+
+
         //textview che scrive Operazione Completata
         TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
         textView_ok.setText("Operazione Completata");
+        //mail con il resoconto della scansione
+        String riepilogo = "L'operatore ha completato il suo lavoro : \n"+ID+"\n"+name+"\n"+qrCitta+"\n"+qrLatitudine+"\n"+qrLongitudine+"\n"+qrAddress+"\n"+valoreCorrenteCalcolo;
+        sendMail("Mail Operatore",riepilogo);
+    }
+
+
+
+    public void sendMail(String oggetto, String testo){
+
+        BackgroundMail.newBuilder(this)
+                .withUsername("lv.menowattge@gmail.com")
+                .withPassword("menowattge")
+                .withMailto("controlloproduzione@menowattge.it")
+                .withType(BackgroundMail.TYPE_PLAIN)
+                .withSubject(oggetto)
+                .withBody(testo)
+                .withOnSuccessCallback(new BackgroundMail.OnSuccessCallback() {
+                    @Override
+                    public void onSuccess() {
+                        //do some magic
+                        Log.println(Log.INFO,"mail_scan","mail_sent");
+                    }
+                })
+                .withOnFailCallback(new BackgroundMail.OnFailCallback() {
+                    @Override
+                    public void onFail() {
+                        Log.println(Log.ERROR,"mail_scan","mail_failed");
+                    }
+                })
+                .send();
+
     }
 
     /**
@@ -422,7 +474,22 @@ public class ToDoActivity extends Activity {
 
         DevicesLightPointsTemp entity = mDevicesLightPointsTemp.update(item).get();
 
+
         return entity;
+    }
+
+    /**
+     * Update an item to the Mobile Service Table
+     *
+     * @param item
+     *            The item to Update
+     */
+    public void updateItemInTable_(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
+
+         mDevicesLightPointsTemp.update(item);
+
+
+
     }
 
 
@@ -591,11 +658,11 @@ public class ToDoActivity extends Activity {
      * @param title
      *            The dialog title
      */
-    private void createAndShowDialogFromTask(final Exception exception, String title) {
+    private void createAndShowDialogFromTask(final Exception exception, final String title) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-            //    createAndShowDialog(exception, "Error");
+                createAndShowDialog(exception, title);
             }
         });
     }
@@ -654,7 +721,7 @@ public class ToDoActivity extends Activity {
      */
 
     public void backToScan(View view){
-        Intent intent = new Intent(getApplicationContext(),QrCodeActivity.class);
+        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
         startActivity(intent);
     }
 

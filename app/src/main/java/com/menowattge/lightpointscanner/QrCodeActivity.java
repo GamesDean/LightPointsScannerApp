@@ -5,13 +5,12 @@ package com.menowattge.lightpointscanner;
  *  Classe per effettuare la scansione del qrcode
  */
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 
@@ -34,7 +33,7 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
     // private String menowattCode = "User : Operator\n" + "Pass :  Ledgear";
 
     // TODO trovare un discriminante per far scannerizzare soltanto i nostri qrcode. fare prova con pdf147
-    private String menowattCode = "pass_ok";
+    private String menowattCode = "d735";
 
 
 
@@ -44,10 +43,8 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
         if (this.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-        }
+
+
     }
 
 
@@ -56,6 +53,7 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
 
         super.onCreate(state);
 
+        CheckPermission();
         // prendo dall'activity GetLatLong dei dati per poi passarli a ToDoActivity
         qrCitta = getIntent().getStringExtra("citta");
         qrIndirizzo = getIntent().getStringExtra("indirizzo");
@@ -98,9 +96,12 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
         //Toast.makeText(getApplicationContext(), rawResult.getText().substring(0,15), Toast.LENGTH_SHORT).show();
 
         Log.v("risultato_qrcodeformat", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        //prelevo solo l'inizio dell'indirizzo radio ovvero d735
+        String d735 = rawResult.getText().substring(0,4);
+        Log.i("d735", d735);
 
-        // controllo che sia un palo o cmq un nostro device un qr code che rispecchi dei nostri vincoli es immagine menowatt
-        //if (rawResult.getText().equals(menowattCode)) {
+        // controllo che sia un nostro qrcode controllando  D735
+        if (d735.equals(menowattCode)) {
 
             //Toast.makeText(getApplicationContext(), "scansione ok", Toast.LENGTH_SHORT).show();
 
@@ -122,8 +123,8 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
 
 
 
-      //  } else {
-         //    Toast.makeText(getApplicationContext(),"codice non valido",Toast.LENGTH_SHORT).show();        }
+        } else {
+            Toast.makeText(getApplicationContext(),"qr code errato",Toast.LENGTH_SHORT).show();        }
 
             // If you would like to resume scanning, call this method below:
             mScannerView.resumeCameraPreview(this);

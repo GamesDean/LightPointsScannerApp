@@ -10,10 +10,11 @@
         android:id="@+id/textViewcoordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/sto_registrando_le_coordinate"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:gravity="center"
+        android:text="@string/sto_registrando_le_coordinate"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
 
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:typeface="normal" />
 
