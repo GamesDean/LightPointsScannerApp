@@ -1,45 +1,92 @@
 package com.menowattge.lightpointscanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
 
-public class ConnectionClass extends Activity {
+public class CheckConnectionActivity extends Activity {
 
 
-    // This is default if you are using JTDS driver.
-    static String classs = "net.sourceforge.jtds.jdbc.Driver";
-    //"com.microsoft.sqlserver.jdbc.SQLServerDriver"
-    static String db = "citymonitor2";
-    static String un = "citymonitor_dbadmin@citymonitoreu";
-    static String password = "MonitCityMenoWatt1296";
-    static String server = "citymonitoreu.database.windows.net:1433";
-
-    String z=" ";
 
 
-    public TextView textviewSQL;
 
 
 
     @Override
     protected  void onCreate(Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
-        setContentView(R.layout.activity_conclasse);
 
-        textviewSQL=findViewById(R.id.textViewSQL);
 
+        writeToFile(this);
         uploadOracolo();
+        finish();
+
 
     }
+
+
+
+    public  void writeToFile( Context context) {
+
+        String data = getAndPrintData();
+        System.out.println("data : "+data);
+
+        File file = new File(CheckConnectionActivity.this.getFilesDir(), "data");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+        try {
+            File gpxfile = new File(file, "info_palo");
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(data);
+            writer.flush();
+            writer.close();
+           // Toast.makeText(this, "Saved your text", Toast.LENGTH_LONG).show();
+        } catch (Exception e) { }
+    }
+
+
+
+
+
+
+
+    public static String getAndPrintData(){
+
+        String nome= ToDoActivity.name;
+        String ID = ToDoActivity.ID;
+        String citta=ToDoActivity.qrCitta;
+        Double Lat=ToDoActivity.qrLatitudine;
+        Double Lon=ToDoActivity.qrLongitudine;
+        String addr=ToDoActivity.qrAddress;
+        String corrente=ToDoActivity.valoreCorrente;
+
+
+        String data = nome+" "+ID+" "+citta+" "+Lat+" "+Lon+" "+addr+" "+corrente;
+
+
+        return  data;
+
+    }
+
+
+
+
+
+
+
 
     /*
     public String ReadFromfile(String fileName, Context context) {
@@ -76,7 +123,17 @@ public class ConnectionClass extends Activity {
     /**
      * upload nell'ftp un file di testo contenente un valore booleano
      */
-    public void uploadOracolo(){
+    public  void uploadOracolo(){
+
+        String yourFilePath = CheckConnectionActivity.this.getFilesDir() + "/data/info_palo";
+        File yourFile = new File( yourFilePath );
+        FileInputStream fileInputStream=null ;
+
+        try {
+             fileInputStream = new FileInputStream(yourFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         FTPClient con ;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -91,12 +148,15 @@ public class ConnectionClass extends Activity {
             {
                 con.enterLocalPassiveMode(); // important!
                 con.setFileType(FTP.BINARY_FILE_TYPE);
-                InputStream fIn=  this.getResources().getAssets().open("oracolo.txt");
+                //InputStream fIn=  this.getResources().getAssets().open("oracolo.txt");
 
-                boolean result = con.storeFile("/ORACOLO_APP/oracolo_app.txt", fIn);
-                fIn.close();
+                String nome= ToDoActivity.name;
+                String citta=ToDoActivity.qrCitta;
+
+                boolean result = con.storeFile("/ORACOLO_APP/"+nome+"_"+citta+".txt", fileInputStream);
+
+               // fIn.close();
                 if (result) Log.v("upload result", "succeeded");
-                textviewSQL.setText("OK");
                 con.logout();
                 con.disconnect();
             }
@@ -116,40 +176,26 @@ public class ConnectionClass extends Activity {
 
 
 /*
-
     public void ConnectToDatabase(){
         try {
-
-
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             Connection DbConn;
             String ConnURL;
-
             Class.forName(classs);
             ConnURL = "jdbc:jtds:sqlserver://" + server + ";" + "database=" + db + ";user=" + un + ";password=" + password + ";"+"encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
             DbConn = DriverManager.getConnection(ConnURL);
-
-
-
             Log.w("Connection","open");
-
             Statement stmt = DbConn.createStatement();
             ResultSet reset = stmt.executeQuery("select DeviceAddress from citymonitor2.dbo.Devices");
-
-
-
             textviewSQL.setText(reset.getString(1));
-
             DbConn.close();
-
         } catch (Exception e)
         {
             Log.w("Error connection","" + e.getMessage());
         }
     }
-
-
 */
+
 
 }

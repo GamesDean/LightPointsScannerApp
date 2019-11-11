@@ -85,13 +85,13 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             // if (this.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             builder.setTitle("INFO Geolocalizzazione");
-            builder.setMessage("In applicazione del Regolamento generale sulla protezione dei dati (GDPR)" +
-                    " del 27 aprile 2016 si dichiara all’utilizzatore dell’app, denominata LightPointScanner, che nessun " +
-                    "dato personale verrà archiviato e/o trasferito e/o sarà oggetto di proliferazione." +
-                    " Si dichiara, inoltre, che nessun dato geografico verrà archiviato e/o trasferito e/o" +
-                    " sarà oggetto di proliferazione." +
-                    "Si ricorda che l’uscita dall’app LightPointScanner rende non più necessario l’uso del circuito GPS: " +
-                    "per risparmiare energia si consiglia di disattivarlo");
+            builder.setMessage("In applicazione del Regolamento generale sulla protezione dei dati (GDPR) del 27 aprile 2016 " +
+                    "si dichiara all’utilizzatore dell’app, denominata LightPointScanner, che nessun dato personale" +
+                    " verrà archiviato e/o trasferito e/o sarà oggetto di proliferazione. Si dichiara che il dato geografico," +
+                    " relativo alla sola posizione del palo di illuminazione, verrà archiviato e/o trasferito solo dopo " +
+                    "specifica autorizzazione da parte dell'utilizzatore dell'app LightPointScanner . " +
+                    "Si ricorda che l’uscita dall’app LightPointScanner  rende non più necessario " +
+                    "l’uso del circuito GPS: per risparmiare energia si consiglia di disattivarlo");
             builder.setPositiveButton(R.string.ho_letto, null);
 
 

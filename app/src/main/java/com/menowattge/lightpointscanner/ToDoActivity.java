@@ -266,6 +266,15 @@ public class ToDoActivity extends Activity {
 
     }
 
+    public static String name;
+    public static String ID;
+    public static String qrCitta;
+    public static Double qrLatitudine;
+    public static Double qrLongitudine;
+    public static String qrAddress;
+    public static String valoreCorrente;
+
+
     /**
      * Add a new item
      *
@@ -288,18 +297,22 @@ public class ToDoActivity extends Activity {
 
         // prelevo ID e nome partendo dalla combinazione dei due
         //String qrCodeData = getIntent().getStringExtra("qrCode");
-        String ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
+         ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
         //String name =  "PL"+value;
-        String name = getIntent().getStringExtra("name_").trim();
-        // prelevo la citta
-        String qrCitta = getIntent().getStringExtra("qrCitta");
-        // prelevo le coordinate
-        Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-        Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-        // prelevo l'indirizzo
-        String qrAddress = getIntent().getStringExtra("qrIndirizzo");
+         name = getIntent().getStringExtra("name_").trim();
 
-        String valoreCorrente = getIntent().getStringExtra("valore_corrente");
+        // prelevo la citta
+         qrCitta = getIntent().getStringExtra("qrCitta");
+        // prelevo le coordinate
+         qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
+         qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
+        // prelevo l'indirizzo
+         qrAddress = getIntent().getStringExtra("qrIndirizzo");
+
+         valoreCorrente = getIntent().getStringExtra("valore_corrente");
+
+        //invio i dati rilevati alla classe che li salva nel file di testo per inviarlo all'FTP per sicurezza
+        //CheckConnectionActivity.writeToFile(this);
 
         int valoreCorrente_;
         int valoreCorrenteCalcolo;
@@ -422,8 +435,15 @@ public class ToDoActivity extends Activity {
         textView_ok.setText("Operazione Completata");
         //mail con il resoconto della scansione
         String riepilogo = "L'operatore ha completato il suo lavoro : \n"+ID+"\n"+name+"\n"+qrCitta+"\n"+qrLatitudine+"\n"+qrLongitudine+"\n"+qrAddress+"\n"+valoreCorrenteCalcolo;
-        sendMail("Mail Operatore",riepilogo);
+       // sendMail("Mail Operatore",riepilogo);
+
+
+        Intent intent = new Intent(getApplicationContext(),CheckConnectionActivity.class);
+        startActivity(intent);
+
     }
+
+
 
 
 

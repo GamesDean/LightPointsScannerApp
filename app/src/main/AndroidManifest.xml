@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"    />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-feature
@@ -73,7 +74,8 @@
             android:theme="@style/Theme.AppCompat" />
 
         <activity
-            android:name="com.menowattge.lightpointscanner.ConnectionClass"
+            android:name="com.menowattge.lightpointscanner.CheckConnectionActivity"
+            android:theme = "@android:style/Theme.Translucent.NoTitleBar"
             android:screenOrientation="portrait" />
 
         <receiver android:name="com.menowattge.lightpointscanner.GpsLocationReceiver">

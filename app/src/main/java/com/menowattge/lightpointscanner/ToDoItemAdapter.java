@@ -76,7 +76,7 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                         ToDoActivity activity = (ToDoActivity) mContext;
                         activity.checkItem(currentItem);
                     }
-//                    Intent intent = new Intent(mContext,com.menowattge.lightpointscanner.ConnectionClass.class);
+//                    Intent intent = new Intent(mContext,com.menowattge.lightpointscanner.CheckConnectionActivity.class);
 //                    mContext.startActivity(intent);
 
                 }

@@ -13,13 +13,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -107,28 +104,6 @@ public class PreQrCodeActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
-
-         ConnectivityManager mgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-         NetworkInfo netInfo = mgr.getActiveNetworkInfo();
-
-
-
-
-
-        if (netInfo != null) {
-            if (netInfo.isConnected()) {
-                // Internet Available
-                Toast.makeText(this,"ok",Toast.LENGTH_SHORT);
-            }else {
-                //No internet
-
-            }
-        } else {
-            //No internet
-        }
-
-
 
 
 
