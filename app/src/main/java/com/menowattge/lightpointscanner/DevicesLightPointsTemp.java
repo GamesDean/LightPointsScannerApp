@@ -11,8 +11,8 @@ public class DevicesLightPointsTemp {
     /**
      * Item text
      */
-  //  @com.google.gson.annotations.SerializedName("text")
-  //  private String mText;
+    @com.google.gson.annotations.SerializedName("conn_string")
+    private String mConn_string;
 
     /**
      * Item Id
@@ -114,6 +114,13 @@ public class DevicesLightPointsTemp {
      */
     public String getId() {
         return mId;
+    }
+
+    /**
+     * Returns the item conn_string
+     */
+    public String getConn_string() {
+        return mConn_string;
     }
 
 

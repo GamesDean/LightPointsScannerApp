@@ -8,8 +8,11 @@ package com.menowattge.lightpointscanner;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -98,6 +101,8 @@ public class ToDoActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
+
+        checkConnection();
 
         //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
         mTextNewToDo = (TextView) findViewById(R.id.textNewToDo);
@@ -178,6 +183,52 @@ public class ToDoActivity extends Activity {
         }
 
         return true;
+    }
+
+
+
+    public void checkConnection(){
+        final Thread timeout = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                try {
+
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+
+
+                            ConnectivityManager mgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                            NetworkInfo netInfo = mgr.getActiveNetworkInfo();
+                            boolean isConnected = netInfo != null &&
+                                    netInfo.isConnectedOrConnecting();
+
+                            if (isConnected ) {
+
+                            }
+                            else {
+                                //No internet
+                                Toast.makeText(getApplicationContext(),"NO INTERNET-IMPOSSIBILE PROSEGUIRE-\nCONNETTERSI E RIAVVIARE L'APP".toUpperCase(),Toast.LENGTH_LONG).show();
+
+                                button.setClickable(false);
+
+                            }
+                        }
+                    });
+
+                    sleep(4000);
+
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        };
+
+        timeout.start();
+
     }
 
     /**
@@ -273,6 +324,7 @@ public class ToDoActivity extends Activity {
     public static Double qrLongitudine;
     public static String qrAddress;
     public static String valoreCorrente;
+    public String        conn_string;
 
 
     /**
@@ -298,6 +350,7 @@ public class ToDoActivity extends Activity {
         // prelevo ID e nome partendo dalla combinazione dei due
         //String qrCodeData = getIntent().getStringExtra("qrCode");
          ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
+
         //String name =  "PL"+value;
          name = getIntent().getStringExtra("name_").trim();
 
@@ -310,6 +363,25 @@ public class ToDoActivity extends Activity {
          qrAddress = getIntent().getStringExtra("qrIndirizzo");
 
          valoreCorrente = getIntent().getStringExtra("valore_corrente");
+
+        // get conn_string
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task_select = new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    conn_string=selectFromTable();
+                    Log.println(Log.INFO,"conn_string","select_ok");
+
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "UpdateError");
+                    Log.println(Log.INFO,"conn_string","select_KO");
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task_select);
+
 
         //invio i dati rilevati alla classe che li salva nel file di testo per inviarlo all'FTP per sicurezza
         //CheckConnectionActivity.writeToFile(this);
@@ -447,31 +519,6 @@ public class ToDoActivity extends Activity {
 
 
 
-    public void sendMail(String oggetto, String testo){
-
-        BackgroundMail.newBuilder(this)
-                .withUsername("lv.menowattge@gmail.com")
-                .withPassword("menowattge")
-                .withMailto("controlloproduzione@menowattge.it")
-                .withType(BackgroundMail.TYPE_PLAIN)
-                .withSubject(oggetto)
-                .withBody(testo)
-                .withOnSuccessCallback(new BackgroundMail.OnSuccessCallback() {
-                    @Override
-                    public void onSuccess() {
-                        //do some magic
-                        Log.println(Log.INFO,"mail_scan","mail_sent");
-                    }
-                })
-                .withOnFailCallback(new BackgroundMail.OnFailCallback() {
-                    @Override
-                    public void onFail() {
-                        Log.println(Log.ERROR,"mail_scan","mail_failed");
-                    }
-                })
-                .send();
-
-    }
 
     /**
      * Add an item to the Mobile Service Table
@@ -572,13 +619,22 @@ public class ToDoActivity extends Activity {
 
 
     /**
-     * Refresh the list with the items in the Mobile Service Table
+     * Select key from table
      */
 
- //   private List<ToDoItem> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException { -L
- //       return mToDoTable.where().field("complete").
- //               eq(val(false)).execute().get();
- //   }
+    private String selectFromTable() throws ExecutionException, InterruptedException {
+
+
+
+             String conn_string =  mDevicesLightPointsTemp.where().field("conn_string").eq(val(ID)).execute().get().toString();
+
+             Log.d("CONNECTION_STRING : ",conn_string);
+
+             return conn_string;
+    }
+
+
+
 
     private List<DevicesLightPointsTemp> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
         return mDevicesLightPointsTemp.where().field("complete").

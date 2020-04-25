@@ -306,7 +306,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             x++;
             // passando il valore di k uguale a 0 faccio eseguire immediatamente l'operazione poichè il GPS essendo già attivo
             // è di conseguenza preciso e non devo attendere che azzecchi la posizione.
-            getFromCoordinate(x,0);
+            getFromCoordinate(x,200);
 
         }
 
@@ -345,7 +345,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             // k = 200 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
             // ho messo 200 perchè così non da problemi (misteriosi) con l'update nel DB che fa successivamente
             // la posizione corretta
-            getFromCoordinate(x,100);
+            getFromCoordinate(x,400);
 
         }
 
