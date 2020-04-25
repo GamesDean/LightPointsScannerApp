@@ -63,7 +63,6 @@ public class ToDoActivity extends Activity {
     /**
      * Table used to access data from the mobile app backend.
      */
-    //private MobileServiceTable<ToDoItem> mToDoTable;  -L
 
     private MobileServiceTable<DevicesLightPointsTemp> mDevicesLightPointsTemp;
 
@@ -104,17 +103,14 @@ public class ToDoActivity extends Activity {
 
         checkConnection();
 
-        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
         mTextNewToDo = (TextView) findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
 
         buttonAgain = findViewById(R.id.button3);
         buttonExit = findViewById(R.id.button4);
 
-        // Initialize the progress bar
-//        mProgressBar.setVisibility(ProgressBar.GONE);
 
-        getQrCodeData();
+        // getQrCodeData(); TODO giusta ma ora non serve
 
         try {
             // Create the client instance, using the provided mobile app URL.
@@ -137,27 +133,18 @@ public class ToDoActivity extends Activity {
 
             // Get the remote table instance to use.
 
-           // mToDoTable = mClient.getTable(ToDoItem.class); -L
+            // mToDoTable = mClient.getTable(ToDoItem.class); -L
             mDevicesLightPointsTemp = mClient.getTable(DevicesLightPointsTemp.class);
 
-            // Offline sync table instance.
-            //mToDoTable = mClient.getSyncTable("ToDoItem", ToDoItem.class);
 
             //Init local storage
             initLocalStore().get();
 
-            // Create an adapter to bind the items with the view
-            //mAdapter = new ToDoItemAdapter(this, R.layout.row_list_to_do);
-           // ListView listViewToDo = (ListView) findViewById(R.id.listViewToDo);
-            //listViewToDo.setAdapter(mAdapter);
-
-            // Load the items from the mobile app backend.
-           // refreshItemsFromTable();
 
         } catch (MalformedURLException e) {
             createAndShowDialog(new Exception("C'è un problema con il Mobile Service. Controlla l'URL"), "Error");
         } catch (Exception e){
-      //      createAndShowDialog(e, "Error");
+            //      createAndShowDialog(e, "Error");
         }
     }
 
@@ -245,31 +232,6 @@ public class ToDoActivity extends Activity {
         // Set the item as completed and update it in the table
         item.setComplete(true);
 
-     /*   AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-
-                    checkItemInTable(item);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (item.isComplete()) {
-                                mAdapter.remove(item);
-                            }
-                        }
-                    });
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
-                }
-
-                return null;
-            }
-        };
-
-        runAsyncTask(task);
-
-*/
     }
 
     /**
@@ -294,6 +256,8 @@ public class ToDoActivity extends Activity {
     }
 
 
+
+    // TODO non la usa ma e giusta
     public void getQrCodeData(){
 
         //prelevo i dati della scansione del qrcode
@@ -306,8 +270,6 @@ public class ToDoActivity extends Activity {
 
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
         String name = getIntent().getStringExtra("name_").trim();
-
-
 
 
         // mostro a video i  valori soprastanti
@@ -324,7 +286,8 @@ public class ToDoActivity extends Activity {
     public static Double qrLongitudine;
     public static String qrAddress;
     public static String valoreCorrente;
-    public String        conn_string;
+    public        String conn_string;
+    public        String key="";
 
 
     /**
@@ -343,7 +306,13 @@ public class ToDoActivity extends Activity {
             return;
         }
 
-        // -L
+        // TODO qui passerò invece i valori alla Put, quindi niente più item.setname e compagnia
+
+
+        ID = "d735f929de940102";
+
+/*
+TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI MI SERVE SOLO L ID
 
 
 
@@ -351,7 +320,6 @@ public class ToDoActivity extends Activity {
         //String qrCodeData = getIntent().getStringExtra("qrCode");
          ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
 
-        //String name =  "PL"+value;
          name = getIntent().getStringExtra("name_").trim();
 
         // prelevo la citta
@@ -364,13 +332,18 @@ public class ToDoActivity extends Activity {
 
          valoreCorrente = getIntent().getStringExtra("valore_corrente");
 
+                                    TODO GIUSTI
+
+ */
+
         // get conn_string
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task_select = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    conn_string=selectFromTable();
+                    conn_string=selectFromTable( ID);
                     Log.println(Log.INFO,"conn_string","select_ok");
+                    Log.d("conn_string : ",conn_string);
 
                 } catch (final Exception e) {
                     createAndShowDialogFromTask(e, "UpdateError");
@@ -384,8 +357,9 @@ public class ToDoActivity extends Activity {
 
 
         //invio i dati rilevati alla classe che li salva nel file di testo per inviarlo all'FTP per sicurezza
-        //CheckConnectionActivity.writeToFile(this);
+        //CheckConnectionActivity.writeToFile(this); TODO VEDERE SE SERVIRA ANCORA
 
+        /*
         int valoreCorrente_;
         int valoreCorrenteCalcolo;
 
@@ -407,6 +381,11 @@ public class ToDoActivity extends Activity {
 
         String viaCompleta = via+", "+numeroCivico;
 
+         */
+
+ /*
+
+
         // /-L
 
         // Create a new item
@@ -414,7 +393,7 @@ public class ToDoActivity extends Activity {
         final DevicesLightPointsTemp item = new DevicesLightPointsTemp();
 
 
-        // imposto l'ID TODO decommentare in fase di release o test con qrcode con ID diversi
+        // imposto l'ID
          item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
 
         //item.setId("D73528DC2B510777");
@@ -446,7 +425,7 @@ public class ToDoActivity extends Activity {
                     //sendMail("Mail operatore-update","dati inseriti nel DB");
                     Log.println(Log.INFO,"database","update_ok");
 
-                 /*   runOnUiThread(new Runnable() {
+                 *//*   runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(!entity.isComplete()){
@@ -454,12 +433,12 @@ public class ToDoActivity extends Activity {
                             }
                         }
                     });
-                    */
+                    *//*
                 } catch (final Exception e) {
                     createAndShowDialogFromTask(e, "UpdateError");
                     Log.println(Log.INFO,"database","update_KO!");
 
-                    /*
+                    *//*
                     try {
                         final DevicesLightPointsTemp entity = addItemInTable(item);
                         Log.println(Log.INFO,"database","insert_ok");
@@ -479,7 +458,7 @@ public class ToDoActivity extends Activity {
 
                     }
 
-                    */
+                    *//*
 
                 }
                 return null;
@@ -487,6 +466,9 @@ public class ToDoActivity extends Activity {
         };
 
         runAsyncTask(task);
+
+        */
+
 
         // ad inserimento completato rendo il pulsante non cliccabile, invisibile ed il testo colorato
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
@@ -506,16 +488,19 @@ public class ToDoActivity extends Activity {
         TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
         textView_ok.setText("Operazione Completata");
         //mail con il resoconto della scansione
-        String riepilogo = "L'operatore ha completato il suo lavoro : \n"+ID+"\n"+name+"\n"+qrCitta+"\n"+qrLatitudine+"\n"+qrLongitudine+"\n"+qrAddress+"\n"+valoreCorrenteCalcolo;
-       // sendMail("Mail Operatore",riepilogo);
 
-
-        Intent intent = new Intent(getApplicationContext(),CheckConnectionActivity.class);
-        startActivity(intent);
+//TODO vedere se serve
+        //Intent intent = new Intent(getApplicationContext(),CheckConnectionActivity.class);
+        //startActivity(intent);
 
     }
 
 
+
+
+
+
+    // ----------------------METODI PER INSERIRE I DATI NEL DB ---TODO DELETE ALL -----------------
 
 
 
@@ -526,10 +511,10 @@ public class ToDoActivity extends Activity {
      * @param item
      *            The item to Add
      */
-  //  public ToDoItem addItemInTable(ToDoItem item) throws ExecutionException, InterruptedException { -L
-  //      ToDoItem entity = mToDoTable.insert(item).get();
-  //      return entity;
-  //  }
+    //  public ToDoItem addItemInTable(ToDoItem item) throws ExecutionException, InterruptedException { -L
+    //      ToDoItem entity = mToDoTable.insert(item).get();
+    //      return entity;
+    //  }
 
     /**
      * Update an item to the Mobile Service Table
@@ -553,7 +538,7 @@ public class ToDoActivity extends Activity {
      */
     public void updateItemInTable_(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
 
-         mDevicesLightPointsTemp.update(item);
+        mDevicesLightPointsTemp.update(item);
 
 
 
@@ -606,7 +591,7 @@ public class ToDoActivity extends Activity {
                     });
                     */
                 } catch (final Exception e){
-             //       createAndShowDialogFromTask(e, "Error");
+                    //       createAndShowDialogFromTask(e, "Error");
                 }
 
                 return null;
@@ -622,15 +607,15 @@ public class ToDoActivity extends Activity {
      * Select key from table
      */
 
-    private String selectFromTable() throws ExecutionException, InterruptedException {
+    private String selectFromTable ( String ID) throws ExecutionException, InterruptedException {
 
+        final List<DevicesLightPointsTemp> conn_string =  mDevicesLightPointsTemp.where().field("id").eq(ID).execute().get();
 
+        for (DevicesLightPointsTemp item : conn_string) { // -L
+            key=item.getConn_string();
+        }
+        return  key;
 
-             String conn_string =  mDevicesLightPointsTemp.where().field("conn_string").eq(val(ID)).execute().get().toString();
-
-             Log.d("CONNECTION_STRING : ",conn_string);
-
-             return conn_string;
     }
 
 
@@ -679,20 +664,20 @@ public class ToDoActivity extends Activity {
                     tableDefinition.put("complete", ColumnDataType.Boolean);
                     tableDefinition.put("nome", ColumnDataType.String);
                     tableDefinition.put("city", ColumnDataType.String);
-                   // tableDefinition.put("text", ColumnDataType.String);
+                    tableDefinition.put("conn_string", ColumnDataType.String);
                     tableDefinition.put("via", ColumnDataType.String);
                     tableDefinition.put("latitude", ColumnDataType.Integer);
                     tableDefinition.put("longitude", ColumnDataType.Integer);
 
                     localStore.defineTable("DevicesLightPointsTemp", tableDefinition);
-                   // localStore.defineTable("Punti_Luce", tableDefinition);
+                    // localStore.defineTable("Punti_Luce", tableDefinition);
 
                     SimpleSyncHandler handler = new SimpleSyncHandler();
 
                     syncContext.initialize(localStore, handler).get();
 
                 } catch (final Exception e) {
-                //    createAndShowDialogFromTask(e, "Error");
+                    //    createAndShowDialogFromTask(e, "Error");
                 }
 
                 return null;

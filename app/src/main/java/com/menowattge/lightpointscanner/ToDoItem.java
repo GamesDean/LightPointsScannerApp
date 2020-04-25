@@ -8,8 +8,8 @@ public class ToDoItem {
     /**
      * Item text
      */
-    @com.google.gson.annotations.SerializedName("text")
-    private String mText;
+    @com.google.gson.annotations.SerializedName("conn_string")
+    private String mConnString;
 
     /**
      * Item Id
@@ -82,7 +82,7 @@ public class ToDoItem {
      * Returns the item text
      */
     public String getText() {
-        return mText;
+        return mConnString;
     }
 
     /**
@@ -92,7 +92,7 @@ public class ToDoItem {
      *            text to set
      */
     public final void setText(String text) {
-        mText = text;
+        mConnString = text;
     }
 
     /**
