@@ -66,7 +66,7 @@ public class CheckConnectionActivity extends Activity {
     public static String getAndPrintData(){
 
         String nome= ToDoActivity.name;
-        String ID = ToDoActivity.ID;
+        String ID = ToDoActivity.id;
         String citta=ToDoActivity.qrCitta;
         Double Lat=ToDoActivity.qrLatitudine;
         Double Lon=ToDoActivity.qrLongitudine;

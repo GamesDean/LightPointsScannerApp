@@ -42,6 +42,7 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLoc
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
@@ -65,18 +73,6 @@ public class ToDoActivity extends Activity {
      */
 
     private MobileServiceTable<DevicesLightPointsTemp> mDevicesLightPointsTemp;
-
-    //Offline Sync
-    /**
-     * Table used to store data locally sync with the mobile app backend.
-     */
-    //private MobileServiceSyncTable<ToDoItem> mToDoTable;   -L
-
-    /**
-     * Adapter to sync the items list with the view
-     */
-    // private ToDoItemAdapter mAdapter;
-
 
 
     /**
@@ -234,30 +230,9 @@ public class ToDoActivity extends Activity {
 
     }
 
-    /**
-     * Mark an item as completed in the Mobile Service Table
-     *
-     * @param item
-     *            The item to mark
-     */
-//    public void checkItemInTable(ToDoItem item) throws ExecutionException, InterruptedException {  -L
-//        mToDoTable.update(item).get();
-//    }
 
 
-    /**
-     * Mark an item as completed in the Mobile Service Table
-     *
-     * @param item
-     *            The item to mark
-     */
-    public void checkItemInTable(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
-        mDevicesLightPointsTemp.update(item).get();
-    }
-
-
-
-    // TODO non la usa ma e giusta
+    // TODO non la uso ora  ma e giusta
     public void getQrCodeData(){
 
         //prelevo i dati della scansione del qrcode
@@ -279,8 +254,52 @@ public class ToDoActivity extends Activity {
 
     }
 
+    /**
+     *
+     * Costruisce il json per inserire i dati nel portale
+     *
+     */
+
+
+    public void postData(Retrofit retrofit,String token){
+
+        JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
+        Call<Post> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
+                TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
+                TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
+                Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
+                Alimentatore,LineaAlimentazione,Telecontrollo),token);
+
+        call_pl.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+
+                String rc = String.valueOf(response.code());
+
+                if (!response.isSuccessful()) {
+                    Log.d("http_post_rc : ", rc);
+                    return;
+                }
+                else{
+                    Log.d("http_ok_post__rc : ", rc);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+
+                Log.d("http_failure : ",t.getMessage());
+            }
+        });
+
+    }
+
+
+    // TODO spostare ad inizio classe
+
     public static String name;
-    public static String ID;
+
     public static String qrCitta;
     public static Double qrLatitudine;
     public static Double qrLongitudine;
@@ -288,6 +307,109 @@ public class ToDoActivity extends Activity {
     public static String valoreCorrente;
     public        String conn_string;
     public        String key="";
+
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
+
+    public  static String  id = "D735F929DE940102"; // TODO
+    private String  Nome_PL = "prova_app_23"; // TODO
+    private String  TipoLuce = "LED";
+    private boolean Ripetitore = false;
+    private String  Note ="";
+    private List<String> chiaviCrittografia   = new ArrayList<>();
+    private String      id_comune = "3279"; // TODO prenderlo con la get
+    private String      indirizzo = "Via Bolivia 55"; // TODO
+    private List<Post.CoordinateGps> coordinateGps = new ArrayList<>();
+    private Post.CoordinateGps coordinate = new Post.CoordinateGps();
+    private String  TipoApparecchiatura="";
+    private String  Marca="";
+    private String  Modello="Meridio";
+    private String  InfoQuadroElettrico="";
+    private String  Palo="";
+    private int     AltezzaPaloMm =0;
+    private boolean Portella =false;
+    private boolean Pozzetto =false;
+    private boolean Terra=false ;
+    private String  TecnologiaLampada = "LED";
+    private double  PotenzaLampadaWatt = 1800; // TODO prenderlo da ValoreCorrente
+    private String  Alimentatore="" ;
+    private String  LineaAlimentazione="" ;
+    private boolean Telecontrollo = true;
+
+
+    /**
+     *
+     * Inserimento dati punto luce nel portale TODO quando ho qrcode e tel, aggiustare variabili non hc
+     *
+     */
+
+    @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task_post = new AsyncTask<Void, Void, Void>(){
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+
+
+                                /*
+            TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE
+
+
+
+                    // prelevo ID e nome partendo dalla combinazione dei due
+                    //String qrCodeData = getIntent().getStringExtra("qrCode");
+                     id =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
+                     name = getIntent().getStringExtra("name_").trim();
+                     qrCitta = getIntent().getStringExtra("qrCitta");
+                     qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
+                     qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
+                     qrAddress = getIntent().getStringExtra("qrIndirizzo");
+
+                     valoreCorrente = getIntent().getStringExtra("valore_corrente");
+
+                                                TODO GIUSTI
+
+             */
+
+
+                conn_string = selectFromTable(id);
+                chiaviCrittografia.add(conn_string);
+
+                coordinate.setLat(49.5432); // TODO
+                coordinate.setLong(97.7543); // TODO
+                coordinateGps.add(coordinate);
+
+
+                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://citymonitor-staging.azurewebsites.net/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(client)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                // prendo il token generato a partire da user e pass
+                String token = LoginCredentials.getAuthToken(username,password);
+
+                // inserisco i dati nel portale
+                postData(retrofit,token);
+
+                Log.d("conn_string : ",conn_string);
+
+            } catch (final Exception e) {
+                createAndShowDialogFromTask(e, "PostError");
+                Log.println(Log.INFO,"conn_string","select_KO");
+            }
+            return null;
+        }
+
+
+    };
+
 
 
     /**
@@ -306,168 +428,8 @@ public class ToDoActivity extends Activity {
             return;
         }
 
-        // TODO qui passerò invece i valori alla Put, quindi niente più item.setname e compagnia
-
-
-        ID = "d735f929de940102";
-
-/*
-TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI MI SERVE SOLO L ID
-
-
-
-        // prelevo ID e nome partendo dalla combinazione dei due
-        //String qrCodeData = getIntent().getStringExtra("qrCode");
-         ID =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
-
-         name = getIntent().getStringExtra("name_").trim();
-
-        // prelevo la citta
-         qrCitta = getIntent().getStringExtra("qrCitta");
-        // prelevo le coordinate
-         qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-         qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-        // prelevo l'indirizzo
-         qrAddress = getIntent().getStringExtra("qrIndirizzo");
-
-         valoreCorrente = getIntent().getStringExtra("valore_corrente");
-
-                                    TODO GIUSTI
-
- */
-
-        // get conn_string
-        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task_select = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    conn_string=selectFromTable( ID);
-                    Log.println(Log.INFO,"conn_string","select_ok");
-                    Log.d("conn_string : ",conn_string);
-
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "UpdateError");
-                    Log.println(Log.INFO,"conn_string","select_KO");
-                }
-                return null;
-            }
-        };
-
-        runAsyncTask(task_select);
-
-
-        //invio i dati rilevati alla classe che li salva nel file di testo per inviarlo all'FTP per sicurezza
-        //CheckConnectionActivity.writeToFile(this); TODO VEDERE SE SERVIRA ANCORA
-
-        /*
-        int valoreCorrente_;
-        int valoreCorrenteCalcolo;
-
-        try {
-            valoreCorrente_ = Integer.parseInt(valoreCorrente);
-            valoreCorrenteCalcolo = valoreCorrente_*36;
-        }
-        catch (NumberFormatException e)
-        {
-            valoreCorrente_ = 0;
-            valoreCorrenteCalcolo=0;
-        }
-
-        // dato che la forma canonica è "via , civico , etc " divido secondo questa logica
-        String[] addressArray = qrAddress.split(",");
-
-        String via = addressArray[0];
-        String numeroCivico = addressArray[1];
-
-        String viaCompleta = via+", "+numeroCivico;
-
-         */
-
- /*
-
-
-        // /-L
-
-        // Create a new item
-       // final ToDoItem item = new ToDoItem(); -L
-        final DevicesLightPointsTemp item = new DevicesLightPointsTemp();
-
-
-        // imposto l'ID
-         item.setId(ID);   // FUNZIONA- COMMENTO ALTRIMENTI NON INSERISCE CAUSA PRIMARY KEY RIPETUTA
-
-        //item.setId("D73528DC2B510777");
-
-        // imposto il nome
-        item.setName(name);
-        // città
-        item.setCity(qrCitta);
-        // latitudine
-        item.setLatitude(qrLatitudine);
-        // longitudine
-        item.setLongitude(qrLongitudine);
-        // via
-        item.setVia(viaCompleta);
-        //corrente selezionata dal menù a tendina
-        item.setCorrente(valoreCorrenteCalcolo);
-
-        item.setComplete(false);
-
-        // Insert the new item
-        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                   // final ToDoItem entity = addItemInTable(item); -L
-                    //final DevicesLightPointsTemp entity = updateItemInTable(item);
-                    //-L non ha valore di ritorno, a me non serve e così non dà Errore
-                    updateItemInTable_(item);
-                    //sendMail("Mail operatore-update","dati inseriti nel DB");
-                    Log.println(Log.INFO,"database","update_ok");
-
-                 *//*   runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!entity.isComplete()){
-                                mAdapter.add(entity);
-                            }
-                        }
-                    });
-                    *//*
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "UpdateError");
-                    Log.println(Log.INFO,"database","update_KO!");
-
-                    *//*
-                    try {
-                        final DevicesLightPointsTemp entity = addItemInTable(item);
-                        Log.println(Log.INFO,"database","insert_ok");
-
-
-                       runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!entity.isComplete()){
-                                    mAdapter.add(entity);
-                                }
-                            }
-                        });
-
-                    } catch (final Exception ex) {
-                        createAndShowDialogFromTask(ex, "InsertError");
-
-                    }
-
-                    *//*
-
-                }
-                return null;
-            }
-        };
-
-        runAsyncTask(task);
-
-        */
+        //inserimento dati nel portale
+        runAsyncTask(task_post);
 
 
         // ad inserimento completato rendo il pulsante non cliccabile, invisibile ed il testo colorato
@@ -487,76 +449,14 @@ TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI M
         //textview che scrive Operazione Completata
         TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
         textView_ok.setText("Operazione Completata");
-        //mail con il resoconto della scansione
-
-//TODO vedere se serve
-        //Intent intent = new Intent(getApplicationContext(),CheckConnectionActivity.class);
-        //startActivity(intent);
-
-    }
-
-
-
-
-
-
-    // ----------------------METODI PER INSERIRE I DATI NEL DB ---TODO DELETE ALL -----------------
-
-
-
-
-    /**
-     * Add an item to the Mobile Service Table
-     *
-     * @param item
-     *            The item to Add
-     */
-    //  public ToDoItem addItemInTable(ToDoItem item) throws ExecutionException, InterruptedException { -L
-    //      ToDoItem entity = mToDoTable.insert(item).get();
-    //      return entity;
-    //  }
-
-    /**
-     * Update an item to the Mobile Service Table
-     *
-     * @param item
-     *            The item to Update
-     */
-    public DevicesLightPointsTemp updateItemInTable(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
-
-        DevicesLightPointsTemp entity = mDevicesLightPointsTemp.update(item).get();
-
-
-        return entity;
-    }
-
-    /**
-     * Update an item to the Mobile Service Table
-     *
-     * @param item
-     *            The item to Update
-     */
-    public void updateItemInTable_(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
-
-        mDevicesLightPointsTemp.update(item);
-
 
 
     }
 
 
-    /**
-     * Insert an item to the Mobile Service Table
-     *
-     * @param item
-     *            The item to Add
-     */
-    public DevicesLightPointsTemp addItemInTable(DevicesLightPointsTemp item) throws ExecutionException, InterruptedException {
 
-        DevicesLightPointsTemp entity = mDevicesLightPointsTemp.insert(item).get();
+    // ----------------------METODI PER INSERIRE I DATI NEL DB ---TODO QUESTI SOTTO SERVONO FORSE TUTTI -----------------
 
-        return entity;
-    }
 
 
     /**
@@ -576,22 +476,8 @@ TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI M
                 try {
                     final List<DevicesLightPointsTemp> results = refreshItemsFromMobileServiceTable(); // -L
 
-                    //Offline Sync
-                    //final List<ToDoItem> results = refreshItemsFromMobileServiceTableSyncTable();
 
-                /*    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.clear();
-
-                            for (DevicesLightPointsTemp item : results) { // -L
-                                mAdapter.add(item);
-                            }
-                        }
-                    });
-                    */
                 } catch (final Exception e){
-                    //       createAndShowDialogFromTask(e, "Error");
                 }
 
                 return null;
@@ -626,17 +512,6 @@ TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI M
                 eq(val(false)).execute().get();
     }
 
-    //Offline Sync
-    /**
-     * Refresh the list with the items in the Mobile Service Sync Table
-     */
-    /*private List<ToDoItem> refreshItemsFromMobileServiceTableSyncTable() throws ExecutionException, InterruptedException {
-        //sync the data
-        sync().get();
-        Query query = QueryOperations.field("complete").
-                eq(val(false));
-        return mToDoTable.read(query).get();
-    }*/
 
     /**
      * Initialize local storage
@@ -687,29 +562,7 @@ TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE SOLO LA CONN STRING QUINDI M
         return runAsyncTask(task);
     }
 
-    //Offline Sync
-    /**
-     * Sync the current context and the Mobile Service Sync Table
-     * @return
-     */
-    /*
-    private AsyncTask<Void, Void, Void> sync() {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
-                    syncContext.push().get();
-                    mToDoTable.pull(null).get();
-                } catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
-                }
-                return null;
-            }
-        };
-        return runAsyncTask(task);
-    }
-    */
+
 
     /**
      * Creates a dialog and shows it
