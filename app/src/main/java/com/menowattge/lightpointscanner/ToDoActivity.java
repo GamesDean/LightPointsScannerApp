@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -336,6 +338,8 @@ public class ToDoActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
+    GoogleMap googleMap;
+
 
     /**
      *
@@ -396,9 +400,11 @@ public class ToDoActivity extends Activity {
                 String token = LoginCredentials.getAuthToken(username,password);
 
                 // inserisco i dati nel portale
-                postData(retrofit,token);
+                //postData(retrofit,token); TODO decommentare
 
                 Log.d("conn_string : ",conn_string);
+
+
 
             } catch (final Exception e) {
                 createAndShowDialogFromTask(e, "PostError");
@@ -431,7 +437,6 @@ public class ToDoActivity extends Activity {
         //inserimento dati nel portale
         runAsyncTask(task_post);
 
-
         // ad inserimento completato rendo il pulsante non cliccabile, invisibile ed il testo colorato
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
         button.setVisibility(View.INVISIBLE);
@@ -444,11 +449,27 @@ public class ToDoActivity extends Activity {
         buttonExit.setVisibility(View.VISIBLE);
         buttonExit.setClickable(true);
 
-
-
         //textview che scrive Operazione Completata
         TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
         textView_ok.setText("Operazione Completata");
+
+        String citta = "Grottammare"; // TODO DELETE
+        // Ad inserimento avvenuto, mostro il device inserito sulla mappa
+
+        // TODO CRASHA il Marker, risolvere se ho tempo e voglia
+        /*
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.981975, 13.842224))
+                .anchor(0.5f, 0.5f)
+                .title("LED")
+                .snippet("Meridio_x")
+                );
+*/
+
+        String geoUri = "http://maps.google.com/maps?q=loc:" + 42.981975 + "," + 13.842224 + " (" + citta + ")";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
 
 
     }
@@ -488,7 +509,6 @@ public class ToDoActivity extends Activity {
     }
 
 
-
     /**
      * Select key from table
      */
@@ -503,8 +523,6 @@ public class ToDoActivity extends Activity {
         return  key;
 
     }
-
-
 
 
     private List<DevicesLightPointsTemp> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {
