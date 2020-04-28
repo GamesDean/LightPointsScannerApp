@@ -25,11 +25,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -52,6 +52,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -256,6 +257,37 @@ public class ToDoActivity extends Activity {
 
     }
 
+
+    public void login(Retrofit retrofit){
+        //login
+        JsonApi login = retrofit.create(JsonApi.class);
+        Call<ResponseBody> call_login = login.loginWithCredentials(new LoginCredentials(username, password));
+
+        call_login.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+
+                        String rc = String.valueOf(response.code());
+                        Log.d("http rc_login : ",rc);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // handle error
+                Log.d("http error : ",t.getMessage());
+            }
+        });
+
+
+    }
+
     /**
      *
      * Costruisce il json per inserire i dati nel portale
@@ -263,7 +295,7 @@ public class ToDoActivity extends Activity {
      */
 
 
-    public void postData(Retrofit retrofit,String token){
+    public void postData(Retrofit retrofit,String token,String id_comune){
 
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
         Call<Post> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
@@ -271,6 +303,7 @@ public class ToDoActivity extends Activity {
                 TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
                 Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
                 Alimentatore,LineaAlimentazione,Telecontrollo),token);
+
 
         call_pl.enqueue(new Callback<Post>() {
             @Override
@@ -284,6 +317,7 @@ public class ToDoActivity extends Activity {
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
+
                 }
 
             }
@@ -314,12 +348,12 @@ public class ToDoActivity extends Activity {
     String password="tecnico";
 
     public  static String  id = "D735F929DE940102"; // TODO
-    private String  Nome_PL = "prova_app_23"; // TODO
+    private String  Nome_PL = "prova_app_29"; // TODO
     private String  TipoLuce = "LED";
     private boolean Ripetitore = false;
     private String  Note ="";
     private List<String> chiaviCrittografia   = new ArrayList<>();
-    private String      id_comune = "3279"; // TODO prenderlo con la get
+    private    String      id_comune=""; // = "3279"; // TODO prenderlo con la get
     private String      indirizzo = "Via Bolivia 55"; // TODO
     private List<Post.CoordinateGps> coordinateGps = new ArrayList<>();
     private Post.CoordinateGps coordinate = new Post.CoordinateGps();
@@ -338,8 +372,70 @@ public class ToDoActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
-    GoogleMap googleMap;
 
+    public void getData(Retrofit retrofit,String token) {
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<JsonObject> call = jsonApi.getJson(token);
+
+        call.enqueue(new Callback <JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                String rc = String.valueOf(response.code());
+                if (!response.isSuccessful()) {
+                    Log.d("http_rc : ", rc);
+                }
+                else{
+                    Log.d("http_rc : ", rc);
+                    //JSON in risposta, lo salvo in una stringa unica
+                    String data = response.body().toString();
+                    //Uso un dizionario così li divido poi passo il comune e prendo l'ID
+                    Map<String, String> myMap = new HashMap<String, String>();
+                    String[] pairs = data.split(",");
+                    for (int i=0;i<pairs.length;i++) {
+                        String pair = pairs[i];
+                        String[] keyValue = pair.split(":");
+                        myMap.put(keyValue[0], keyValue[1].trim());
+                    }
+                    for (Map.Entry<String, String> entry : myMap.entrySet()) {
+
+                        if (entry.getValue().contains(qrCitta)) {
+                            id_comune=entry.getKey().replace("\"","");
+                            System.out.println("IDCOMUNE : "+id_comune);
+                        }
+
+
+                    }
+
+                    //postData(retrofit,token,id_comune);
+
+                }
+
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("http_rc_fail : ", t.getMessage());
+            }
+        });
+
+    }
+
+
+
+
+    /**
+     * Mostra sulla mappa il punto luce installato
+     * @param citta
+     * @param lat
+     * @param lon
+     */
+    public void showLightPointOnMap(String citta, String lat,String lon){
+
+        String geoUri = "http://maps.google.com/maps?q=loc:" + lat + "," + lon + " (" + citta + ")";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+    }
 
     /**
      *
@@ -354,40 +450,32 @@ public class ToDoActivity extends Activity {
             try {
 
 
-                                /*
-            TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE
-
-
+           // TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE
 
                     // prelevo ID e nome partendo dalla combinazione dei due
                     //String qrCodeData = getIntent().getStringExtra("qrCode");
-                     id =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
-                     name = getIntent().getStringExtra("name_").trim();
-                     qrCitta = getIntent().getStringExtra("qrCitta");
-                     qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-                     qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-                     qrAddress = getIntent().getStringExtra("qrIndirizzo");
+                     //id =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
+                     //Nome_PL = getIntent().getStringExtra("name_").trim();
+                     qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
+                     //qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
+                     //qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
+                     //indirizzo = getIntent().getStringExtra("qrIndirizzo");
+                     //PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
 
-                     valoreCorrente = getIntent().getStringExtra("valore_corrente");
-
-                                                TODO GIUSTI
-
-             */
+                                  //              TODO GIUSTI
 
 
-                conn_string = selectFromTable(id);
+                conn_string = selectFromTable(id); // prendo la key da DLPt
                 chiaviCrittografia.add(conn_string);
-
                 coordinate.setLat(49.5432); // TODO
                 coordinate.setLong(97.7543); // TODO
                 coordinateGps.add(coordinate);
 
-
+               // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
                 OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
+                // end-debug
 
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://citymonitor-staging.azurewebsites.net/")
@@ -396,14 +484,18 @@ public class ToDoActivity extends Activity {
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
 
+               // login(retrofit);
+
                 // prendo il token generato a partire da user e pass
                 String token = LoginCredentials.getAuthToken(username,password);
+                getData(retrofit,token);
+                // inserisco i dati nel portale TODO OKKKKKKKKKKKK
+                //postData(retrofit,token); //TODO decommentare
 
-                // inserisco i dati nel portale
-                //postData(retrofit,token); TODO decommentare
+
+
 
                 Log.d("conn_string : ",conn_string);
-
 
 
             } catch (final Exception e) {
@@ -429,7 +521,6 @@ public class ToDoActivity extends Activity {
 
     public void addItem(View view) {
 
-
         if (mClient == null) {
             return;
         }
@@ -449,27 +540,23 @@ public class ToDoActivity extends Activity {
         buttonExit.setVisibility(View.VISIBLE);
         buttonExit.setClickable(true);
 
+        /*
         //textview che scrive Operazione Completata
         TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
+
         textView_ok.setText("Operazione Completata");
-
-        String citta = "Grottammare"; // TODO DELETE
-        // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-
-        // TODO CRASHA il Marker, risolvere se ho tempo e voglia
-        /*
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(42.981975, 13.842224))
-                .anchor(0.5f, 0.5f)
-                .title("LED")
-                .snippet("Meridio_x")
-                );
 */
 
-        String geoUri = "http://maps.google.com/maps?q=loc:" + 42.981975 + "," + 13.842224 + " (" + citta + ")";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
+        //textview che scrive Operazione Completata
+        TextView textView_ok = (findViewById(R.id.textview_ok));
+        textView_ok.setText("Operazione Completata");
+        String citta = "Grottammare"; // TODO DELETE
+        // Ad inserimento avvenuto, mostro il device inserito sulla mappa
+        //showLightPointOnMap(citta,"42.981975","13.842224");
+
+
+
+        //42.981975 13.842224
 
 
     }

@@ -30,7 +30,7 @@ public class Post {
     private List<String> chiaviCrittografia = null;
     @SerializedName("IdComune")
     @Expose
-    private String idComune;
+    private  String idComune;
     @SerializedName("Indirizzo")
     @Expose
     private String indirizzo;
