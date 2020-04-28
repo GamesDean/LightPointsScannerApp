@@ -8,7 +8,6 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 
 public interface JsonApi {
 
@@ -20,7 +19,7 @@ public interface JsonApi {
     Call<JsonObject> getJson(@Header("Authorization") String authkey);
 
     // inserisco il punto luce, gli passo i dati ed il token
-    @PUT("/api/PuntoLuce")//("/LightPoint/Insert?createAtLat=null&createAtLng=null")
+    @POST("/api/PuntoLuce")//("/LightPoint/Insert?createAtLat=null&createAtLng=null")
     Call<Post> putData(@Body Post data , @Header("Authorization") String authkey);
 
 

@@ -109,7 +109,7 @@ public class ToDoActivity extends Activity {
         buttonExit = findViewById(R.id.button4);
 
 
-        // getQrCodeData(); TODO giusta ma ora non serve
+         getQrCodeData();
 
         try {
             // Create the client instance, using the provided mobile app URL.
@@ -132,7 +132,6 @@ public class ToDoActivity extends Activity {
 
             // Get the remote table instance to use.
 
-            // mToDoTable = mClient.getTable(ToDoItem.class); -L
             mDevicesLightPointsTemp = mClient.getTable(DevicesLightPointsTemp.class);
 
 
@@ -347,14 +346,14 @@ public class ToDoActivity extends Activity {
     String username="tecnico@citymonitor.it";
     String password="tecnico";
 
-    public  static String  id = "D735F929DE940102"; // TODO
-    private String  Nome_PL = "prova_app_29"; // TODO
+    public  static String  id ;//= "D735F929DE940102"; // TODO
+    private String  Nome_PL ;//= "prova_app_29"; // TODO
     private String  TipoLuce = "LED";
     private boolean Ripetitore = false;
     private String  Note ="";
     private List<String> chiaviCrittografia   = new ArrayList<>();
     private    String      id_comune=""; // = "3279"; // TODO prenderlo con la get
-    private String      indirizzo = "Via Bolivia 55"; // TODO
+    private String      indirizzo ;//= "Via Bolivia 55"; // TODO
     private List<Post.CoordinateGps> coordinateGps = new ArrayList<>();
     private Post.CoordinateGps coordinate = new Post.CoordinateGps();
     private String  TipoApparecchiatura="";
@@ -367,7 +366,7 @@ public class ToDoActivity extends Activity {
     private boolean Pozzetto =false;
     private boolean Terra=false ;
     private String  TecnologiaLampada = "LED";
-    private double  PotenzaLampadaWatt = 1800; // TODO prenderlo da ValoreCorrente
+    private double  PotenzaLampadaWatt ;//= 1800; // TODO prenderlo da ValoreCorrente
     private String  Alimentatore="" ;
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
@@ -407,7 +406,7 @@ public class ToDoActivity extends Activity {
 
                     }
 
-                    //postData(retrofit,token,id_comune);
+                    postData(retrofit,token,id_comune);
 
                 }
 
@@ -453,22 +452,25 @@ public class ToDoActivity extends Activity {
            // TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE
 
                     // prelevo ID e nome partendo dalla combinazione dei due
-                    //String qrCodeData = getIntent().getStringExtra("qrCode");
-                     //id =  getIntent().getStringExtra("qrCode");                  //   qrCodeData.substring(0,16);
-                     //Nome_PL = getIntent().getStringExtra("name_").trim();
-                     qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
-                     //qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-                     //qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-                     //indirizzo = getIntent().getStringExtra("qrIndirizzo");
-                     //PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
+                    // String qrCodeData = getIntent().getStringExtra("qrCode");
+                     id  = getIntent().getStringExtra("qrCode").toUpperCase();
+                     Nome_PL = getIntent().getStringExtra("name_").trim();
+                     Log.d("Nome_PL : ",Nome_PL);
+                     Nome_PL = "prova_app_x";
+                     //qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
+                     qrCitta =getIntent().getStringExtra("qrCitta");
+                     qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
+                     qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
+                     indirizzo = getIntent().getStringExtra("qrIndirizzo");
+                     PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
 
                                   //              TODO GIUSTI
 
 
                 conn_string = selectFromTable(id); // prendo la key da DLPt
                 chiaviCrittografia.add(conn_string);
-                coordinate.setLat(49.5432); // TODO
-                coordinate.setLong(97.7543); // TODO
+                coordinate.setLat(qrLatitudine); // TODO
+                coordinate.setLong(qrLongitudine); // TODO
                 coordinateGps.add(coordinate);
 
                // debug log http
