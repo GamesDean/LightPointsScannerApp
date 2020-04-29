@@ -302,7 +302,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             longitude = location.getLongitude();
 
             // le mostro a video per una frazione di secondo
-            textCoordinate.setText("Latitudine : " + latitude + "\nLongitudine : " + longitude);
+            textCoordinate.setText("ATTENDERE : \nScansione GPS in corso...\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
             x++;
             // passando il valore di k uguale a 0 faccio eseguire immediatamente l'operazione poichè il GPS essendo già attivo
             // è di conseguenza preciso e non devo attendere che azzecchi la posizione.
@@ -340,7 +340,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             // prelevo lat e long
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            textCoordinate.setText("Latitudine : " + latitude + "\nLongitudine : " + longitude);
+            textCoordinate.setText("ATTENDERE : \nScansione GPS in corso...\n\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
             x++;
             // k = 200 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
             // ho messo 200 perchè così non da problemi (misteriosi) con l'update nel DB che fa successivamente

@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
@@ -91,6 +92,46 @@ public class ToDoActivity extends Activity {
     private android.widget.Button buttonAgain;
     private android.widget.Button buttonExit;
 
+    // TODO spostare ad inizio classe
+
+    public static String name;
+
+    public static String qrCitta;
+    public static Double qrLatitudine;
+    public static Double qrLongitudine;
+    public static String qrAddress;
+    public static String valoreCorrente;
+    public        String conn_string;
+    public        String key="";
+
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
+
+    // per creare il JSON
+    public  static String  id ;
+    private String  Nome_PL ;
+    private String  TipoLuce = "LED";
+    private boolean Ripetitore = false;
+    private String  Note ="";
+    private List<String> chiaviCrittografia   = new ArrayList<>();
+    private    String      id_comune="";
+    private String      indirizzo ;
+    private List<Post.CoordinateGps> coordinateGps = new ArrayList<>();
+    private Post.CoordinateGps coordinate = new Post.CoordinateGps();
+    private String  TipoApparecchiatura="";
+    private String  Marca="";
+    private String  Modello="Meridio";
+    private String  InfoQuadroElettrico="";
+    private String  Palo="";
+    private int     AltezzaPaloMm =0;
+    private boolean Portella =false;
+    private boolean Pozzetto =false;
+    private boolean Terra=false ;
+    private String  TecnologiaLampada = "LED";
+    private double  PotenzaLampadaWatt ;
+    private String  Alimentatore="" ;
+    private String  LineaAlimentazione="" ;
+    private boolean Telecontrollo = true;
 
     /**
      * Initializes the activity
@@ -108,8 +149,13 @@ public class ToDoActivity extends Activity {
         buttonAgain = findViewById(R.id.button3);
         buttonExit = findViewById(R.id.button4);
 
+        getQrCodeData();
 
-         getQrCodeData();
+        // -------------------------------------------------------------------------------------------------------------------------
+
+        // ----------- Definisco il link dove risiede la mia app su Azure poi creo l'istanza della tabella del DB ------------------
+
+        // -------------------------------------------------------------------------------------------------------------------------
 
         try {
             // Create the client instance, using the provided mobile app URL.
@@ -131,9 +177,7 @@ public class ToDoActivity extends Activity {
             });
 
             // Get the remote table instance to use.
-
             mDevicesLightPointsTemp = mClient.getTable(DevicesLightPointsTemp.class);
-
 
             //Init local storage
             initLocalStore().get();
@@ -142,12 +186,12 @@ public class ToDoActivity extends Activity {
         } catch (MalformedURLException e) {
             createAndShowDialog(new Exception("C'è un problema con il Mobile Service. Controlla l'URL"), "Error");
         } catch (Exception e){
-            //      createAndShowDialog(e, "Error");
+
         }
     }
 
 
-
+// -------------------------------------------------------------------------------------------------------------------------
 
     /**
      * Initializes the activity menu
@@ -177,12 +221,9 @@ public class ToDoActivity extends Activity {
             @Override
             public void run() {
                 super.run();
-
                 try {
-
                     runOnUiThread(new Runnable() {
                         public void run() {
-
 
                             ConnectivityManager mgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                             NetworkInfo netInfo = mgr.getActiveNetworkInfo();
@@ -195,25 +236,17 @@ public class ToDoActivity extends Activity {
                             else {
                                 //No internet
                                 Toast.makeText(getApplicationContext(),"NO INTERNET-IMPOSSIBILE PROSEGUIRE-\nCONNETTERSI E RIAVVIARE L'APP".toUpperCase(),Toast.LENGTH_LONG).show();
-
                                 button.setClickable(false);
-
                             }
                         }
                     });
-
                     sleep(4000);
-
                 }catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-
             }
         };
-
         timeout.start();
-
     }
 
     /**
@@ -226,21 +259,16 @@ public class ToDoActivity extends Activity {
         if (mClient == null) {
             return;
         }
-
         // Set the item as completed and update it in the table
         item.setComplete(true);
-
     }
 
 
-
-    // TODO non la uso ora  ma e giusta
     public void getQrCodeData(){
 
         //prelevo i dati della scansione del qrcode
         String qrCodeData = getIntent().getStringExtra("qrCode");
         // prelevo le altre info che ho trasferito tra le activity
-
         String qrAddress = getIntent().getStringExtra("qrIndirizzo");
         Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
@@ -248,14 +276,16 @@ public class ToDoActivity extends Activity {
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
         String name = getIntent().getStringExtra("name_").trim();
 
-
         // mostro a video i  valori soprastanti
         mTextNewToDo.setText(qrCodeData);
         mTextNewToDo.append("\ncodice : "+name+"\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\ncorrente : "+valoreCorrente+"\n");
 
-
     }
 
+    /**
+     * Effettua il login al portale
+     * @param retrofit
+     */
 
     public void login(Retrofit retrofit){
         //login
@@ -287,26 +317,25 @@ public class ToDoActivity extends Activity {
 
     }
 
+
     /**
-     *
-     * Costruisce il json per inserire i dati nel portale
-     *
+     * Costruisce il JSON per inserire i dati nel portale
+     * @param retrofit
+     * @param token
+     * @param id_comune
      */
-
-
     public void postData(Retrofit retrofit,String token,String id_comune){
 
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
-        Call<Post> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
+        Call<Void> call_pl = postPuntoLuce.postData(new Post(id,Nome_PL,
                 TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
                 TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
                 Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
                 Alimentatore,LineaAlimentazione,Telecontrollo),token);
 
-
-        call_pl.enqueue(new Callback<Post>() {
+        call_pl.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
                 String rc = String.valueOf(response.code());
 
@@ -316,14 +345,16 @@ public class ToDoActivity extends Activity {
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
-
+                    //textview che scrive Operazione Completata
+                     TextView textView_ok = (findViewById(R.id.textview_ok));
+                     textView_ok.setText("Operazione Completata");
+                    // Ad inserimento avvenuto, mostro il device inserito sulla mappa
+                     showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
                 }
-
             }
 
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
-
+            public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("http_failure : ",t.getMessage());
             }
         });
@@ -331,61 +362,112 @@ public class ToDoActivity extends Activity {
     }
 
 
-    // TODO spostare ad inizio classe
+    /**
+     * Costruisce il JSON per AGGIORNARE i dati nel portale
+     * @param retrofit
+     * @param token
+     * @param id_comune
+     */
+    public void putData(Retrofit retrofit,String token,String id_comune){
 
-    public static String name;
+        JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
+        Call<Void> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
+                TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
+                TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
+                Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
+                Alimentatore,LineaAlimentazione,Telecontrollo),token);
 
-    public static String qrCitta;
-    public static Double qrLatitudine;
-    public static Double qrLongitudine;
-    public static String qrAddress;
-    public static String valoreCorrente;
-    public        String conn_string;
-    public        String key="";
+        call_pl.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+                String rc = String.valueOf(response.code());
 
-    public  static String  id ;//= "D735F929DE940102"; // TODO
-    private String  Nome_PL ;//= "prova_app_29"; // TODO
-    private String  TipoLuce = "LED";
-    private boolean Ripetitore = false;
-    private String  Note ="";
-    private List<String> chiaviCrittografia   = new ArrayList<>();
-    private    String      id_comune=""; // = "3279"; // TODO prenderlo con la get
-    private String      indirizzo ;//= "Via Bolivia 55"; // TODO
-    private List<Post.CoordinateGps> coordinateGps = new ArrayList<>();
-    private Post.CoordinateGps coordinate = new Post.CoordinateGps();
-    private String  TipoApparecchiatura="";
-    private String  Marca="";
-    private String  Modello="Meridio";
-    private String  InfoQuadroElettrico="";
-    private String  Palo="";
-    private int     AltezzaPaloMm =0;
-    private boolean Portella =false;
-    private boolean Pozzetto =false;
-    private boolean Terra=false ;
-    private String  TecnologiaLampada = "LED";
-    private double  PotenzaLampadaWatt ;//= 1800; // TODO prenderlo da ValoreCorrente
-    private String  Alimentatore="" ;
-    private String  LineaAlimentazione="" ;
-    private boolean Telecontrollo = true;
+                if (!response.isSuccessful()) {
+                    Log.d("http_post_rc : ", rc);
+                    return;
+                }
+                else{
+                    Log.d("http_ok_post__rc : ", rc);
+                    //textview che scrive Operazione Completata
+                    TextView textView_ok = (findViewById(R.id.textview_ok));
+                    textView_ok.setText("Operazione Completata");
+                    // Ad inserimento avvenuto, mostro il device inserito sulla mappa
+                    showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("http_failure : ",t.getMessage());
+            }
+        });
+
+    }
 
 
-    public void getData(Retrofit retrofit,String token) {
+    public void getDevicesList(Retrofit retrofit,String token,String id_comune){
+
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<JsonArray> callDevices = jsonApi.getDeviceList(token);
+
+        callDevices.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+
+                String rc = String.valueOf(response.code());
+                if (!response.isSuccessful()) {
+                    Log.d("http_get_list_rc : ", rc);
+                }
+                else {
+                    Log.d("http_get_list_rc : ", rc);
+                    //JSON in risposta, lo salvo in una stringa unica
+                    String data = response.body().toString();
+                    String id_with_quotes = "\""+id+"\"";
+                    if(data.contains(id_with_quotes)){
+                        System.out.println("UPDATE");
+                        // aggiornamento dati nel portale
+                         putData(retrofit,token,id_comune);
+                    }
+                    else{
+                        System.out.println("INSERT");
+                        postData(retrofit,token,id_comune);
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.d("http_get_list__fail : ", t.getMessage());
+
+            }
+        });
+
+    }
+
+    /**
+     * Get della lista dei device registrati nel portale
+     * in base alla presenza o meno inserimento o aggiornamento
+     * dei dati del punto luce nel portale e visualizzazione su maps
+     * @param retrofit
+     * @param token
+     */
+
+    public void insertLightPoint(Retrofit retrofit,String token) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonObject> call = jsonApi.getJson(token);
 
         call.enqueue(new Callback <JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
                 String rc = String.valueOf(response.code());
                 if (!response.isSuccessful()) {
-                    Log.d("http_rc : ", rc);
+                    Log.d("http_get_ko_rc : ", rc);
                 }
                 else{
-                    Log.d("http_rc : ", rc);
+                    Log.d("http_get_ok_rc : ", rc);
                     //JSON in risposta, lo salvo in una stringa unica
                     String data = response.body().toString();
                     //Uso un dizionario così li divido poi passo il comune e prendo l'ID
@@ -397,19 +479,17 @@ public class ToDoActivity extends Activity {
                         myMap.put(keyValue[0], keyValue[1].trim());
                     }
                     for (Map.Entry<String, String> entry : myMap.entrySet()) {
-
                         if (entry.getValue().contains(qrCitta)) {
-                            id_comune=entry.getKey().replace("\"","");
+                            id_comune=entry.getKey().replace("\"",""); // rimuovo le virgolette
                             System.out.println("IDCOMUNE : "+id_comune);
                         }
-
-
                     }
-
-                    postData(retrofit,token,id_comune);
-
+                    /**
+                     * Ottiene la lista degli ID registrati nel portale ed a seconda
+                     * triggera un metodo POST per inserire o PUT per aggiornare
+                     */
+                    getDevicesList(retrofit,token,id_comune);
                 }
-
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
@@ -418,8 +498,6 @@ public class ToDoActivity extends Activity {
         });
 
     }
-
-
 
 
     /**
@@ -438,7 +516,7 @@ public class ToDoActivity extends Activity {
 
     /**
      *
-     * Inserimento dati punto luce nel portale TODO quando ho qrcode e tel, aggiustare variabili non hc
+     * Inserimento dati punto luce nel portale
      *
      */
 
@@ -447,38 +525,31 @@ public class ToDoActivity extends Activity {
         protected Void doInBackground(Void... params) {
 
             try {
-
-
-           // TODO SONO GIUSTI LI COMMENTO CHE ORA DEVO DEBUGGARE
-
-                    // prelevo ID e nome partendo dalla combinazione dei due
-                    // String qrCodeData = getIntent().getStringExtra("qrCode");
-                     id  = getIntent().getStringExtra("qrCode").toUpperCase();
-                     Nome_PL = getIntent().getStringExtra("name_").trim();
-                     Log.d("Nome_PL : ",Nome_PL);
-                     Nome_PL = "prova_app_x";
-                     //qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
-                     qrCitta =getIntent().getStringExtra("qrCitta");
-                     qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-                     qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-                     indirizzo = getIntent().getStringExtra("qrIndirizzo");
-                     PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
-
-                                  //              TODO GIUSTI
-
-
-                conn_string = selectFromTable(id); // prendo la key da DLPt
+                // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
+                id  = getIntent().getStringExtra("qrCode").toUpperCase();
+                Nome_PL = getIntent().getStringExtra("name_").trim();
+                Log.d("Nome_PL : ",Nome_PL);
+                Nome_PL = "prova_app_y"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
+                //qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
+                qrCitta =getIntent().getStringExtra("qrCitta");
+                qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
+                qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
+                indirizzo = getIntent().getStringExtra("qrIndirizzo");
+                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
+                conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
                 chiaviCrittografia.add(conn_string);
-                coordinate.setLat(qrLatitudine); // TODO
-                coordinate.setLong(qrLongitudine); // TODO
+                coordinate.setLat(qrLatitudine);
+                coordinate.setLong(qrLongitudine);
                 coordinateGps.add(coordinate);
 
-               // debug log http
+               // id="D735D9193D944102";  // lo uso per sovrascrivere e testare gli INSERT
+
+
+                // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                 OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
                 // end-debug
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://citymonitor-staging.azurewebsites.net/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -486,19 +557,9 @@ public class ToDoActivity extends Activity {
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
 
-               // login(retrofit);
-
                 // prendo il token generato a partire da user e pass
                 String token = LoginCredentials.getAuthToken(username,password);
-                getData(retrofit,token);
-                // inserisco i dati nel portale TODO OKKKKKKKKKKKK
-                //postData(retrofit,token); //TODO decommentare
-
-
-
-
-                Log.d("conn_string : ",conn_string);
-
+                insertLightPoint(retrofit,token);
 
             } catch (final Exception e) {
                 createAndShowDialogFromTask(e, "PostError");
@@ -506,21 +567,15 @@ public class ToDoActivity extends Activity {
             }
             return null;
         }
-
-
     };
 
-
-
     /**
-     * Add a new item
-     *
+     * Add a new item.
+     * Alla pressione del tasto INVIA  salva nel portale i dati.
+     * Viene gestito nell'xml e non qui, quindi niente "OnClickListener()"
      * @param view
-     *            The view that originated the call
+     * The view that originated the call
      */
-
-// pressione del tasto Add che salva nel DB i dati. viene gestito nell'xml e non qui, quindi niente "OnClickListener()"
-
     public void addItem(View view) {
 
         if (mClient == null) {
@@ -534,7 +589,6 @@ public class ToDoActivity extends Activity {
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
-
         // ad inserimento completato rendo il pulsante cliccabile e visibile
         buttonAgain.setVisibility(View.VISIBLE);
         buttonAgain.setClickable(true);
@@ -542,31 +596,11 @@ public class ToDoActivity extends Activity {
         buttonExit.setVisibility(View.VISIBLE);
         buttonExit.setClickable(true);
 
-        /*
-        //textview che scrive Operazione Completata
-        TextView textView_ok =  (TextView)(findViewById(R.id.textview_ok));
-
-        textView_ok.setText("Operazione Completata");
-*/
-
-        //textview che scrive Operazione Completata
-        TextView textView_ok = (findViewById(R.id.textview_ok));
-        textView_ok.setText("Operazione Completata");
-        String citta = "Grottammare"; // TODO DELETE
-        // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-        //showLightPointOnMap(citta,"42.981975","13.842224");
-
-
-
-        //42.981975 13.842224
-
-
     }
 
 
 
     // ----------------------METODI PER INSERIRE I DATI NEL DB ---TODO QUESTI SOTTO SERVONO FORSE TUTTI -----------------
-
 
 
     /**
@@ -599,19 +633,22 @@ public class ToDoActivity extends Activity {
 
 
     /**
-     * Select key from table
+     * Select key from table DeviceLightPointsTemp where Id=?
+     * @param ID
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
-
     private String selectFromTable ( String ID) throws ExecutionException, InterruptedException {
 
         final List<DevicesLightPointsTemp> conn_string =  mDevicesLightPointsTemp.where().field("id").eq(ID).execute().get();
-
-        for (DevicesLightPointsTemp item : conn_string) { // -L
+        for (DevicesLightPointsTemp item : conn_string) {
             key=item.getConn_string();
         }
         return  key;
-
     }
+
+
 
 
     private List<DevicesLightPointsTemp> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {

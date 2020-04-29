@@ -1,5 +1,6 @@
 package com.menowattge.lightpointscanner;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import okhttp3.ResponseBody;
@@ -8,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface JsonApi {
 
@@ -18,10 +20,16 @@ public interface JsonApi {
     @GET("/api/Comuni")
     Call<JsonObject> getJson(@Header("Authorization") String authkey);
 
+    @GET("/api/Dispositivi")
+    Call<JsonArray> getDeviceList(@Header("Authorization") String authkey);
+
+    // aggiorno il punto luce, gli passo i dati ed il token
+    @PUT("/api/PuntoLuce")//("/LightPoint/Insert?createAtLat=null&createAtLng=null")
+    Call<Void> putData(@Body Post data , @Header("Authorization") String authkey);
+
     // inserisco il punto luce, gli passo i dati ed il token
     @POST("/api/PuntoLuce")//("/LightPoint/Insert?createAtLat=null&createAtLng=null")
-    Call<Post> putData(@Body Post data , @Header("Authorization") String authkey);
-
+    Call<Void> postData(@Body Post data , @Header("Authorization") String authkey);
 
 
 
