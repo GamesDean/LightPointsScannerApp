@@ -340,6 +340,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             // prelevo lat e long
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            //textCoordinate.setTextColor(Color.parseColor("#9EAFB8"));;
             textCoordinate.setText("ATTENDERE : \nScansione GPS in corso...\n\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
             x++;
             // k = 200 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
@@ -446,4 +447,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
         refreshCoordinate();
 
     }
+
+
 }

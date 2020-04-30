@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -25,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -92,6 +94,10 @@ public class ToDoActivity extends Activity {
     private android.widget.Button buttonAgain;
     private android.widget.Button buttonExit;
 
+
+
+
+
     // TODO spostare ad inizio classe
 
     public static String name;
@@ -104,8 +110,8 @@ public class ToDoActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username="xxxxxxx";
+    String password="xxxxxxx";
 
     // per creare il JSON
     public  static String  id ;
@@ -143,11 +149,12 @@ public class ToDoActivity extends Activity {
 
         checkConnection();
 
-        mTextNewToDo = (TextView) findViewById(R.id.textNewToDo);
+        mTextNewToDo = findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
 
         buttonAgain = findViewById(R.id.button3);
         buttonExit = findViewById(R.id.button4);
+
 
         getQrCodeData();
 
@@ -346,10 +353,11 @@ public class ToDoActivity extends Activity {
                 else{
                     Log.d("http_ok_post__rc : ", rc);
                     //textview che scrive Operazione Completata
-                     TextView textView_ok = (findViewById(R.id.textview_ok));
-                     textView_ok.setText("Operazione Completata");
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
                      showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
+                    TextView textView_ok = (findViewById(R.id.textview_ok));
+
+                    textView_ok.setText("Operazione Completata");
                 }
             }
 
@@ -390,10 +398,10 @@ public class ToDoActivity extends Activity {
                 else{
                     Log.d("http_ok_post__rc : ", rc);
                     //textview che scrive Operazione Completata
-                    TextView textView_ok = (findViewById(R.id.textview_ok));
-                    textView_ok.setText("Operazione Completata");
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
                     showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
+                    TextView textView_ok = (findViewById(R.id.textview_ok));
+                    textView_ok.setText("Operazione Completata");
                 }
             }
 
@@ -426,9 +434,31 @@ public class ToDoActivity extends Activity {
                     String id_with_quotes = "\""+id+"\"";
                     if(data.contains(id_with_quotes)){
                         System.out.println("UPDATE");
-                        // aggiornamento dati nel portale
-                         putData(retrofit,token,id_comune);
+                        // device già inserito, aggiornare i suoi dati?
+                        AlertDialog alertDialog = new AlertDialog.Builder(ToDoActivity.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("PL già inserito")
+                                .setMessage("Vuoi aggiornarlo?")
+                                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        putData(retrofit,token,id_comune);                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Toast.makeText(getApplicationContext(),"Operazione Annullata",Toast.LENGTH_LONG).show();
+                                        TextView textView_ok = (findViewById(R.id.textview_ok));
+
+                                        textView_ok.setText("Esegui un'altra scan o esci");
+                                    }
+                                })
+                                .show();
+
                     }
+
+
+
                     else{
                         System.out.println("INSERT");
                         postData(retrofit,token,id_comune);
@@ -499,6 +529,7 @@ public class ToDoActivity extends Activity {
 
     }
 
+    GoogleMap googleMap = null;
 
     /**
      * Mostra sulla mappa il punto luce installato
@@ -581,6 +612,10 @@ public class ToDoActivity extends Activity {
         if (mClient == null) {
             return;
         }
+
+        TextView textView_ok = (findViewById(R.id.textview_ok));
+
+        textView_ok.setText("Registrazione in corso...");
 
         //inserimento dati nel portale
         runAsyncTask(task_post);
