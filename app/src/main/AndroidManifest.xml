@@ -31,7 +31,8 @@
             android:label="@string/title_activity_power"
             android:parentActivityName="com.menowattge.lightpointscanner.QrCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.menowattge.lightpointscanner.QrCodeActivity" />
@@ -39,7 +40,8 @@
         <activity
             android:name="com.menowattge.lightpointscanner.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
@@ -49,7 +51,8 @@
         <activity
             android:name="com.menowattge.lightpointscanner.ToDoActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -58,7 +61,8 @@
         <activity
             android:name="com.menowattge.lightpointscanner.QrCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -66,18 +70,21 @@
         <activity
             android:name="com.menowattge.lightpointscanner.PreQrCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
         <activity
             android:name="com.menowattge.lightpointscanner.GetLatLong"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" />
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name="com.menowattge.lightpointscanner.CheckConnectionActivity"
             android:theme = "@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <receiver android:name="com.menowattge.lightpointscanner.GpsLocationReceiver">
             <intent-filter>

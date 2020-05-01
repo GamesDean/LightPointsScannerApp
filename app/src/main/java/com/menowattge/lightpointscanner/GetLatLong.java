@@ -17,6 +17,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -70,7 +71,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
     public String city,address="";
     double latitude,longitude;
-    private  int x = 0;
+    private  int x = 0, k=200;
 
 
 
@@ -302,8 +303,10 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             longitude = location.getLongitude();
 
             // le mostro a video per una frazione di secondo
-            textCoordinate.setText("ATTENDERE : \nScansione GPS in corso...\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
-            x++;
+            textCoordinate.setText("ATTENDERE "+k/10+" sec : \n\nScansione GPS in corso...\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
+
+            k--;
+            SystemClock.sleep(7);
             // passando il valore di k uguale a 0 faccio eseguire immediatamente l'operazione poichè il GPS essendo già attivo
             // è di conseguenza preciso e non devo attendere che azzecchi la posizione.
             getFromCoordinate(x,200);
@@ -341,12 +344,14 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             //textCoordinate.setTextColor(Color.parseColor("#9EAFB8"));;
-            textCoordinate.setText("ATTENDERE : \nScansione GPS in corso...\n\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
-            x++;
+            textCoordinate.setText("ATTENDERE "+k/10+" sec : \n\nScansione GPS in corso...\n\nLatitudine : " + latitude + "\nLongitudine : " + longitude);
+
+            k--;
+            SystemClock.sleep(7);
             // k = 200 poichè corrisponde a circa 30 secondi, necessari e sufficienti affinchè il GPS determini
             // ho messo 200 perchè così non da problemi (misteriosi) con l'update nel DB che fa successivamente
             // la posizione corretta
-            getFromCoordinate(x,400);
+            getFromCoordinate(x,k);
 
         }
 
@@ -384,7 +389,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
         }
 
-        if(textCoordinate.getText().toString().length()>1&& (x>=k)) {
+        if(textCoordinate.getText().toString().length()>1&& (k<=x)) {
             // intent che lancia l'activity e gli passa i valori rilevati.
             // li passo a QrCodeActivity come classe intermedia dato che il vero destinatario è ToDoActivity
             Intent intentQr = new Intent(getApplicationContext(), QrCodeActivity.class);

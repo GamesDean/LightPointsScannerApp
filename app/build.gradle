@@ -64,4 +64,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
 
+    implementation 'com.github.sachinvarma:EasyLocation:1.0.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
 }

@@ -8,6 +8,7 @@ package com.menowattge.lightpointscanner;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,7 +27,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -93,6 +93,7 @@ public class ToDoActivity extends Activity {
     private android.widget.Button button;
     private android.widget.Button buttonAgain;
     private android.widget.Button buttonExit;
+    private ProgressDialog pd;
 
 
 
@@ -110,8 +111,8 @@ public class ToDoActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="xxxxxxx";
-    String password="xxxxxxx";
+    String username="xxxxxxxx";
+    String password="xxxxxxxx";
 
     // per creare il JSON
     public  static String  id ;
@@ -154,6 +155,8 @@ public class ToDoActivity extends Activity {
 
         buttonAgain = findViewById(R.id.button3);
         buttonExit = findViewById(R.id.button4);
+
+         pd = new ProgressDialog(ToDoActivity.this);
 
 
         getQrCodeData();
@@ -356,8 +359,8 @@ public class ToDoActivity extends Activity {
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
                      showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
                     TextView textView_ok = (findViewById(R.id.textview_ok));
-
                     textView_ok.setText("Operazione Completata");
+
                 }
             }
 
@@ -402,6 +405,7 @@ public class ToDoActivity extends Activity {
                     showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
                     TextView textView_ok = (findViewById(R.id.textview_ok));
                     textView_ok.setText("Operazione Completata");
+
                 }
             }
 
@@ -418,8 +422,9 @@ public class ToDoActivity extends Activity {
 
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonArray> callDevices = jsonApi.getDeviceList(token);
-
         callDevices.enqueue(new Callback<JsonArray>() {
+
+
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
 
@@ -434,6 +439,7 @@ public class ToDoActivity extends Activity {
                     String id_with_quotes = "\""+id+"\"";
                     if(data.contains(id_with_quotes)){
                         System.out.println("UPDATE");
+                        pd.dismiss();
                         // device già inserito, aggiornare i suoi dati?
                         AlertDialog alertDialog = new AlertDialog.Builder(ToDoActivity.this)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -460,6 +466,7 @@ public class ToDoActivity extends Activity {
 
 
                     else{
+                        pd.dismiss();
                         System.out.println("INSERT");
                         postData(retrofit,token,id_comune);
                     }
@@ -529,7 +536,7 @@ public class ToDoActivity extends Activity {
 
     }
 
-    GoogleMap googleMap = null;
+
 
     /**
      * Mostra sulla mappa il punto luce installato
@@ -593,7 +600,7 @@ public class ToDoActivity extends Activity {
                 insertLightPoint(retrofit,token);
 
             } catch (final Exception e) {
-                createAndShowDialogFromTask(e, "PostError");
+                createAndShowDialogFromTask(e, "Errore,riprova");
                 Log.println(Log.INFO,"conn_string","select_KO");
             }
             return null;
@@ -612,10 +619,9 @@ public class ToDoActivity extends Activity {
         if (mClient == null) {
             return;
         }
-
-        TextView textView_ok = (findViewById(R.id.textview_ok));
-
-        textView_ok.setText("Registrazione in corso...");
+        // progress dialog
+        pd.setMessage("Registrazione in corso...");
+        pd.show();
 
         //inserimento dati nel portale
         runAsyncTask(task_post);
