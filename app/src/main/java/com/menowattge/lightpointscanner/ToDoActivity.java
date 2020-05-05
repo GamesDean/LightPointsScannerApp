@@ -173,13 +173,14 @@ public class ToDoActivity extends Activity {
                     "https://menowattgeqrcodescanner.azurewebsites.net", // fondamentale
                     this).withFilter(new ProgressFilter());
 
-            // Extend timeout from default of 10s to 20s
+            // Extend timeout from default of 10s to 120s
             mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
                 @Override
                 public OkHttpClient createOkHttpClient() {
                     OkHttpClient client = new OkHttpClient.Builder()
-                            .connectTimeout(20, TimeUnit.SECONDS)
-                            .readTimeout(20, TimeUnit.SECONDS)
+                            .connectTimeout(120, TimeUnit.SECONDS)
+                            .readTimeout(120, TimeUnit.SECONDS)
+                            .retryOnConnectionFailure(true)
                             .build();
 
                     return client;
@@ -357,7 +358,7 @@ public class ToDoActivity extends Activity {
                     Log.d("http_ok_post__rc : ", rc);
                     //textview che scrive Operazione Completata
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-                     showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
+                     //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
                     TextView textView_ok = (findViewById(R.id.textview_ok));
                     textView_ok.setText("Operazione Completata");
 
@@ -402,7 +403,7 @@ public class ToDoActivity extends Activity {
                     Log.d("http_ok_post__rc : ", rc);
                     //textview che scrive Operazione Completata
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-                    showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
+                    //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
                     TextView textView_ok = (findViewById(R.id.textview_ok));
                     textView_ok.setText("Operazione Completata");
 
@@ -460,6 +461,7 @@ public class ToDoActivity extends Activity {
                                     }
                                 })
                                 .show();
+                                alertDialog.setCanceledOnTouchOutside(false);
 
                     }
 
@@ -622,6 +624,7 @@ public class ToDoActivity extends Activity {
         // progress dialog
         pd.setMessage("Registrazione in corso...");
         pd.show();
+        pd.setCanceledOnTouchOutside(false);
 
         //inserimento dati nel portale
         runAsyncTask(task_post);

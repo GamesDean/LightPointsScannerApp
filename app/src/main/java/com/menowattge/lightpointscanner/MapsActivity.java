@@ -148,7 +148,7 @@ public class MapsActivity extends AppCompatActivity implements
         //Request location updates//
             mFusedLocationClient.requestLocationUpdates(getLocationRequest(secondi),mLocationCallback,null);
 //If the geocoder retrieves an address, then display this address in the TextView//
-            textview.setText(getString(R.string.address_text));
+           // textview.setText(getString(R.string.address_text));
 
         }
 
@@ -183,8 +183,8 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public void onTaskComplete(String result) {
         if (addressRequest) {
-//Update the TextView with the reverse geocoded address//
-            textview.setText(getString(R.string.address_text, result));
+            String indirizzo_completo = getString(R.string.address_text, result);
+            //textview.setText(indirizzo_completo);
             Log.d("RESULT : ", result);
 
             String coordinate[] = result.split(";");
@@ -230,7 +230,8 @@ public class MapsActivity extends AppCompatActivity implements
                                     android.app.AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                             .setTitle("Inserimento Punto Luce")
-                                            .setMessage("Inserire qui?")
+                                            .setMessage("Inserire qui?\n\n"+address)
+                                            .setCancelable(false)
                                             .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -252,6 +253,7 @@ public class MapsActivity extends AppCompatActivity implements
                                                 }
                                             })
                                             .show();
+                                    alertDialog.setCanceledOnTouchOutside(false);
 
                                     return false;
                                 }

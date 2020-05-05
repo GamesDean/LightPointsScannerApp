@@ -12,7 +12,7 @@
     <string name="selezionare_il_valore_corrispondente_al_campo1_come_da_immagine">Selezionare il valore corrispondente al \"CAMPO1\" come da immagine :</string>
     <string name="ho_letto">\"ok\"</string>
 
-    <string name="get_location">Get my location</string>
+    <string name="get_location">GPS</string>
     <string name="address_text">"Indirizzo: %1$s"</string>
     <string name="no_address">Cannot retrieve address at this time</string>
 
