@@ -142,7 +142,8 @@ public class PreQrCodeActivity extends AppCompatActivity {
         else{
 
 
-            Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.GetLatLong.class);
+           // Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.GetLatLong.class);
+            Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.MapsActivity.class);
             startActivity(intent);
         }
 

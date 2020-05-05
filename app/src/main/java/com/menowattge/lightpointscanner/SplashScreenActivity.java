@@ -70,7 +70,6 @@ public class SplashScreenActivity extends AppCompatActivity  {
 
                 Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.PreQrCodeActivity.class);
                 startActivity(intent);
-
                 finish();
             }
         };

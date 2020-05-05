@@ -67,4 +67,5 @@ dependencies {
     implementation 'com.github.sachinvarma:EasyLocation:1.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
 
+
 }

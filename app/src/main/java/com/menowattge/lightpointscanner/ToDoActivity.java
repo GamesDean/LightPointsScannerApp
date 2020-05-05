@@ -111,8 +111,8 @@ public class ToDoActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="xxxxxxxx";
-    String password="xxxxxxxx";
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
 
     // per creare il JSON
     public  static String  id ;

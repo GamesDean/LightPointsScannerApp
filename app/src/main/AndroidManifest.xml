@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"    />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -18,6 +19,8 @@
         android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera" />
+
+
 
     <application
 
@@ -79,6 +82,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name="com.menowattge.lightpointscanner.MapsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity"/>
 
         <activity
             android:name="com.menowattge.lightpointscanner.CheckConnectionActivity"
@@ -91,6 +99,12 @@
                 <action android:name="android.location.PROVIDERS_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCXmi_FECyycWt20AA7pRz9VHsYink78T0"/>
+        <!--FONDAMENTALE ALTRIMENTI MAPS NON PARTE E DA ERRORI INFAMISSIMI-->
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
     </application>
 

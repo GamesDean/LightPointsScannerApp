@@ -397,7 +397,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
             intentQr.putExtra("indirizzo", address);
             intentQr.putExtra("latitudine", latitude);
             intentQr.putExtra("longitudine", longitude);
-
             startActivity(intentQr);
 
 
@@ -405,6 +404,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
         }
 
     }
+
 
 
     // aggiorna la posizione
@@ -423,7 +423,6 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
-
 
 
 

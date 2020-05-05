@@ -24,7 +24,8 @@ public class GpsLocationReceiver extends BroadcastReceiver  {
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if(statusOfGPS) {
-                Intent intenT = new Intent(context, com.menowattge.lightpointscanner.GetLatLong.class);
+                //Intent intenT = new Intent(context, com.menowattge.lightpointscanner.GetLatLong.class);
+                Intent intenT = new Intent(context, com.menowattge.lightpointscanner.MapsActivity.class);
                 context.startActivity(intenT);
 
             }
