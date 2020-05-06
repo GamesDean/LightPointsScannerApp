@@ -1,3 +1,4 @@
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -5,12 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
+    android:background="@drawable/ge_splash_sfocatura"
     >
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4e9441"
+        android:background="#487D5E"
         android:padding="6dip" >
 
         <TextView
@@ -21,6 +26,7 @@
             android:layout_weight="0.12"
             android:gravity="center"
             android:text="@string/service_title"
+            android:textColor="#003"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -34,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#D1C7C7"
+         android:alpha="0.8"
         android:padding="6dip"  >
 
          <TextView
@@ -42,88 +49,35 @@
              android:layout_height="wrap_content"
              android:layout_weight="1"
              android:ems="10"
+             android:textColor="#003"
              android:textSize="22sp">
 
              <requestFocus />
          </TextView>
 
-
-
     </LinearLayout>
 
     <Button
         android:id="@+id/buttonAddToDo"
-        android:layout_marginTop="10dp"
         android:layout_width="125dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:background="#9fc73d"
+        android:layout_marginTop="30dp"
+        android:background="#487D5E"
         android:onClick="addItem"
+        android:alpha="0.8"
         android:text="@string/add_button_text"
+        android:textColor="#C6FF00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textview_ok"
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="97dp"
-        android:gravity="center"
-        android:textColor="#1B5E20"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine" />
 
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="100dp"
-            android:layout_height="63dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#7CB342"
-            android:gravity="center"
-            android:onClick="backToScan"
-            android:text="Nuova Scan"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="invisible" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="100dp"
-            android:layout_height="63dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#E53935"
-            android:onClick="quit"
-            android:text="Chiudi"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="invisible" />
-
-    </android.support.constraint.ConstraintLayout>
-
-
-    <!--
-        <ListView
-            android:id="@+id/listViewToDo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/row_list_to_do"
-            android:padding="6dip" >
-
-        </ListView>
-
-    -->
-    </LinearLayout>
+</LinearLayout>

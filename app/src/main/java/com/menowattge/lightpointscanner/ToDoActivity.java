@@ -153,8 +153,8 @@ public class ToDoActivity extends Activity {
         mTextNewToDo = findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
 
-        buttonAgain = findViewById(R.id.button3);
-        buttonExit = findViewById(R.id.button4);
+//        buttonAgain = findViewById(R.id.button3);
+  //      buttonExit = findViewById(R.id.button4);
 
          pd = new ProgressDialog(ToDoActivity.this);
 
@@ -359,8 +359,10 @@ public class ToDoActivity extends Activity {
                     //textview che scrive Operazione Completata
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
                      //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
-                    TextView textView_ok = (findViewById(R.id.textview_ok));
-                    textView_ok.setText("Operazione Completata");
+                    //TextView textView_ok = (findViewById(R.id.textview_ok));
+                   // textView_ok.setText("Operazione Completata");
+
+                    createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
 
                 }
             }
@@ -371,6 +373,28 @@ public class ToDoActivity extends Activity {
             }
         });
 
+    }
+
+    public void createDialog(String title, String message){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(ToDoActivity.this)
+                .setIcon(android.R.drawable.checkbox_on_background)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Scan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        backToScan();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        quit();
+                    }
+                })
+                .show();
+        alertDialog.setCanceledOnTouchOutside(false);
     }
 
 
@@ -404,8 +428,10 @@ public class ToDoActivity extends Activity {
                     //textview che scrive Operazione Completata
                     // Ad inserimento avvenuto, mostro il device inserito sulla mappa
                     //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
-                    TextView textView_ok = (findViewById(R.id.textview_ok));
-                    textView_ok.setText("Operazione Completata");
+                 //   TextView textView_ok = (findViewById(R.id.textview_ok));
+                  //  textView_ok.setText("Operazione Completata");
+
+                    createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
 
                 }
             }
@@ -454,10 +480,9 @@ public class ToDoActivity extends Activity {
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Toast.makeText(getApplicationContext(),"Operazione Annullata",Toast.LENGTH_LONG).show();
-                                        TextView textView_ok = (findViewById(R.id.textview_ok));
+                                       // Toast.makeText(getApplicationContext(),"Operazione Annullata",Toast.LENGTH_LONG).show();
+                                        createDialog("Operazione Annullata","Esegui un'altra SCAN o ESCI");
 
-                                        textView_ok.setText("Esegui un'altra scan o esci");
                                     }
                                 })
                                 .show();
@@ -569,13 +594,13 @@ public class ToDoActivity extends Activity {
                 id  = getIntent().getStringExtra("qrCode").toUpperCase();
                 Nome_PL = getIntent().getStringExtra("name_").trim();
                 Log.d("Nome_PL : ",Nome_PL);
-                Nome_PL = "prova_app_y"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
+                Nome_PL = "prova_app_z"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
                 //qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
                 qrCitta =getIntent().getStringExtra("qrCitta");
                 qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
                 qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
                 indirizzo = getIntent().getStringExtra("qrIndirizzo");
-                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
+                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") )*36;
                 conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
                 chiaviCrittografia.add(conn_string);
                 coordinate.setLat(qrLatitudine);
@@ -602,8 +627,9 @@ public class ToDoActivity extends Activity {
                 insertLightPoint(retrofit,token);
 
             } catch (final Exception e) {
-                createAndShowDialogFromTask(e, "Errore,riprova");
-                Log.println(Log.INFO,"conn_string","select_KO");
+                createAndShowDialogFromTask(e, "Errore,chiudi l'app e riprova");
+                Log.println(Log.INFO,"conn_string","select_ko");
+                pd.dismiss();
             }
             return null;
         }
@@ -634,11 +660,14 @@ public class ToDoActivity extends Activity {
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
         // ad inserimento completato rendo il pulsante cliccabile e visibile
+        /*
         buttonAgain.setVisibility(View.VISIBLE);
         buttonAgain.setClickable(true);
 
         buttonExit.setVisibility(View.VISIBLE);
         buttonExit.setClickable(true);
+
+         */
 
     }
 
@@ -827,6 +856,11 @@ public class ToDoActivity extends Activity {
         startActivity(intent);
     }
 
+    public void backToScan(){
+        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
+        startActivity(intent);
+    }
+
     /**
      * Add a new item
      *
@@ -835,6 +869,12 @@ public class ToDoActivity extends Activity {
      */
 
     public void quit(View view){
+        finishAffinity();
+        System.exit(0);
+    }
+
+
+    public void quit(){
         finishAffinity();
         System.exit(0);
     }

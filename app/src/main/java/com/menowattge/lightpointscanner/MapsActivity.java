@@ -137,7 +137,7 @@ public class MapsActivity extends AppCompatActivity implements
 //Implement getAddress//
 
     private void getAddress(boolean dialog) {
-            secondi=5000000;
+            secondi=600000;
         if (dialog){
             secondi = 20000;
         }
@@ -230,7 +230,7 @@ public class MapsActivity extends AppCompatActivity implements
                                     android.app.AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                             .setTitle("Inserimento Punto Luce")
-                                            .setMessage("Inserire qui?\n\n"+address)
+                                            .setMessage("Inserire QUI?\n\n"+address)
                                             .setCancelable(false)
                                             .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                 @Override

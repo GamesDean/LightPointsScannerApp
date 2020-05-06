@@ -8,6 +8,7 @@ package com.menowattge.lightpointscanner;
  */
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -32,8 +34,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissions = new ArrayList<>();
     private static final int ALL_PERMISSIONS_RESULT = 1011;
-
-
+    private ProgressDialog pd;
 
 
 
@@ -41,8 +42,14 @@ public class PreQrCodeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.pre_activity_qr_code);
 
+        pd = new ProgressDialog(PreQrCodeActivity.this);
+        pd.setMessage(getString(R.string.attiva_gps));
+        pd.show();
+        pd.setCanceledOnTouchOutside(false);
 
 
         /////////////  richiedo a video il permesso
