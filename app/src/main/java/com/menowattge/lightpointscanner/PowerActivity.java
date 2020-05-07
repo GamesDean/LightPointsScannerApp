@@ -14,8 +14,6 @@ import android.widget.Spinner;
 
 public class PowerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-
-
     public double qrlongitudine,qrlatitudine;
     public String qrCodeData,name,qrCitta,qrIndirizzo;
 

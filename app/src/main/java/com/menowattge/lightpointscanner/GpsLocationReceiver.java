@@ -13,7 +13,6 @@ import android.location.LocationManager;
 public class GpsLocationReceiver extends BroadcastReceiver  {
 
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.location.PROVIDERS_CHANGED")) {

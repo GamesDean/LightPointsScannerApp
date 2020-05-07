@@ -8,15 +8,13 @@ package com.menowattge.lightpointscanner;
  */
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
@@ -47,59 +45,8 @@ public class PreQrCodeActivity extends AppCompatActivity {
         setContentView(R.layout.pre_activity_qr_code);
 
         pd = new ProgressDialog(PreQrCodeActivity.this);
-        pd.setMessage(getString(R.string.attiva_gps));
-        pd.show();
-        pd.setCanceledOnTouchOutside(false);
 
 
-        /////////////  richiedo a video il permesso
-
-        // we add permissions we need to request location of the users
-        /*
-        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-
-        permissionsToRequest = permissionsToRequest(permissions);
-        Log.println(Log.INFO,"permesso",permissionsToRequest.toString());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (permissionsToRequest.size() > 0) {
-                requestPermissions(permissionsToRequest.toArray(
-                        new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
-            }
-        }
-
-
-*/
-
-        ////////////
-
-        gps = new GpsLocationReceiver();
-        filter = new IntentFilter(Context.LOCATION_SERVICE);
-
-
-
-    }
-
-
-    private ArrayList<String> permissionsToRequest(ArrayList<String> wantedPermissions) {
-        ArrayList<String> result = new ArrayList<>();
-
-        for (String perm : wantedPermissions) {
-            if (!hasPermission(perm)) {
-                result.add(perm);
-            }
-        }
-
-        return result;
-    }
-
-    private boolean hasPermission(String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
-        }
-
-        return true;
     }
 
 
@@ -112,13 +59,13 @@ public class PreQrCodeActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-
+        Activity mContext = PreQrCodeActivity.this;//change this your activity name
+        StartLocationAlert startLocationAlert = new StartLocationAlert(mContext);
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
         final boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if (!statusOfGPS){
-
+        if (statusOfGPS){
 
 
             final Thread timeout = new Thread() {
@@ -127,17 +74,26 @@ public class PreQrCodeActivity extends AppCompatActivity {
                     super.run();
 
                     try {
-                        sleep(4000);
-                    } catch (InterruptedException e) {
+
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+
+                                pd.setMessage("Caricamento Mappa...");
+                                pd.show();
+                                pd.setCanceledOnTouchOutside(false);
+
+                            }
+                        });
+
+                        sleep(3000);
+
+                    }catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.MapsActivity.class);
                     startActivity(intent);
-
-
-
-
+                    finish();
                 }
             };
 
@@ -145,21 +101,19 @@ public class PreQrCodeActivity extends AppCompatActivity {
 
 
 
-        }
-        else{
 
 
-           // Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.GetLatLong.class);
-            Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.MapsActivity.class);
-            startActivity(intent);
         }
+
 
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-
-
-
         registerReceiver(gps,filter);
 
+
     }
+
+
+
+
 }

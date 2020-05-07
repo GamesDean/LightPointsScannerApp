@@ -141,7 +141,25 @@ public class MapsActivity extends AppCompatActivity implements
             secondi = 10000;
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
+            final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+
+            builder.setTitle("INFO Geolocalizzazione");
+            builder.setMessage("In applicazione del Regolamento generale sulla protezione dei dati (GDPR) del 27 aprile 2016 " +
+                    "si dichiara all’utilizzatore dell’app, denominata LightPointScanner, che nessun dato personale" +
+                    " verrà archiviato e/o trasferito e/o sarà oggetto di proliferazione. Si dichiara che il dato geografico," +
+                    " relativo alla sola posizione del palo di illuminazione, verrà archiviato e/o trasferito solo dopo " +
+                    "specifica autorizzazione da parte dell'utilizzatore dell'app LightPointScanner . " +
+                    "Si ricorda che l’uscita dall’app LightPointScanner  rende non più necessario " +
+                    "l’uso del circuito GPS: per risparmiare energia si consiglia di disattivarlo");
+            builder.setPositiveButton(R.string.ho_letto, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
+                }
+            });
+
+            builder.show();
         } else {
             addressRequest = true;
         //Request location updates//
