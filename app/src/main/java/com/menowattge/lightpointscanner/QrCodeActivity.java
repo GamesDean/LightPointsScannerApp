@@ -43,8 +43,6 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
         if (this.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
 
-
-
     }
 
 

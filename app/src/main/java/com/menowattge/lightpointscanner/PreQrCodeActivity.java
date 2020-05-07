@@ -2,7 +2,7 @@ package com.menowattge.lightpointscanner;
 
 /**
  *
- *  Classe che ha il compito di controllare lo stato del GPS e nel caso portare l'utente alla schermata di settings per accenderlo.
+ *  Classe che ha il compito di controllare lo stato del GPS e nel caso proporre l'utente un dialog per accenderlo.
  *  Il controllo avviene in prima battuta cioè all'avvio dell'app, per un monitoraggio costante ho implementato un BR.
  *  Mantengo comunque questa classe anche perchè ha un Layout essendo un'Activity.
  */
@@ -18,23 +18,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import java.util.ArrayList;
-
-
-
 
 public class PreQrCodeActivity extends AppCompatActivity {
 
     private GpsLocationReceiver gps;
     private IntentFilter filter;
 
-    // lists for permissions
-    private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissions = new ArrayList<>();
-    private static final int ALL_PERMISSIONS_RESULT = 1011;
     private ProgressDialog pd;
-
-
 
 
     @Override
@@ -46,14 +36,13 @@ public class PreQrCodeActivity extends AppCompatActivity {
 
         pd = new ProgressDialog(PreQrCodeActivity.this);
 
-
     }
 
 
     /**
-     *  Se il GPS non è attivo, una scritta avvisa che l'utente verrà portato alla schermata delle impostazioni
-     *  che al termine di 4 secondi verranno proposte a video.
-     *  Se il GPS è attivo, viene avviata la classe GetLatLong per inquadrare il Qrcode con la fotocamera.
+     *  Se il GPS non è attivo, un dialog invita l'utente ad accenderlo
+     *  al termine di 3 secondi carica la mappa
+     *  Se il GPS è attivo, viene avviata la classe MapsActivity per geolocalizzarsi
      */
     @Override
     protected void onResume(){
@@ -66,15 +55,11 @@ public class PreQrCodeActivity extends AppCompatActivity {
         final boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (statusOfGPS){
-
-
             final Thread timeout = new Thread() {
                 @Override
                 public void run() {
                     super.run();
-
                     try {
-
                         runOnUiThread(new Runnable() {
                             public void run() {
 
@@ -98,10 +83,6 @@ public class PreQrCodeActivity extends AppCompatActivity {
             };
 
             timeout.start();
-
-
-
-
 
         }
 

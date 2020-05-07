@@ -2,9 +2,11 @@ package com.menowattge.lightpointscanner;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -51,44 +53,7 @@ public class MapsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reverse_geo);
 
-        //Obtain the SupportMapFragment//
-/*
-
-        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
-        mapFragment.getMapAsync(
-                new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-                mMap.clear(); //clear old markers
-
-                CameraPosition googlePlex = CameraPosition.builder()
-                        .target(new LatLng(37.4219999,-122.0862462))
-                        .zoom(10)
-                        .bearing(0)
-                        .tilt(45)
-                        .build();
-
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 10000, null);
-
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(37.4219999, -122.0862462))
-                        .title("Spider Man"));
-
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(37.4629101,-122.2449094))
-                        .title("Iron Man")
-                        .snippet("His Talent : Plenty of money"));
-
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(37.3092293,-122.1136845))
-                        .title("Captain America"));
-            }
-        });
-*/
-
+        checkGpsStatus();
 
         button = findViewById(R.id.button);
         textview = findViewById(R.id.textview);
@@ -133,9 +98,26 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-//Implement getAddress//
+
+    public void checkGpsStatus(){
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+        final boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!statusOfGPS){
+            StartLocationAlert startLocationAlert = new StartLocationAlert(MapsActivity.this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkGpsStatus();
+    }
 
     private void getAddress(boolean dialog) {
+
+        checkGpsStatus();
+
             secondi=30000;
         if (dialog){
             secondi = 10000;
