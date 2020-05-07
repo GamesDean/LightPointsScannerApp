@@ -95,8 +95,7 @@ public class MapsActivity extends AppCompatActivity implements
 
 //Initialize mFusedLocationClient//
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(
-                this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 //Create the onClickListener//
 
@@ -106,6 +105,7 @@ public class MapsActivity extends AppCompatActivity implements
 //Call getAddress, in response to onClick events//
                 if (!addressRequest) {
                     getAddress(false);
+                   // mFusedLocationClient.removeLocationUpdates(mLocationCallback);
                 }
             }
         });
@@ -119,8 +119,7 @@ public class MapsActivity extends AppCompatActivity implements
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                if (addressRequest) { new ReverseGeo(MapsActivity.this, MapsActivity.this)
-                            .execute(locationResult.getLastLocation());
+                if (addressRequest) { new ReverseGeo(MapsActivity.this, MapsActivity.this).execute(locationResult.getLastLocation());
                 }
             }
         };
@@ -137,9 +136,9 @@ public class MapsActivity extends AppCompatActivity implements
 //Implement getAddress//
 
     private void getAddress(boolean dialog) {
-            secondi=600000;
+            secondi=30000;
         if (dialog){
-            secondi = 20000;
+            secondi = 10000;
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
@@ -162,6 +161,15 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        //locationManager.removeUpdates(this);
+       // Log.i(TAG, "onPause, done");
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        Log.i( "onPause","done");
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
 
         switch (requestCode) {
@@ -169,7 +177,7 @@ public class MapsActivity extends AppCompatActivity implements
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getAddress(false);
                 } else {
-                    Toast.makeText(this, "aa", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Necessari permessi GPS", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -248,7 +256,7 @@ public class MapsActivity extends AppCompatActivity implements
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Toast.makeText(getApplicationContext(),"Nuova Posizione entro 20 sec...",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(),"Nuova Posizione entro 10 sec...",Toast.LENGTH_LONG).show();
                                                     getAddress(true);
                                                 }
                                             })

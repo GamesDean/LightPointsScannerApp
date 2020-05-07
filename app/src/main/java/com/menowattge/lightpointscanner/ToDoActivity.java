@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -287,9 +288,16 @@ public class ToDoActivity extends Activity {
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
         String name = getIntent().getStringExtra("name_").trim();
 
+
+
         // mostro a video i  valori soprastanti
-        mTextNewToDo.setText(qrCodeData);
-        mTextNewToDo.append("\ncodice : "+name+"\nindirizzo : "+qrAddress+"\nlatitudine : "+qrLatitudine+"\nlongitudine : "+qrLongitudine+"\ncorrente : "+valoreCorrente+"\n");
+        mTextNewToDo.setText(Html.fromHtml("<br />"+"<font color=#4f9e33>" + "<b>"+"ID : "+ "</b>"+"</font>"+"<font color=#0000>"+qrCodeData+"</font>"+"<br />"+"<br />"));
+
+        mTextNewToDo.append(Html.fromHtml("<font color=#4f9e33>" +"<b>"+"Codice : "+"</b>"+"</font>"+"<font color=#0000>"+name+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#0000>"+qrAddress+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLatitudine+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLongitudine+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+"</font>"+"<br />"));
 
     }
 

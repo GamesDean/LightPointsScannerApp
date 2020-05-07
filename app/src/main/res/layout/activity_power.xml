@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ge_splash_sfocatura"
+    android:background="#FFF"
 
     android:orientation="vertical">
 
@@ -18,10 +18,11 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="307dp"
         android:layout_marginEnd="8dp"
         android:alpha="0.8"
         android:background="@drawable/arrow_2"
+        android:backgroundTint="#777"
         android:gravity="center"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:visibility="visible"
@@ -39,13 +40,13 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="130dp"
-        android:layout_marginEnd="130dp"
-        android:layout_marginBottom="122dp"
-        android:background="#487D5E"
+        android:layout_marginStart="132dp"
+        android:layout_marginEnd="127dp"
+        android:layout_marginBottom="74dp"
+        android:alpha="0.8"
+        android:background="#4f9e33"
         android:gravity="center"
         android:text="@android:string/ok"
-        android:alpha="0.8"
-        android:textColor="#C6FF00" />
+        android:textColor="#FFF" />
 
 </RelativeLayout>

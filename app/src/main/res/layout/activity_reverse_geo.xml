@@ -20,9 +20,9 @@
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
         android:textStyle="bold"
-        android:textColor="#C6FF00"
+        android:textColor="#FFF"
         android:alpha="0.8"
-        android:background="#B7CAC8"
+        android:background="#4f9e33"
         android:text="@string/get_location" />
 
     <TextView
