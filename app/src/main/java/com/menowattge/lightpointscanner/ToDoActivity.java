@@ -286,6 +286,7 @@ public class ToDoActivity extends Activity {
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
 
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
+        Double valoreWatt = Double.parseDouble(valoreCorrente)*36;
         String name = getIntent().getStringExtra("name_").trim();
 
 
@@ -297,7 +298,7 @@ public class ToDoActivity extends Activity {
                                                 +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#0000>"+qrAddress+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLatitudine+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLongitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+"</font>"+"<br />"));
+                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+"-"+valoreWatt+"W"+"</font>"+"<br />"));
 
     }
 

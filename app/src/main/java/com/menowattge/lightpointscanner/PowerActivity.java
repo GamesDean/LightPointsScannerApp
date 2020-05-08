@@ -1,11 +1,8 @@
 package com.menowattge.lightpointscanner;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +19,7 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_power);
 
-        AlertDialog.Builder alertadd = new AlertDialog.Builder(PowerActivity.this);
+       /* AlertDialog.Builder alertadd = new AlertDialog.Builder(PowerActivity.this);
         LayoutInflater factory = LayoutInflater.from(PowerActivity.this);
         final View view = factory.inflate(R.layout.dialog_power, null);
         alertadd.setView(view);
@@ -36,15 +33,14 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
         alertadd.show();
-        alertadd.setCancelable(false);
+        alertadd.setCancelable(false);*/
 
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_power);
         Button button_ok = findViewById(R.id.button_ok);
 
 // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.ampere, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.ampere, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
@@ -54,10 +50,6 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
         final Intent intent = new Intent(getApplicationContext(), ToDoActivity.class);
-
-
-
-        // TODO get di quelli inviati da qrcodeactivity per poi passarli a todoactivity
 
         //prelevo i dati della scansione del qrcode
         qrCodeData = getIntent().getStringExtra("qrCode_");
@@ -89,13 +81,8 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
     }
-    // provo a vedere cosa stampano, se ok faccio tutto nell'onCreate
-    String valore;
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //valore = parent.getItemAtPosition(position).toString();
-        //System.out.println("valore selezionato dallo spinner : "+valore);
-
 
     }
 

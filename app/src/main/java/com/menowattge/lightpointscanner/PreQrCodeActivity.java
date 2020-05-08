@@ -70,7 +70,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
                             }
                         });
 
-                        sleep(3000);
+                        sleep(1500);
 
                     }catch (InterruptedException e) {
                         e.printStackTrace();

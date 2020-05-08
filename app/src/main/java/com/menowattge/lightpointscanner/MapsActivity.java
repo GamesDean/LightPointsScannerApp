@@ -223,7 +223,7 @@ public class MapsActivity extends AppCompatActivity implements
                                     .tilt(45)
                                     .build();
 
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 3000, null);
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 1500, null);
 
 
                             mMap.addMarker(new MarkerOptions()
@@ -251,7 +251,8 @@ public class MapsActivity extends AppCompatActivity implements
                                                     intentQr.putExtra("indirizzo", address);
                                                     intentQr.putExtra("latitudine", latitude);
                                                     intentQr.putExtra("longitudine", longitude);
-                                                    startActivity(intentQr);                                   }
+                                                    startActivity(intentQr);
+                                                    finish();}
                                             })
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override

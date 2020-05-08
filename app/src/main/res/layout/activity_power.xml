@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF"
+    android:background="@drawable/giano_new"
 
     android:orientation="vertical">
 
@@ -15,22 +15,17 @@
 
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="307dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.8"
-        android:background="@drawable/arrow_2"
-        android:backgroundTint="#777"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="160dp"
+        android:background="@drawable/arrow_gray"
+
         android:gravity="center"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.019"
         tools:visibility="visible" />
 
     <Button
@@ -40,8 +35,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="132dp"
-        android:layout_marginEnd="127dp"
+        android:layout_marginStart="105dp"
+        android:layout_marginEnd="105dp"
         android:layout_marginBottom="74dp"
         android:alpha="0.8"
         android:background="#4f9e33"
