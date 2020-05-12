@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -41,45 +43,42 @@ public class MapsActivity extends AppCompatActivity implements
     private boolean addressRequest;
 
     int secondi;
-//Create a member variable of the FusedLocationProviderClient type//
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
 
-    String indirizzoCompleto;
+    private GoogleMap googleMap;
+
+    public boolean firstTime;
+
+    SupportMapFragment mapFragment;
+    Marker currentLocationMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reverse_geo);
-
+        //creo la mappa
+        mapFragment = SupportMapFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
+        //flag primo avvio - serve per animare la mappa una volta sola
+        firstTime = true;
+        //controllo che sia attivo
         checkGpsStatus();
 
         button = findViewById(R.id.button);
         textview = findViewById(R.id.textview);
-
-//Initialize mFusedLocationClient//
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-//Create the onClickListener//
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//Call getAddress, in response to onClick events//
-                if (!addressRequest) {
+                if (!addressRequest && isGooglePlayServicesAvailable() ) {
                     getAddress(false);
-                   // mFusedLocationClient.removeLocationUpdates(mLocationCallback);
                 }
             }
         });
 
-//Create a LocationCallback object//
-//Override the onLocationResult() method,
-//which is where this app receives its location updates//
-//Execute ReverseGeo in response to addressRequest//
-// Obtain the device's last known location from the FusedLocationProviderClient//
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -89,15 +88,58 @@ public class MapsActivity extends AppCompatActivity implements
             }
         };
 
-      /*  if (!addressRequest) {
-            getAddress(false);
-        }*/
-
-
-
-
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mFusedLocationClient!=null) {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            Log.i("onPause", "done");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mFusedLocationClient!=null) {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            Log.i("onStop", "done");
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkGpsStatus();
+    }
+
+
+    // -------------------------------------------------------------------------------------------- //
+
+    /**
+     *
+     * Controllo scrupoloso per i services Google altrimenti non funziona la mappa
+     * @return
+     */
+    private boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == status)
+            return true;
+        else {
+            if (googleApiAvailability.isUserResolvableError(status))
+                Toast.makeText(this, "Sono necessari Google Play Services per usare l'app : installali dal Play Store", Toast.LENGTH_LONG).show();
+        }
+        return false;
+    }
+
+    /**
+     * Controllo stato del GPS
+     *
+     */
 
     public void checkGpsStatus(){
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
@@ -108,17 +150,17 @@ public class MapsActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkGpsStatus();
-    }
 
+    /**
+     * Al primo avvio in assoluto mostro le info del GDPR. Controllo invece sempre il GPS se attivo
+     * Se non sono stati concessi, chiedo i permessi.
+     * Infine prelevo le coordinate e quindi indirizzo
+     * @param dialog
+     */
     private void getAddress(boolean dialog) {
 
         checkGpsStatus();
-
-            secondi=30000;
+        secondi=30000;
         if (dialog){
             secondi = 10000;
         }
@@ -146,28 +188,19 @@ public class MapsActivity extends AppCompatActivity implements
             addressRequest = true;
         //Request location updates//
             mFusedLocationClient.requestLocationUpdates(getLocationRequest(secondi),mLocationCallback,null);
-//If the geocoder retrieves an address, then display this address in the TextView//
-           // textview.setText(getString(R.string.address_text));
 
         }
 
     }
 
-//Specify the requirements for your application's location requests//
+
     private LocationRequest getLocationRequest(int secondi) {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(secondi);
         return locationRequest;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //locationManager.removeUpdates(this);
-       // Log.i(TAG, "onPause, done");
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        Log.i( "onPause","done");
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
@@ -175,7 +208,10 @@ public class MapsActivity extends AppCompatActivity implements
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getAddress(false);
+                    if (isGooglePlayServicesAvailable()) {
+                        getAddress(false);
+                    }
+
                 } else {
                     Toast.makeText(this, "Necessari permessi GPS", Toast.LENGTH_SHORT).show();
                 }
@@ -188,49 +224,62 @@ public class MapsActivity extends AppCompatActivity implements
         return null;
     }
 
+
+
+
+  // --------------------------------------------------------------------------------------------//
+
+    /**
+     * Quando ha il valore di ritorno contenente lat-lon indirizzo generato dalla classe asincrona ReverseGeo,
+     * zooma la mappa ed aggiorna il marker
+     * @param result
+     */
     @Override
     public void onTaskComplete(String result) {
         if (addressRequest) {
-            String indirizzo_completo = getString(R.string.address_text, result);
-            //textview.setText(indirizzo_completo);
+
             Log.d("RESULT : ", result);
-
             String coordinate[] = result.split(";");
-
             String lat = coordinate[0];
             String lon = coordinate[1];
             String address = coordinate[2];
             String city = coordinate[3];
-
-            Log.d("address",address+"--"+city);
+            Log.d("address", address + "--" + city);
             double latitude = Double.parseDouble(lat);
             double longitude = Double.parseDouble(lon);
 
-            SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
             mapFragment.getMapAsync(
                     new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap mMap) {
+                            //una volta sola all'avvio muovo la camera della mappa spostandomi sulle opportune coordinate
+                            if(firstTime) {
+                                mMap.clear(); //clear old markers
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(41.29246, 12.5736108)));
 
-                            mMap.clear(); //clear old markers
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(41.29246 ,12.5736108)));
+                                CameraPosition googlePlex = CameraPosition.builder()
+                                        .target(new LatLng(latitude, longitude))
+                                        .zoom(17)
+                                        .bearing(0)
+                                        .tilt(45)
+                                        .build();
 
-                            CameraPosition googlePlex = CameraPosition.builder()
-                                    .target(new LatLng(latitude,longitude))
-                                    .zoom(17)
-                                    .bearing(0)
-                                    .tilt(45)
-                                    .build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 1500, null);
 
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 1500, null);
+                                currentLocationMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(latitude, longitude))
+                                        .title("Punto Luce")
+                                        .snippet("Meridio verrà inserito in questa posizione"));
 
+                                firstTime=false;
+                                // aggiorno il marker senza ricaricare la mappa ed animarla ogni volta
+                            }else {
+                                LatLng latLng = new LatLng(latitude, longitude);
+                                //todo verificare che DAVVERO aggiorni il marker sulla mappa : mi devo spostare
+                                MarkerAnimation.animateMarkerToGB(currentLocationMarker, latLng, new LatLngInterpolator.Spherical());
+                            }
 
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(latitude,longitude))
-                                    .title("Punto Luce")
-                                    .snippet("Meridio verrà inserito in questa posizione"));
-
+                            // gestisco il click sul marker
                             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
                                 @Override
@@ -238,8 +287,10 @@ public class MapsActivity extends AppCompatActivity implements
                                     android.app.AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                             .setTitle("Inserimento Punto Luce")
-                                            .setMessage("Inserire QUI?\n\n"+address)
+                                            .setMessage("Inserire QUI?\n\n"+address+"\n"+"lat : "+latitude+" lon : "+longitude)
                                             .setCancelable(false)
+
+                                            // al click su SI prendo i dati raccolti ed avvio l'activity per la scan del qrcode
                                             .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -254,10 +305,13 @@ public class MapsActivity extends AppCompatActivity implements
                                                     startActivity(intentQr);
                                                     finish();}
                                             })
+
+                                            // al click su NO ricalcolo la posizione
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     Toast.makeText(getApplicationContext(),"Nuova Posizione entro 10 sec...",Toast.LENGTH_LONG).show();
+                                                    if(isGooglePlayServicesAvailable())
                                                     getAddress(true);
                                                 }
                                             })
@@ -277,6 +331,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        this.googleMap = googleMap;
     }
 }
