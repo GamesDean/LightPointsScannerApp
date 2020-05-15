@@ -65,13 +65,13 @@ public class CheckConnectionActivity extends Activity {
 
     public static String getAndPrintData(){
 
-        String nome= ToDoActivity.name;
-        String ID = ToDoActivity.id;
-        String citta=ToDoActivity.qrCitta;
-        Double Lat=ToDoActivity.qrLatitudine;
-        Double Lon=ToDoActivity.qrLongitudine;
-        String addr=ToDoActivity.qrAddress;
-        String corrente=ToDoActivity.valoreCorrente;
+        String nome= SendDataActivity.name;
+        String ID = SendDataActivity.id;
+        String citta= SendDataActivity.qrCitta;
+        Double Lat= SendDataActivity.qrLatitudine;
+        Double Lon= SendDataActivity.qrLongitudine;
+        String addr= SendDataActivity.qrAddress;
+        String corrente= SendDataActivity.valoreCorrente;
 
 
         String data = nome+" "+ID+" "+citta+" "+Lat+" "+Lon+" "+addr+" "+corrente;
@@ -150,8 +150,8 @@ public class CheckConnectionActivity extends Activity {
                 con.setFileType(FTP.BINARY_FILE_TYPE);
                 //InputStream fIn=  this.getResources().getAssets().open("oracolo.txt");
 
-                String nome= ToDoActivity.name;
-                String citta=ToDoActivity.qrCitta;
+                String nome= SendDataActivity.name;
+                String citta= SendDataActivity.qrCitta;
 
                 boolean result = con.storeFile("/ORACOLO_APP/"+nome+"_"+citta+".txt", fileInputStream);
 

@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,7 +69,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 
-public class ToDoActivity extends Activity {
+public class SendDataActivity extends Activity {
 
     /**
      * Client reference
@@ -112,8 +113,8 @@ public class ToDoActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username="xx";
+    String password="xx";
 
     // per creare il JSON
     public  static String  id ;
@@ -157,7 +158,7 @@ public class ToDoActivity extends Activity {
 //        buttonAgain = findViewById(R.id.button3);
   //      buttonExit = findViewById(R.id.button4);
 
-         pd = new ProgressDialog(ToDoActivity.this);
+         pd = new ProgressDialog(new ContextThemeWrapper(SendDataActivity.this,R.style.ProgressDialogCustom));
 
 
         getQrCodeData();
@@ -286,7 +287,8 @@ public class ToDoActivity extends Activity {
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
 
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
-        Double valoreWatt = Double.parseDouble(valoreCorrente)*36;
+        Double valoreWatt = Double.parseDouble(valoreCorrente)*0.36;
+        Integer valoreWatt_ = valoreWatt.intValue();
         String name = getIntent().getStringExtra("name_").trim();
 
 
@@ -298,7 +300,7 @@ public class ToDoActivity extends Activity {
                                                 +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#0000>"+qrAddress+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLatitudine+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLongitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+"-"+valoreWatt+"W"+"</font>"+"<br />"));
+                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+" - "+valoreWatt_+" W"+"</font>"+"<br />"));
 
     }
 
@@ -386,7 +388,7 @@ public class ToDoActivity extends Activity {
 
     public void createDialog(String title, String message){
 
-        AlertDialog alertDialog = new AlertDialog.Builder(ToDoActivity.this)
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataActivity.this,R.style.AlertDialogCustom))
                 .setIcon(android.R.drawable.checkbox_on_background)
                 .setTitle(title)
                 .setMessage(message)
@@ -477,7 +479,8 @@ public class ToDoActivity extends Activity {
                         System.out.println("UPDATE");
                         pd.dismiss();
                         // device già inserito, aggiornare i suoi dati?
-                        AlertDialog alertDialog = new AlertDialog.Builder(ToDoActivity.this)
+                        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataActivity.this,R.style.AlertDialogCustom))
+
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle("PL già inserito")
                                 .setMessage("Vuoi aggiornarlo?")

@@ -49,7 +49,7 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
         spinner.setOnItemSelectedListener(this);
 
 
-        final Intent intent = new Intent(getApplicationContext(), ToDoActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
 
         //prelevo i dati della scansione del qrcode
         qrCodeData = getIntent().getStringExtra("qrCode_");

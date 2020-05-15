@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -284,7 +285,9 @@ public class MapsActivity extends AppCompatActivity implements
 
                                 @Override
                                 public boolean onMarkerClick(Marker marker) {
-                                    android.app.AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
+
+                                    AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(MapsActivity.this,R.style.AlertDialogCustom))
+
                                             .setIcon(android.R.drawable.ic_dialog_alert)
                                             .setTitle("Inserimento Punto Luce")
                                             .setMessage("Inserire QUI?\n\n"+address+"\n"+"lat : "+latitude+" lon : "+longitude)

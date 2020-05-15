@@ -52,7 +52,7 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
         super.onCreate(state);
 
         CheckPermission();
-        // prendo dall'activity GetLatLong dei dati per poi passarli a ToDoActivity
+        // prendo dall'activity GetLatLong dei dati per poi passarli a SendDataActivity
         qrCitta = getIntent().getStringExtra("citta");
         qrIndirizzo = getIntent().getStringExtra("indirizzo");
         qrlatitudine = getIntent().getDoubleExtra("latitudine",0);
@@ -103,7 +103,7 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
 
             //Toast.makeText(getApplicationContext(), "scansione ok", Toast.LENGTH_SHORT).show();
 
-           // Intent intent = new Intent(getApplicationContext(), ToDoActivity.class);
+           // Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
             Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
             // prelevo il valore dal qrcode letto
             String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...

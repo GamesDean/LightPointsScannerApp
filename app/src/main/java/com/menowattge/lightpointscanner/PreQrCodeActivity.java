@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextThemeWrapper;
 import android.view.WindowManager;
 
 
@@ -34,7 +35,8 @@ public class PreQrCodeActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.pre_activity_qr_code);
 
-        pd = new ProgressDialog(PreQrCodeActivity.this);
+        pd = new ProgressDialog(new ContextThemeWrapper(PreQrCodeActivity.this,R.style.ProgressDialogCustom));
+
 
     }
 
@@ -62,6 +64,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
                     try {
                         runOnUiThread(new Runnable() {
                             public void run() {
+
 
                                 pd.setMessage("Caricamento Mappa...");
                                 pd.show();

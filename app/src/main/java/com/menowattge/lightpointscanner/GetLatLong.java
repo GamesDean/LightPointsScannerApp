@@ -391,7 +391,7 @@ public class GetLatLong extends AppCompatActivity implements  GoogleApiClient.Co
 
         if(textCoordinate.getText().toString().length()>1&& (k<=x)) {
             // intent che lancia l'activity e gli passa i valori rilevati.
-            // li passo a QrCodeActivity come classe intermedia dato che il vero destinatario è ToDoActivity
+            // li passo a QrCodeActivity come classe intermedia dato che il vero destinatario è SendDataActivity
             Intent intentQr = new Intent(getApplicationContext(), QrCodeActivity.class);
             intentQr.putExtra("citta", city);
             intentQr.putExtra("indirizzo", address);

@@ -57,7 +57,7 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
 
         row.setTag(currentItem);
         final CheckBox checkBox = (CheckBox) row.findViewById(R.id.checkToDoItem);
-        checkBox.setText(ToDoActivity.mTextNewToDo.getText());
+        checkBox.setText(SendDataActivity.mTextNewToDo.getText());
 
         checkBox.setChecked(false);
         checkBox.setEnabled(true);
@@ -72,8 +72,8 @@ public class ToDoItemAdapter extends ArrayAdapter<DevicesLightPointsTemp> {
                     checkBox.setText("OPERAZIONE COMPLETATA");
                     checkBox.setTextColor(Color.parseColor("#14ad11"));
                     checkBox.setEnabled(false);
-                    if (mContext instanceof ToDoActivity) {
-                        ToDoActivity activity = (ToDoActivity) mContext;
+                    if (mContext instanceof SendDataActivity) {
+                        SendDataActivity activity = (SendDataActivity) mContext;
                         activity.checkItem(currentItem);
                     }
 //                    Intent intent = new Intent(mContext,com.menowattge.lightpointscanner.CheckConnectionActivity.class);
