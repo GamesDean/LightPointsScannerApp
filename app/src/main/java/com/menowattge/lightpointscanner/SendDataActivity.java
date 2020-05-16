@@ -48,6 +48,14 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileSer
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,8 +121,8 @@ public class SendDataActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="xx";
-    String password="xx";
+    String username="";
+    String password="";
 
     // per creare il JSON
     public  static String  id ;
@@ -614,6 +622,17 @@ public class SendDataActivity extends Activity {
                 indirizzo = getIntent().getStringExtra("qrIndirizzo");
                 PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") )*36;
                 conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
+                // controllo la lunghezza ed in caso la prendo dal DB sull'FTP
+                if(conn_string.length()!=32){
+
+                    try{
+                        // TODO
+                        // prendo db dall'ftp
+                        //downloadAndSaveFile()
+                    }catch (Exception f){}
+
+                    // devo fare la query e prendere il valore della conn_string
+                }
                 chiaviCrittografia.add(conn_string);
                 coordinate.setLat(qrLatitudine);
                 coordinate.setLong(qrLongitudine);
@@ -707,6 +726,7 @@ public class SendDataActivity extends Activity {
 
 
                 } catch (final Exception e){
+
                 }
 
                 return null;
@@ -714,6 +734,43 @@ public class SendDataActivity extends Activity {
         };
 
         runAsyncTask(task);
+    }
+
+    //TODO prendere credenziali poss da file
+    private Boolean downloadAndSaveFile(String server, int portNumber,
+                                        String user, String password, String filename, File localFile)
+            throws IOException {
+        FTPClient ftp = null;
+
+        try {
+            ftp = new FTPClient();
+            ftp.connect(server, portNumber);
+            Log.d("LOG_TAG", "Connected. Reply: " + ftp.getReplyString());
+
+            ftp.login(user, password);
+            Log.d("LOG_TAG", "Logged in");
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+            Log.d("LOG_TAG", "Downloading");
+            ftp.enterLocalPassiveMode();
+
+            OutputStream outputStream = null;
+            boolean success = false;
+            try {
+                outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
+                success = ftp.retrieveFile(filename, outputStream);
+            } finally {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+
+            return success;
+        } finally {
+            if (ftp != null) {
+                ftp.logout();
+                ftp.disconnect();
+            }
+        }
     }
 
 
