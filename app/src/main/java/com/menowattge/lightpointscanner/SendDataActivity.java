@@ -12,6 +12,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -121,8 +123,8 @@ public class SendDataActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="";
-    String password="";
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
 
     // per creare il JSON
     public  static String  id ;
@@ -150,6 +152,12 @@ public class SendDataActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
+
+    File db_saved ;
+
+
+
+
     /**
      * Initializes the activity
      */
@@ -162,14 +170,21 @@ public class SendDataActivity extends Activity {
 
         mTextNewToDo = findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
-
-//        buttonAgain = findViewById(R.id.button3);
-  //      buttonExit = findViewById(R.id.button4);
-
-         pd = new ProgressDialog(new ContextThemeWrapper(SendDataActivity.this,R.style.ProgressDialogCustom));
-
+        pd = new ProgressDialog(new ContextThemeWrapper(SendDataActivity.this,R.style.ProgressDialogCustom));
 
         getQrCodeData();
+
+        try {
+            db_saved = new File(this.getExternalFilesDir(null), "rluDB.db");
+            if (!db_saved.exists())
+                db_saved.createNewFile();
+            Log.d("DB_DB","creato file db");
+        }catch (IOException e ){
+            e.printStackTrace();
+        }
+
+
+
 
         // -------------------------------------------------------------------------------------------------------------------------
 
@@ -375,12 +390,6 @@ public class SendDataActivity extends Activity {
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
-                    //textview che scrive Operazione Completata
-                    // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-                     //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
-                    //TextView textView_ok = (findViewById(R.id.textview_ok));
-                   // textView_ok.setText("Operazione Completata");
-
                     createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
 
                 }
@@ -444,12 +453,6 @@ public class SendDataActivity extends Activity {
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
-                    //textview che scrive Operazione Completata
-                    // Ad inserimento avvenuto, mostro il device inserito sulla mappa
-                    //showLightPointOnMap(qrCitta,qrLatitudine.toString(),qrLongitudine.toString());
-                 //   TextView textView_ok = (findViewById(R.id.textview_ok));
-                  //  textView_ok.setText("Operazione Completata");
-
                     createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
 
                 }
@@ -507,17 +510,13 @@ public class SendDataActivity extends Activity {
                                 })
                                 .show();
                                 alertDialog.setCanceledOnTouchOutside(false);
-
                     }
-
-
 
                     else{
                         pd.dismiss();
                         System.out.println("INSERT");
                         postData(retrofit,token,id_comune);
                     }
-
 
                 }
             }
@@ -599,6 +598,8 @@ public class SendDataActivity extends Activity {
         getApplicationContext().startActivity(intent);
     }
 
+
+
     /**
      *
      * Inserimento dati punto luce nel portale
@@ -622,24 +623,27 @@ public class SendDataActivity extends Activity {
                 indirizzo = getIntent().getStringExtra("qrIndirizzo");
                 PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") )*36;
                 conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
-                // controllo la lunghezza ed in caso la prendo dal DB sull'FTP
-                if(conn_string.length()!=32){
 
+                // --------------------------------------- CONN_STRING FROM FTP DB ---------------------------------------------- //
+                // ------------------------------------------------------------------------------------------------------------- //
+                // controllo la lunghezza della chiave così se ho timeout dal portale o altri problemi, scarico il DB dall'FTP e la prendo da lì
+                if(conn_string.length()!=32){
+                    Log.d("DB_DB","prendo connstring dall' FTP");
                     try{
-                        // TODO
-                        // prendo db dall'ftp
-                        //downloadAndSaveFile()
+                        downloadAndSaveFile("",21,"","","/Facere/rluDB.db",db_saved);
+                        SQLiteDatabase db = SQLiteDatabase.openDatabase(String.valueOf(db_saved), null, 0);
+                        selectConnStringFromDb(db);
                     }catch (Exception f){}
 
-                    // devo fare la query e prendere il valore della conn_string
                 }
+                // ------------------------------------------------------------------------------------------------------------- //
+                // ----------------------------------------------------- END -------------------------------------------------- //
                 chiaviCrittografia.add(conn_string);
                 coordinate.setLat(qrLatitudine);
                 coordinate.setLong(qrLongitudine);
                 coordinateGps.add(coordinate);
 
                // id="D735D9193D944102";  // lo uso per sovrascrivere e testare gli INSERT
-
 
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -690,15 +694,7 @@ public class SendDataActivity extends Activity {
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
-        // ad inserimento completato rendo il pulsante cliccabile e visibile
-        /*
-        buttonAgain.setVisibility(View.VISIBLE);
-        buttonAgain.setClickable(true);
 
-        buttonExit.setVisibility(View.VISIBLE);
-        buttonExit.setClickable(true);
-
-         */
 
     }
 
@@ -711,11 +707,6 @@ public class SendDataActivity extends Activity {
      * Refresh the list with the items in the Table
      */
     private void refreshItemsFromTable() {
-
-        /*
-        Get the items that weren't marked as completed and add them in the
-        adapter
-        */
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
@@ -736,21 +727,53 @@ public class SendDataActivity extends Activity {
         runAsyncTask(task);
     }
 
-    //TODO prendere credenziali poss da file
-    private Boolean downloadAndSaveFile(String server, int portNumber,
-                                        String user, String password, String filename, File localFile)
+
+    /**
+     * Effettua una query sul db per ottenere la chiave ed assegna il valore alla varibile
+     * @param rluDB il database presso il quale effettuare la query
+     */
+    private void selectConnStringFromDb(SQLiteDatabase rluDB){
+
+        SQLiteDatabase db = rluDB;
+        String field =" key ";
+        String tableName = " RLU ";
+        String query= "SELECT"+field+"FROM"+tableName+"WHERE  id_radio = ?";
+        Cursor c = db.rawQuery(query,new String[]{id});
+        if (c.moveToFirst()){
+            do {
+                 conn_string = c.getString(0);
+            } while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+        Log.d("DB_DB",conn_string);
+
+    }
+
+
+    /**
+     * Scarica il db dal server FTP nella cartella dell'applicazione
+     * @param server l'ip del server
+     * @param portNumber 21
+     * @param user l'user per accedere al server
+     * @param password password
+     * @param filename nome compreso di path del file da scaricare
+     * @param localFile nome che avrà il file una volta scaricato
+     * @return se tutto ok torna true
+     * @throws IOException classica eccezione
+     */
+    private Boolean downloadAndSaveFile(String server, int portNumber, String user, String password, String filename, File localFile)
             throws IOException {
         FTPClient ftp = null;
 
         try {
             ftp = new FTPClient();
             ftp.connect(server, portNumber);
-            Log.d("LOG_TAG", "Connected. Reply: " + ftp.getReplyString());
-
+            Log.d("DB_DB", "Connected. Reply: " + ftp.getReplyString());
             ftp.login(user, password);
-            Log.d("LOG_TAG", "Logged in");
+            Log.d("DB_DB", "Logged in");
             ftp.setFileType(FTP.BINARY_FILE_TYPE);
-            Log.d("LOG_TAG", "Downloading");
+            Log.d("DB_DB", "Downloading");
             ftp.enterLocalPassiveMode();
 
             OutputStream outputStream = null;
@@ -775,11 +798,11 @@ public class SendDataActivity extends Activity {
 
 
     /**
-     * Select key from table DeviceLightPointsTemp where Id=?
-     * @param ID
-     * @return
-     * @throws ExecutionException
-     * @throws InterruptedException
+     * Select key from table DeviceLightPointsTemp where Id=? Ritorna la chiave interrogando il db del portale
+     * @param ID ovvero il deviceid scansionato col qrcode
+     * @return torna la chiave
+     * @throws ExecutionException ecc
+     * @throws InterruptedException ecc
      */
     private String selectFromTable ( String ID) throws ExecutionException, InterruptedException {
 

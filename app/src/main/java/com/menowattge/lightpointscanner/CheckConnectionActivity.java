@@ -142,9 +142,9 @@ public class CheckConnectionActivity extends Activity {
         try
         {
             con = new FTPClient();
-            con.connect("94.177.203.9");
+            con.connect("");
 
-            if (con.login("metering", "m3t3r1ng_01"))
+            if (con.login("", ""))
             {
                 con.enterLocalPassiveMode(); // important!
                 con.setFileType(FTP.BINARY_FILE_TYPE);
