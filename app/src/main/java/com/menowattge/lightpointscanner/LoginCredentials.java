@@ -5,6 +5,9 @@ import android.util.Base64;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * Utile per effettuare il Login ; non la uso perchè da user e pass genero un token
+ */
 public class LoginCredentials {
 
     private String name;

@@ -9,6 +9,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+/**
+ *  Permette all'utente di selezionare la potenza del Meridio. Passa poi questi dati a SendDataActivity
+ */
 public class PowerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public double qrlongitudine,qrlatitudine;
@@ -19,31 +29,19 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_power);
 
-       /* AlertDialog.Builder alertadd = new AlertDialog.Builder(PowerActivity.this);
-        LayoutInflater factory = LayoutInflater.from(PowerActivity.this);
-        final View view = factory.inflate(R.layout.dialog_power, null);
-        alertadd.setView(view);
-        alertadd.setTitle("Seleziona valore CAMPO1");
-        alertadd.setMessage("Guarda l'immagine come esempio");
-        alertadd.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dlg, int sumthin) {
-
-            }
-        });
-
-
-        alertadd.show();
-        alertadd.setCancelable(false);*/
-
+        // total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_power);
         Button button_ok = findViewById(R.id.button_ok);
 
-// Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.ampere, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
@@ -80,6 +78,16 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
         });
 
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        //total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

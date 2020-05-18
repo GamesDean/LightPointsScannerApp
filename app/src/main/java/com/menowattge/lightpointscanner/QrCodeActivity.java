@@ -1,7 +1,6 @@
 package com.menowattge.lightpointscanner;
 
 /**
- *
  *  Classe per effettuare la scansione del qrcode
  */
 
@@ -11,12 +10,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.zxing.Result;
-
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-//import es.dmoral.toasty.Toasty;
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
 
 public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerView.ResultHandler {
@@ -24,17 +26,12 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
 
     private ZXingScannerView mScannerView;
 
-    //dati provenienti dall'activity GetLatLong e destinati a PowerActivity
     public String qrCitta;
     public String qrIndirizzo;
     public double qrlatitudine;
     public double qrlongitudine;
-
-    // private String menowattCode = "User : Operator\n" + "Pass :  Ledgear";
-
-    // TODO trovare un discriminante per far scannerizzare soltanto i nostri qrcode. fare prova con pdf147
+   // solo gli ID che iniziano con D735 (in minuscolo perchè nel qr è così) sono accettati in quanto Menowatt
     private String menowattCode = "d735";
-
 
 
     //PERMESSI CAMERA
@@ -50,6 +47,11 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
     protected void onCreate(Bundle state) {
 
         super.onCreate(state);
+
+        // total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         CheckPermission();
         // prendo dall'activity GetLatLong dei dati per poi passarli a SendDataActivity
@@ -70,6 +72,11 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
     public void onResume() {
         super.onResume();
 
+        //total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         CheckPermission();
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
@@ -84,15 +91,14 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
     }
 
 
-
-    //Gestisco camera e qrcode
-
+    /**
+     * Preleva i dati dalla camera e quindi dal qrcode scansionato,se tutto ok avvia PowerActvity
+     * @param rawResult risultato della scansione
+     */
     @Override
     public void handleResult(Result rawResult) {
         // Qui è possibile gestire il risultato
         Log.v("risultato", rawResult.getText().substring(0,16));
-        //Toast.makeText(getApplicationContext(), rawResult.getText().substring(0,15), Toast.LENGTH_SHORT).show();
-
         Log.v("risultato_qrcodeformat", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         //prelevo solo l'inizio dell'indirizzo radio ovvero d735
         String d735 = rawResult.getText().substring(0,4);
@@ -100,10 +106,6 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
 
         // controllo che sia un nostro qrcode controllando  D735
         if (d735.equals(menowattCode)) {
-
-            //Toast.makeText(getApplicationContext(), "scansione ok", Toast.LENGTH_SHORT).show();
-
-           // Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
             Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
             // prelevo il valore dal qrcode letto
             String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...
@@ -120,11 +122,10 @@ public class QrCodeActivity extends AppCompatActivity  implements ZXingScannerVi
             startActivity(intent);
 
 
-
         } else {
-            Toast.makeText(getApplicationContext(),"qr code errato",Toast.LENGTH_SHORT).show();        }
-
-            // If you would like to resume scanning, call this method below:
+            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
+        }
+            //ripropone all'utente lo scan
             mScannerView.resumeCameraPreview(this);
         }
     }

@@ -11,6 +11,9 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
+/**
+ * Preleva Inserisce o aggiorna i dati nel portale tramite chiamate alle API opportune
+ */
 public interface JsonApi {
 
 
@@ -33,8 +36,8 @@ public interface JsonApi {
 
 
 
-    @POST("/api/ComandoStatoPuntoLuce/")
-    Call<Post> onOff(@Body OnOff data,@Header("Authorization") String authkey);
+   // @POST("/api/ComandoStatoPuntoLuce/")
+   // Call<Post> onOff(@Body OnOff data,@Header("Authorization") String authkey);
 
 
 

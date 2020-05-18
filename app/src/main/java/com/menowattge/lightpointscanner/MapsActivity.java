@@ -2,6 +2,7 @@ package com.menowattge.lightpointscanner;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+/**
+ * Mostra a video la mappa e ne consente l'interazione con l'utente
+ */
 public class MapsActivity extends AppCompatActivity implements
         ReverseGeo.OnTaskComplete, OnMapReadyCallback {
 
@@ -52,6 +63,8 @@ public class MapsActivity extends AppCompatActivity implements
 
     public boolean firstTime;
 
+    private ProgressDialog pd;
+
     SupportMapFragment mapFragment;
     Marker currentLocationMarker;
 
@@ -59,6 +72,14 @@ public class MapsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reverse_geo);
+
+        //total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        pd = new ProgressDialog(new ContextThemeWrapper(MapsActivity.this,R.style.ProgressDialogCustom));
+
         //creo la mappa
         mapFragment = SupportMapFragment.newInstance();
         getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
@@ -108,13 +129,40 @@ public class MapsActivity extends AppCompatActivity implements
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Log.i("onStop", "done");
         }
+
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
+        firstTime = true;
+        //total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isGooglePlayServicesAvailable() ) {
+                    getAddress(false);
+                }
+            }
+        });
+
         checkGpsStatus();
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (addressRequest) { new ReverseGeo(MapsActivity.this, MapsActivity.this).execute(locationResult.getLastLocation());
+                }
+            }
+        };
+        Log.i("onResume", "done");
     }
 
 
@@ -139,10 +187,10 @@ public class MapsActivity extends AppCompatActivity implements
 
     /**
      * Controllo stato del GPS
-     *
      */
 
     public void checkGpsStatus(){
+        pd.dismiss();
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
         final boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
@@ -189,6 +237,10 @@ public class MapsActivity extends AppCompatActivity implements
             addressRequest = true;
         //Request location updates//
             mFusedLocationClient.requestLocationUpdates(getLocationRequest(secondi),mLocationCallback,null);
+
+            pd.setMessage("Imposto coordinate...");
+            pd.show();
+            pd.setCanceledOnTouchOutside(false);
 
         }
 
@@ -253,6 +305,8 @@ public class MapsActivity extends AppCompatActivity implements
                     new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap mMap) {
+
+                            pd.dismiss();
                             //una volta sola all'avvio muovo la camera della mappa spostandomi sulle opportune coordinate
                             if(firstTime) {
                                 mMap.clear(); //clear old markers
@@ -327,8 +381,6 @@ public class MapsActivity extends AppCompatActivity implements
 
                         }
                     });
-
-
         }
     }
 

@@ -22,7 +22,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 
 /**
- * Created by Anirudh on 20/07/16.
+ * Controlla lo stato del GPS, la uso molto in MapsActivity
  */
 public class StartLocationAlert implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
     Activity context;
@@ -97,10 +97,6 @@ public class StartLocationAlert implements GoogleApiClient.ConnectionCallbacks, 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-
-    /*    MainActivity mm = new MainActivity();
-        mm.requestLocationUpdates();*/
-        //Toast.makeText(context , "Connected", Toast.LENGTH_SHORT).show();
 
     }
 

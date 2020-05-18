@@ -32,6 +32,9 @@ public class SplashScreenActivity extends AppCompatActivity  {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash_screen);
 
+        ConnectivityManager mgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = mgr.getActiveNetworkInfo();
+        boolean isConnected = netInfo != null && netInfo.isConnectedOrConnecting();
 
         final Thread timeout = new Thread() {
             @Override
@@ -42,35 +45,25 @@ public class SplashScreenActivity extends AppCompatActivity  {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
-
-
-                            ConnectivityManager mgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-                            NetworkInfo netInfo = mgr.getActiveNetworkInfo();
-                            boolean isConnected = netInfo != null &&
-                                    netInfo.isConnectedOrConnecting();
-
-                            if (isConnected ) {
-
-                            }
-                            else {
-                                //No internet
+                            if (!isConnected ) {
                                 Toast.makeText(getApplicationContext(),"Impossibile avviare l'app :\nE'necessario l'accesso ad internet".toUpperCase(),Toast.LENGTH_LONG).show();
-
                                 finish();
-
                             }
                         }
                     });
 
                     sleep(4000);
 
+                    if(isConnected){
+                        Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.PreQrCodeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 }catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                Intent intent = new Intent(getApplicationContext(), com.menowattge.lightpointscanner.PreQrCodeActivity.class);
-                startActivity(intent);
-                finish();
             }
         };
 
@@ -79,8 +72,6 @@ public class SplashScreenActivity extends AppCompatActivity  {
 
 
     }
-
-
 
     }
 

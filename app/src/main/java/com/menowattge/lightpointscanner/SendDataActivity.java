@@ -1,7 +1,7 @@
 package com.menowattge.lightpointscanner;
 
 /**
- * Popola la lista con il dato appena salvato sul DB nella tabella DevicesLightPointsTemp
+ * Inserisce o aggiorna i dati del deivice nel portale
  */
 
 
@@ -76,6 +76,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 
@@ -107,14 +113,7 @@ public class SendDataActivity extends Activity {
     private android.widget.Button buttonExit;
     private ProgressDialog pd;
 
-
-
-
-
-    // TODO spostare ad inizio classe
-
     public static String name;
-
     public static String qrCitta;
     public static Double qrLatitudine;
     public static Double qrLongitudine;
@@ -123,8 +122,16 @@ public class SendDataActivity extends Activity {
     public        String conn_string;
     public        String key="";
 
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    // API login
+    String username="";
+    String password="";
+
+    //FTP server login
+    String server ="";
+    int portNumber = 21;
+    String ftpUser = "";
+    String ftpPwd = "";
+    String fileName = "/Facere/rluDB.db";
 
     // per creare il JSON
     public  static String  id ;
@@ -152,9 +159,8 @@ public class SendDataActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
-
+    //ftp db
     File db_saved ;
-
 
 
 
@@ -168,12 +174,18 @@ public class SendDataActivity extends Activity {
 
         checkConnection();
 
+        // total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         mTextNewToDo = findViewById(R.id.textNewToDo);
         button = findViewById(R.id.buttonAddToDo);
         pd = new ProgressDialog(new ContextThemeWrapper(SendDataActivity.this,R.style.ProgressDialogCustom));
 
         getQrCodeData();
 
+        // creo un file .db nella cartella dell'app nel caso in cui dovesse servirmi per il download effttivo dall' FTP
         try {
             db_saved = new File(this.getExternalFilesDir(null), "rluDB.db");
             if (!db_saved.exists())
@@ -182,7 +194,6 @@ public class SendDataActivity extends Activity {
         }catch (IOException e ){
             e.printStackTrace();
         }
-
 
 
 
@@ -227,6 +238,16 @@ public class SendDataActivity extends Activity {
     }
 
 
+    protected  void onResume(){
+        super.onResume();
+
+        //total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+
 // -------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -251,7 +272,9 @@ public class SendDataActivity extends Activity {
     }
 
 
-
+    /**
+     * Controlla la connessione internet
+     */
     public void checkConnection(){
         final Thread timeout = new Thread() {
             @Override
@@ -308,30 +331,54 @@ public class SendDataActivity extends Activity {
         String qrAddress = getIntent().getStringExtra("qrIndirizzo");
         Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
         Double valoreWatt = Double.parseDouble(valoreCorrente)*0.36;
         Integer valoreWatt_ = valoreWatt.intValue();
         String name = getIntent().getStringExtra("name_").trim();
 
-
-
-        // mostro a video i  valori soprastanti
-        mTextNewToDo.setText(Html.fromHtml("<br />"+"<font color=#4f9e33>" + "<b>"+"ID : "+ "</b>"+"</font>"+"<font color=#0000>"+qrCodeData+"</font>"+"<br />"+"<br />"));
-
-        mTextNewToDo.append(Html.fromHtml("<font color=#4f9e33>" +"<b>"+"Codice : "+"</b>"+"</font>"+"<font color=#0000>"+name+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#0000>"+qrAddress+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLatitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#0000>"+qrLongitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#0000>"+valoreCorrente+" - "+valoreWatt_+" W"+"</font>"+"<br />"));
+        // mostro a video i  valori soprastanti usando la formattazione HTML
+        mTextNewToDo.setText(Html.fromHtml("<br />"+"<font color=#4f9e33>" + "<b>"+"ID : "+ "</b>"+"</font>"+"<font color=#656d66>"+qrCodeData+"</font>"+"<br />"+"<br />"));
+        mTextNewToDo.append(Html.fromHtml("<font color=#4f9e33>" +"<b>"+"Codice : "+"</b>"+"</font>"+"<font color=#656d66>"+name+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#656d66>"+qrAddress+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLatitudine+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLongitudine+"</font>"+"<br />"+"<br />"
+                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#656d66>"+valoreCorrente+" - "+valoreWatt_+" W"+"</font>"+"<br />"));
 
     }
+
+
+    /**
+     *  Mostra a video un Dialog
+     * @param title titolo del messaggio
+     * @param message messaggio
+     */
+    public void createDialog(String title, String message){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataActivity.this,R.style.AlertDialogCustom))
+                .setIcon(android.R.drawable.checkbox_on_background)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Scan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        backToScan();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        quit();
+                    }
+                })
+                .show();
+        alertDialog.setCanceledOnTouchOutside(false);
+    }
+
 
     /**
      * Effettua il login al portale
      * @param retrofit
      */
-
     public void login(Retrofit retrofit){
         //login
         JsonApi login = retrofit.create(JsonApi.class);
@@ -359,15 +406,14 @@ public class SendDataActivity extends Activity {
             }
         });
 
-
     }
 
 
     /**
      * Costruisce il JSON per inserire i dati nel portale
-     * @param retrofit
-     * @param token
-     * @param id_comune
+     * @param retrofit istanza della libreria per le chiamate API
+     * @param token generato a partire da user e pass
+     * @param id_comune id del comune nel quale inserire il punto luce
      */
     public void postData(Retrofit retrofit,String token,String id_comune){
 
@@ -391,7 +437,6 @@ public class SendDataActivity extends Activity {
                 else{
                     Log.d("http_ok_post__rc : ", rc);
                     createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
-
                 }
             }
 
@@ -403,34 +448,12 @@ public class SendDataActivity extends Activity {
 
     }
 
-    public void createDialog(String title, String message){
-
-        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataActivity.this,R.style.AlertDialogCustom))
-                .setIcon(android.R.drawable.checkbox_on_background)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Scan", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        backToScan();
-                    }
-                })
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        quit();
-                    }
-                })
-                .show();
-        alertDialog.setCanceledOnTouchOutside(false);
-    }
-
 
     /**
      * Costruisce il JSON per AGGIORNARE i dati nel portale
-     * @param retrofit
-     * @param token
-     * @param id_comune
+     * @param retrofit istanza della libreria per le chiamate API
+     * @param token generato a partire da user e pass
+     * @param id_comune id del comune nel quale inserire il punto luce
      */
     public void putData(Retrofit retrofit,String token,String id_comune){
 
@@ -467,12 +490,18 @@ public class SendDataActivity extends Activity {
     }
 
 
-    public void getDevicesList(Retrofit retrofit,String token,String id_comune){
+    /**
+     * Prende dal portale la lista dei dispositivi, se un ID è presente, mostra il dialog e chiede
+     * se effettuare  un UPDATE chiamando nel caso putData, altrimenti esegue una insert con postData
+     * @param retrofit istanza della libreria per le chiamate API
+     * @param token generato a partire da user e pass
+     * @param id_comune id del comune nel quale inserire il punto luce
+     */
+    public void getDevicesListInsertOrUpdate(Retrofit retrofit,String token,String id_comune){
 
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonArray> callDevices = jsonApi.getDeviceList(token);
         callDevices.enqueue(new Callback<JsonArray>() {
-
 
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
@@ -503,15 +532,12 @@ public class SendDataActivity extends Activity {
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                       // Toast.makeText(getApplicationContext(),"Operazione Annullata",Toast.LENGTH_LONG).show();
                                         createDialog("Operazione Annullata","Esegui un'altra SCAN o ESCI");
-
                                     }
                                 })
                                 .show();
                                 alertDialog.setCanceledOnTouchOutside(false);
                     }
-
                     else{
                         pd.dismiss();
                         System.out.println("INSERT");
@@ -524,18 +550,18 @@ public class SendDataActivity extends Activity {
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 Log.d("http_get_list__fail : ", t.getMessage());
-
             }
         });
 
     }
 
     /**
-     * Get della lista dei device registrati nel portale
-     * in base alla presenza o meno inserimento o aggiornamento
-     * dei dati del punto luce nel portale e visualizzazione su maps
-     * @param retrofit
-     * @param token
+     * Interroga il portale e torna una lista di tutti i comuni;
+     * scorre la lista e la confronta con qrCitta prendendo il corrispondente id.
+     *
+     * Al termine, chiama getDevicesList()
+     * @param retrofit istanza della libreria per le chiamate API
+     * @param token generato a partire da user e pass
      */
 
     public void insertLightPoint(Retrofit retrofit,String token) {
@@ -571,7 +597,7 @@ public class SendDataActivity extends Activity {
                      * Ottiene la lista degli ID registrati nel portale ed a seconda
                      * triggera un metodo POST per inserire o PUT per aggiornare
                      */
-                    getDevicesList(retrofit,token,id_comune);
+                    getDevicesListInsertOrUpdate(retrofit,token,id_comune);
                 }
             }
             @Override
@@ -581,7 +607,6 @@ public class SendDataActivity extends Activity {
         });
 
     }
-
 
 
     /**
@@ -601,12 +626,9 @@ public class SendDataActivity extends Activity {
 
 
     /**
-     *
-     * Inserimento dati punto luce nel portale
-     *
+     * Inserimento dati punto luce nel portale alla pressione del tasto "invia"
      */
-
-    @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task_post = new AsyncTask<Void, Void, Void>(){
+    @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> sendData = new AsyncTask<Void, Void, Void>(){
         @Override
         protected Void doInBackground(Void... params) {
 
@@ -615,8 +637,7 @@ public class SendDataActivity extends Activity {
                 id  = getIntent().getStringExtra("qrCode").toUpperCase();
                 Nome_PL = getIntent().getStringExtra("name_").trim();
                 Log.d("Nome_PL : ",Nome_PL);
-                Nome_PL = "prova_app_z"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
-                //qrCitta = "Grottammare";//getIntent().getStringExtra("qrCitta");
+                Nome_PL = "prova_app_jk"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
                 qrCitta =getIntent().getStringExtra("qrCitta");
                 qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
                 qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
@@ -630,7 +651,7 @@ public class SendDataActivity extends Activity {
                 if(conn_string.length()!=32){
                     Log.d("DB_DB","prendo connstring dall' FTP");
                     try{
-                        downloadAndSaveFile("",21,"","","/Facere/rluDB.db",db_saved);
+                        downloadAndSaveFile(server,portNumber,ftpUser,ftpPwd,fileName,db_saved);
                         SQLiteDatabase db = SQLiteDatabase.openDatabase(String.valueOf(db_saved), null, 0);
                         selectConnStringFromDb(db);
                     }catch (Exception f){}
@@ -638,13 +659,14 @@ public class SendDataActivity extends Activity {
                 }
                 // ------------------------------------------------------------------------------------------------------------- //
                 // ----------------------------------------------------- END -------------------------------------------------- //
+
                 chiaviCrittografia.add(conn_string);
                 coordinate.setLat(qrLatitudine);
                 coordinate.setLong(qrLongitudine);
                 coordinateGps.add(coordinate);
-
-               // id="D735D9193D944102";  // lo uso per sovrascrivere e testare gli INSERT
-
+                // DEBUG
+                //id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
+                
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -659,6 +681,7 @@ public class SendDataActivity extends Activity {
 
                 // prendo il token generato a partire da user e pass
                 String token = LoginCredentials.getAuthToken(username,password);
+                // inserisco o aggiorno il punto luce
                 insertLightPoint(retrofit,token);
 
             } catch (final Exception e) {
@@ -669,6 +692,7 @@ public class SendDataActivity extends Activity {
             return null;
         }
     };
+
 
     /**
      * Add a new item.
@@ -688,13 +712,12 @@ public class SendDataActivity extends Activity {
         pd.setCanceledOnTouchOutside(false);
 
         //inserimento dati nel portale
-        runAsyncTask(task_post);
+        runAsyncTask(sendData);
 
         // ad inserimento completato rendo il pulsante non cliccabile, invisibile ed il testo colorato
         mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
         button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
-
 
     }
 
@@ -812,8 +835,6 @@ public class SendDataActivity extends Activity {
         }
         return  key;
     }
-
-
 
 
     private List<DevicesLightPointsTemp> refreshItemsFromMobileServiceTable() throws ExecutionException, InterruptedException {

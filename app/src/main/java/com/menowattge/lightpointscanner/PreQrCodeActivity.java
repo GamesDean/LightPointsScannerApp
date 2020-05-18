@@ -64,8 +64,6 @@ public class PreQrCodeActivity extends AppCompatActivity {
                     try {
                         runOnUiThread(new Runnable() {
                             public void run() {
-
-
                                 pd.setMessage("Caricamento Mappa...");
                                 pd.show();
                                 pd.setCanceledOnTouchOutside(false);

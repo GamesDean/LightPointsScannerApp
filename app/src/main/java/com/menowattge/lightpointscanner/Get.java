@@ -12,10 +12,6 @@ public class Get {
     @Expose
     private String nome;
 
-
-
-
-
     public String getId() {
         return id;
     }

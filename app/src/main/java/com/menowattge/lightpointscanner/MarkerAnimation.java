@@ -8,6 +8,9 @@ import android.view.animation.Interpolator;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+/**
+ *  Consente l'animazione del Marker sulla mappa ed il suo aggiornamento mediante l'interfaccia LatLngInterpolator
+ */
 public class MarkerAnimation {
 
     public static void animateMarkerToGB(final Marker marker, final LatLng finalPosition, final LatLngInterpolator latLngInterpolator) {

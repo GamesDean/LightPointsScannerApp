@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * Classe fondamentale dove costruisco il JSON da inviare al portale
+ */
 public class Post {
-
 
 
     @SerializedName("ID")

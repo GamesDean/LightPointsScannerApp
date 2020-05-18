@@ -78,22 +78,13 @@
             tools:ignore="LockedOrientationActivity">
 
         </activity>
-        <activity
-            android:name="com.menowattge.lightpointscanner.GetLatLong"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat"
-            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name="com.menowattge.lightpointscanner.MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:ignore="LockedOrientationActivity"/>
 
-        <activity
-            android:name="com.menowattge.lightpointscanner.CheckConnectionActivity"
-            android:theme = "@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
 
         <receiver android:name="com.menowattge.lightpointscanner.GpsLocationReceiver">
             <intent-filter>

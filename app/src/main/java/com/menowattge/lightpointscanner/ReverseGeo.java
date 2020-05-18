@@ -34,8 +34,7 @@ class ReverseGeo extends AsyncTask<Location, Void, String> {
         super.onPostExecute(address);
     }
 
-//Implement AsyncTask’s doInBackground() method,
-//where we’ll convert the Location object into an address//
+
     @Override
     protected String doInBackground(Location... params) {
         Geocoder mGeocoder = new Geocoder(mContext,Locale.getDefault());
@@ -66,7 +65,6 @@ class ReverseGeo extends AsyncTask<Location, Void, String> {
         return printAddress;
     }
 
-//Create the OnTaskComplete interface, which takes a String as an argument//
 
     interface OnTaskComplete { View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
         void onTaskComplete(String result);
