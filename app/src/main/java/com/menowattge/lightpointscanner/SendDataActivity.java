@@ -123,14 +123,14 @@ public class SendDataActivity extends Activity {
     public        String key="";
 
     // API login
-    String username="";
-    String password="";
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
 
     //FTP server login
-    String server ="";
+    String server ="94.177.203.9";
     int portNumber = 21;
-    String ftpUser = "";
-    String ftpPwd = "";
+    String ftpUser = "metering";
+    String ftpPwd = "m3t3r1ng_01";
     String fileName = "/Facere/rluDB.db";
 
     // per creare il JSON
@@ -636,8 +636,7 @@ public class SendDataActivity extends Activity {
                 // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
                 id  = getIntent().getStringExtra("qrCode").toUpperCase();
                 Nome_PL = getIntent().getStringExtra("name_").trim();
-                Log.d("Nome_PL : ",Nome_PL);
-                Nome_PL = "prova_app_jk"; // TODO delete -> per ora rinomino perche ho un solo qr code con nome gia inserito
+                //Nome_PL = "prova_app_jk"; // DEBUG lo uso se ho un solo qrcode per i test
                 qrCitta =getIntent().getStringExtra("qrCitta");
                 qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
                 qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);

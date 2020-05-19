@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class GpsLocationReceiver extends BroadcastReceiver  {
 
     @Override
@@ -22,6 +24,7 @@ public class GpsLocationReceiver extends BroadcastReceiver  {
             if(statusOfGPS) {
                 //Intent intenT = new Intent(context, com.menowattge.lightpointscanner.GetLatLong.class);
                 Intent intenT = new Intent(context, com.menowattge.lightpointscanner.MapsActivity.class);
+                intenT.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intenT);
 
             }
