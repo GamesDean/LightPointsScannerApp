@@ -89,8 +89,7 @@ public class MapsActivity extends AppCompatActivity implements
         checkGpsStatus();
 
         button = findViewById(R.id.button);
-        textview = findViewById(R.id.textview);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,15 +128,12 @@ public class MapsActivity extends AppCompatActivity implements
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Log.i("onStop", "done");
         }
-
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
 
         firstTime = true;
         //total fullscreen
@@ -289,6 +285,11 @@ public class MapsActivity extends AppCompatActivity implements
      */
     @Override
     public void onTaskComplete(String result) {
+
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         if (addressRequest) {
 
             Log.d("RESULT : ", result);
@@ -305,7 +306,9 @@ public class MapsActivity extends AppCompatActivity implements
                     new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap mMap) {
-
+                            // evita di far comparire i pulsanti "navigazione" e "mappa", propri di Gmaps, sulla mia mappa
+                            // non mi servono e si sovrappongono al pulsante GPS
+                            mMap.getUiSettings().setMapToolbarEnabled(false);
                             pd.dismiss();
                             //una volta sola all'avvio muovo la camera della mappa spostandomi sulle opportune coordinate
                             if(firstTime) {

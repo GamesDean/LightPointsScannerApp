@@ -123,14 +123,14 @@ public class SendDataActivity extends Activity {
     public        String key="";
 
     // API login
-    String username="";
-    String password="";
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
 
     //FTP server login
-    String server ="";
+    String server ="94.177.203.9";
     int portNumber = 21;
-    String ftpUser = "";
-    String ftpPwd = "";
+    String ftpUser = "metering";
+    String ftpPwd = "m3t3r1ng_01";
     String fileName = "/Facere/rluDB.db";
 
     // per creare il JSON
