@@ -330,8 +330,9 @@ public class MapsActivity extends AppCompatActivity implements
                                 // aggiorno il marker senza ricaricare la mappa ed animarla ogni volta
                             }else {
                                 LatLng latLng = new LatLng(latitude, longitude);
-                                //todo verificare che DAVVERO aggiorni il marker sulla mappa : mi devo spostare
                                 MarkerAnimation.animateMarkerToGB(currentLocationMarker, latLng, new LatLngInterpolator.Spherical());
+                                //mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+
                             }
 
                             // gestisco il click sul marker

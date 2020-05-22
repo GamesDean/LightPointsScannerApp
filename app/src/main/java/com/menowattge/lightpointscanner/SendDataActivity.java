@@ -123,14 +123,14 @@ public class SendDataActivity extends Activity {
     public        String key="";
 
     // API login
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username="";
+    String password="";
 
     //FTP server login
-    String server ="94.177.203.9";
+    String server ="";
     int portNumber = 21;
-    String ftpUser = "metering";
-    String ftpPwd = "m3t3r1ng_01";
+    String ftpUser = "";
+    String ftpPwd = "";
     String fileName = "/Facere/rluDB.db";
 
     // per creare il JSON
@@ -410,7 +410,7 @@ public class SendDataActivity extends Activity {
 
 
     /**
-     * Costruisce il JSON per inserire i dati nel portale
+     * Costruisce il JSON per INSERIRE i dati nel portale
      * @param retrofit istanza della libreria per le chiamate API
      * @param token generato a partire da user e pass
      * @param id_comune id del comune nel quale inserire il punto luce
@@ -522,8 +522,8 @@ public class SendDataActivity extends Activity {
                         AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataActivity.this,R.style.AlertDialogCustom))
 
                                 .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setTitle("PL già inserito")
-                                .setMessage("Vuoi aggiornarlo?")
+                                .setTitle("PL già presente")
+                                .setMessage("Vuoi cancellare il PL esistente ed inserire il nuovo?")
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
