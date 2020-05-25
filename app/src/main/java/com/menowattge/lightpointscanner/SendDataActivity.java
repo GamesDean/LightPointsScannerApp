@@ -123,15 +123,15 @@ public class SendDataActivity extends Activity {
     public        String key="";
 
     // API login
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username=".it";
+    String password="";
 
     //FTP server login
-    String server ="94.177.203.9";
+    String server =".9";
     int portNumber = 21;
-    String ftpUser = "metering";
-    String ftpPwd = "m3t3r1ng_01";
-    String fileName = "/Facere/rluDB.db";
+    String ftpUser = "";
+    String ftpPwd = "";
+    String fileName = "/Facere/.db";
 
     // per creare il JSON
     public  static String  id ;
@@ -332,8 +332,8 @@ public class SendDataActivity extends Activity {
         Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
         Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
         String valoreCorrente = getIntent().getStringExtra("valore_corrente");
-        Double valoreWatt = Double.parseDouble(valoreCorrente)*0.36;
-        Integer valoreWatt_ = valoreWatt.intValue();
+        //Double valoreWatt = Double.parseDouble(valoreCorrente)*0.36;
+        //Integer valoreWatt_ = valoreWatt.intValue();
         String name = getIntent().getStringExtra("name_").trim();
 
         // mostro a video i  valori soprastanti usando la formattazione HTML
@@ -342,7 +342,7 @@ public class SendDataActivity extends Activity {
                                                 +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#656d66>"+qrAddress+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLatitudine+"</font>"+"<br />"+"<br />"
                                                 +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLongitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#656d66>"+valoreCorrente+" - "+valoreWatt_+" W"+"</font>"+"<br />"));
+                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#656d66>"+valoreCorrente+" W"+"</font>"+"<br />"));
 
     }
 
@@ -641,7 +641,8 @@ public class SendDataActivity extends Activity {
                 qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
                 qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
                 indirizzo = getIntent().getStringExtra("qrIndirizzo");
-                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") )*36;
+                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
+
                 conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
 
                 // --------------------------------------- CONN_STRING FROM FTP DB ---------------------------------------------- //
@@ -684,9 +685,11 @@ public class SendDataActivity extends Activity {
                 insertLightPoint(retrofit,token);
 
             } catch (final Exception e) {
-                createAndShowDialogFromTask(e, "Errore,chiudi l'app e riprova");
+                //createAndShowDialogFromTask(e, "Errore");
                 Log.println(Log.INFO,"conn_string","select_ko");
                 pd.dismiss();
+                createDialog("Errore inserimento","Ripeti la scansione, se persiste, chiama l'assistenza ");
+
             }
             return null;
         }

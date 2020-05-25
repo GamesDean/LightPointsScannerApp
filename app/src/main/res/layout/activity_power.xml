@@ -5,13 +5,13 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/giano_new"
+    android:background="@drawable/giano_potenza"
     android:scaleType="centerCrop"
     android:gravity="center|bottom"
     android:orientation="vertical">
 
 
-    <Spinner
+    <!--Spinner
         android:id="@+id/spinner_power"
 
         android:layout_width="200dp"
@@ -27,7 +27,29 @@
         android:gravity="center"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:visibility="visible"
-        tools:visibility="visible" />
+        tools:visibility="visible" /-->
+
+    <EditText
+        android:id="@+id/editText"
+        android:cursorVisible="true"
+        android:textColor="#4f9e33"
+        android:hint="inserire potenza"
+        android:focusable="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="170dp"
+        android:gravity="center"
+        android:ems="10"
+        android:visibility="visible"
+        tools:visibility="visible"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:inputType="numberDecimal" />
+
 
     <Button
         android:id="@+id/button_ok"
@@ -44,5 +66,7 @@
         android:gravity="center"
         android:text="@android:string/ok"
         android:textColor="#FFF" />
+
+
 
 </RelativeLayout>

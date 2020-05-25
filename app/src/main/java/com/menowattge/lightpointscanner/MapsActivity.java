@@ -205,10 +205,10 @@ public class MapsActivity extends AppCompatActivity implements
     private void getAddress(boolean dialog) {
 
         checkGpsStatus();
-        secondi=30000;
-        if (dialog){
-            secondi = 10000;
-        }
+        secondi=500;
+     //   if (dialog){
+       //     secondi = 1500;
+       // }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
 
@@ -327,14 +327,14 @@ public class MapsActivity extends AppCompatActivity implements
                                 currentLocationMarker = mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(latitude, longitude))
                                         .title("Punto Luce")
-                                        .snippet("Meridio verrà inserito in questa posizione"));
+                                        .snippet("Verrà inserito in questa posizione"));
 
                                 firstTime=false;
                                 // aggiorno il marker senza ricaricare la mappa ed animarla ogni volta
                             }else {
                                 LatLng latLng = new LatLng(latitude, longitude);
                                 MarkerAnimation.animateMarkerToGB(currentLocationMarker, latLng, new LatLngInterpolator.Spherical());
-                                //mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
 
                             }
 
@@ -371,7 +371,7 @@ public class MapsActivity extends AppCompatActivity implements
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Toast.makeText(getApplicationContext(),"Nuova Posizione entro 10 sec...",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(),"Aggiorno posizione...",Toast.LENGTH_LONG).show();
                                                     if(isGooglePlayServicesAvailable())
                                                     getAddress(true);
                                                 }

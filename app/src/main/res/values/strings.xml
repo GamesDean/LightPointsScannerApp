@@ -3,7 +3,7 @@
     <string name="app_name">Light Point Scanner</string>
     <string name="add_textbox_hint">Add a ToDo item</string>
     <string name="add_button_text">Invia</string>
-    <string name="service_title">Riepilogo Dati Palo </string>
+    <string name="service_title">Riepilogo Dati Punto Luce</string>
     <string name="menu_refresh">Aggiorna</string>
     <string name="checkbox_text">Elemento nel DB</string>
     <string name="sto_registrando_le_coordinate">Sto registrando le coordinate aspetta...</string>
@@ -22,6 +22,14 @@
         <item>550</item>
         <item>650</item>
         <item>700</item>
+    </string-array>
+
+    <string-array name="potenza">
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
     </string-array>
 
 
