@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -74,8 +75,14 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
                 //final String valoreCorrente = spinner.getSelectedItem().toString();
                 final String valoreCorrente = editText.getText().toString();
 
-                intent.putExtra("valore_corrente", valoreCorrente);
-                startActivity(intent);
+                if(valoreCorrente==""|| valoreCorrente.isEmpty()){
+                    Toast.makeText(PowerActivity.this,"Inserire il valore della potenza",Toast.LENGTH_LONG).show();
+                }else{
+                    intent.putExtra("valore_corrente", valoreCorrente);
+                    startActivity(intent);
+                }
+
+
             }
         });
 
