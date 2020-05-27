@@ -7,16 +7,16 @@ package com.menowattge.lightpointscanner;
 
 // TODO cambiare splashscreen introdurne uno idoneo
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class SplashScreenActivity extends AppCompatActivity  {
+public class SplashScreenActivity extends Activity {
 
     public void quit(){
 

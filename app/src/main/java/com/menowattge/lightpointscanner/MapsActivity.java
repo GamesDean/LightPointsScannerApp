@@ -1,16 +1,15 @@
 package com.menowattge.lightpointscanner;
 
-import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -20,6 +19,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
+import com.android.gpstest.GpsStatusFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,11 +44,10 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
 /**
  * Mostra a video la mappa e ne consente l'interazione con l'utente
  */
-public class MapsActivity extends AppCompatActivity implements
+public class MapsActivity extends Activity implements
         ReverseGeo.OnTaskComplete, OnMapReadyCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
@@ -66,12 +67,21 @@ public class MapsActivity extends AppCompatActivity implements
     private ProgressDialog pd;
 
     SupportMapFragment mapFragment;
+    Fragment mapFrag;
     Marker currentLocationMarker;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reverse_geo);
+
+        GpsStatusFragment gpsStatusFragment = new GpsStatusFragment() ;
+
+        Location location = gpsStatusFragment.getmLocation();
+
+        Log.d("",location.toString());
 
         //total fullscreen
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
@@ -81,8 +91,16 @@ public class MapsActivity extends AppCompatActivity implements
         pd = new ProgressDialog(new ContextThemeWrapper(MapsActivity.this,R.style.ProgressDialogCustom));
 
         //creo la mappa
-        mapFragment = SupportMapFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
+       // mapFragment = SupportMapFragment.newInstance();
+        // funziona con  implementation 'com.google.android.gms:play-services-location:15.0.1'
+        // nel build gradle di GPSTest
+        //getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
+
+         mapFrag = new Fragment();
+        //getSupportFragmentManager().beginTransaction().add(R.id.map,mapFrag);
+
+
+
         //flag primo avvio - serve per animare la mappa una volta sola
         firstTime = true;
         //controllo che sia attivo
@@ -95,7 +113,7 @@ public class MapsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 if (!addressRequest && isGooglePlayServicesAvailable() ) {
-                    getAddress(false);
+                    //getAddress(false);
                 }
             }
         });
@@ -145,7 +163,7 @@ public class MapsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 if (isGooglePlayServicesAvailable() ) {
-                    getAddress(false);
+                    //getAddress(false);
                 }
             }
         });
@@ -200,8 +218,10 @@ public class MapsActivity extends AppCompatActivity implements
      * Al primo avvio in assoluto mostro le info del GDPR. Controllo invece sempre il GPS se attivo
      * Se non sono stati concessi, chiedo i permessi.
      * Infine prelevo le coordinate e quindi indirizzo
-     * @param dialog
+     * @param //dialog
      */
+
+    /*
     private void getAddress(boolean dialog) {
 
         checkGpsStatus();
@@ -240,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         }
 
-    }
+    }*/
 
 
     private LocationRequest getLocationRequest(int secondi) {
@@ -258,7 +278,7 @@ public class MapsActivity extends AppCompatActivity implements
             case MY_PERMISSIONS_REQUEST_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (isGooglePlayServicesAvailable()) {
-                        getAddress(false);
+                        //getAddress(false);
                     }
 
                 } else {
@@ -372,8 +392,8 @@ public class MapsActivity extends AppCompatActivity implements
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     Toast.makeText(getApplicationContext(),"Aggiorno posizione...",Toast.LENGTH_LONG).show();
-                                                    if(isGooglePlayServicesAvailable())
-                                                    getAddress(true);
+                                                    if(isGooglePlayServicesAvailable()){}
+                                                    //getAddress(true);
                                                 }
                                             })
                                             .show();

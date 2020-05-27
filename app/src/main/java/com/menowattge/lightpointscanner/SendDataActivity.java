@@ -123,15 +123,15 @@ public class SendDataActivity extends Activity {
     public        String key="";
 
     // API login
-    String username=".it";
-    String password="";
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
 
     //FTP server login
-    String server =".9";
+    String server ="94.177.203.9";
     int portNumber = 21;
-    String ftpUser = "";
-    String ftpPwd = "";
-    String fileName = "/Facere/.db";
+    String ftpUser = "metering";
+    String ftpPwd = "m3t3r1ng_01";
+    String fileName = "/Facere/rluDB.db";
 
     // per creare il JSON
     public  static String  id ;
@@ -688,7 +688,7 @@ public class SendDataActivity extends Activity {
                 //createAndShowDialogFromTask(e, "Errore");
                 Log.println(Log.INFO,"conn_string","select_ko");
                 pd.dismiss();
-                createDialog("Errore inserimento","Ripeti la scansione, se persiste, chiama l'assistenza ");
+                createDialog("Errore inserimento","Ripeti la scansione, se persiste, chiama l'assistenza");
 
             }
             return null;
