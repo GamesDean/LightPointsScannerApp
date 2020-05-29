@@ -14,19 +14,19 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#4f9e33</item>
+        <item name="colorPrimaryDark">#4f7e33</item>
+        <item name="colorAccent">#4f9e70</item>
     </style>
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#4f9e33</item>
+        <item name="colorPrimaryDark">#4f7e33</item>
+        <item name="colorAccent">#4f9e70</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -42,9 +42,9 @@
 
     <style name="AppTheme.Preferences" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#4f9e33</item>
+        <item name="colorPrimaryDark">#4f7e33</item>
+        <item name="colorAccent">#4f9e70</item>
     </style>
 
     <!-- Navigation Drawer -->
@@ -76,7 +76,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">@dimen/status_text_size</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">#4f9e70</item>
         <item name="android:paddingTop">3dp</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:paddingLeft">6dp</item>
@@ -101,7 +101,7 @@
 
     <style name="cn0_avg_value_in_view">
         <item name="android:textSize">10sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">#4f9e70</item>
         <item name="android:paddingTop">3dp</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:paddingLeft">6dp</item>
@@ -122,7 +122,24 @@
         <item name="android:insetBottom">0dp</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">0dp</item>
-        <item name="iconTint">@color/colorAccent</item>
+        <item name="iconTint">#4f9e70</item>
     </style>
+
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">#FFF</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <!-- Used for the background -->
+        <item name="android:background">#4f9e33</item>
+    </style>
+
+    <style name="ProgressDialogCustom" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#4f9e33</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">#FFF</item>
+
+    </style>
+
 </resources>
 

@@ -18,10 +18,15 @@
 package com.android.gpstest;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.GnssMeasurementsEvent;
 import android.location.GnssStatus;
 import android.location.GpsSatellite;
@@ -31,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,7 +67,6 @@ import com.android.gpstest.model.SatelliteMetadata;
 import com.android.gpstest.model.SatelliteStatus;
 import com.android.gpstest.util.CarrierFreqUtils;
 import com.android.gpstest.util.DateTimeUtils;
-import com.android.gpstest.util.IOUtils;
 import com.android.gpstest.util.MathUtils;
 import com.android.gpstest.util.NmeaUtils;
 import com.android.gpstest.util.PreferenceUtils;
@@ -69,10 +74,12 @@ import com.android.gpstest.util.SatelliteUtils;
 import com.android.gpstest.util.SortUtil;
 import com.android.gpstest.util.UIUtils;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 import static android.util.TypedValue.COMPLEX_UNIT_PX;
@@ -139,6 +146,8 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
 
     DeviceInfoViewModel mViewModel;
 
+    private ProgressDialog pd;
+
     private final Observer<SatelliteMetadata> mSatelliteMetadataObserver = new Observer<SatelliteMetadata>() {
         @Override
         public void onChanged(@Nullable final SatelliteMetadata satelliteMetadata) {
@@ -197,7 +206,18 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         mFlagICAO = getResources().getDrawable(R.drawable.ic_flag_icao);
 
         mLocationCard = v.findViewById(R.id.status_location_card);
-        mLocationCard.setOnClickListener(view -> {
+
+        mLocationCard.setCardBackgroundColor(Color.parseColor("#bc6d6e"));
+        mLocationCard.setCardElevation(50);
+
+        pd = new ProgressDialog(new ContextThemeWrapper(GpsTestActivity.getInstance(),R.style.ProgressDialogCustom));
+
+        pd.setMessage("Sto calcolando le coordinate\npuoi controllare la tua posizione sulla mappa,\nClicca sul riquadro verde in alto e tieni premuto per accedere alla scansione...");
+        pd.show();
+        pd.setCanceledOnTouchOutside(false);
+
+        mLocationCard.setOnLongClickListener(view -> {
+
             final Location location = mLocation;
             // Copy location to clipboard
             if (location != null) {
@@ -206,10 +226,42 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
                 String formattedLocation = UIUtils.formatLocationForDisplay(location, null, includeAltitude,
                         null, null, null, coordinateFormat);
                 if (!TextUtils.isEmpty(formattedLocation)) {
-                    IOUtils.copyToClipboard(formattedLocation);
-                    Toast.makeText(getActivity(), R.string.copied_to_clipboard, Toast.LENGTH_LONG).show();
+                   // IOUtils.copyToClipboard(formattedLocation);
+                   // Toast.makeText(getActivity(), R.string.copied_to_clipboard, Toast.LENGTH_LONG).show();
+
+
+                    // ---------------------------------------------
+
+                    Geocoder mGeocoder = new Geocoder(GpsTestActivity.getInstance(), Locale.getDefault());
+                    String latitude = String.valueOf(location.getLatitude());
+                    String longitude = String.valueOf(location.getLongitude());
+                    double latitude_ = location.getLatitude();
+                    double longitude_ = location.getLongitude();
+
+                    List<Address> addresses = null;
+                    try {
+                        addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    String address = addresses.get(0).getAddressLine(0);
+                    String city = addresses.get(0).getLocality();
+
+                    Intent intentQr = new Intent(GpsTestActivity.getInstance(), QrCodeActivity.class);
+                    intentQr.putExtra("citta", city);
+                    intentQr.putExtra("indirizzo", address);
+                    intentQr.putExtra("latitudine", latitude_);
+                    intentQr.putExtra("longitudine", longitude_);
+                    startActivity(intentQr);
+
+                    // --------------------------------------------------------
+                }
+                else{
+                    Toast.makeText(getActivity(), "Aspetta che il campo diventi verde per favore", Toast.LENGTH_LONG).show();
                 }
             }
+            return false;
         });
 
         // GNSS
@@ -225,6 +277,8 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         mGnssStatusList.setLayoutManager(llmGnss);
         mGnssStatusList.setNestedScrollingEnabled(false);
 
+        mGnssStatusList.setBackgroundColor(Color.parseColor("#bc6d6e"));
+
         // SBAS
         LinearLayoutManager llmSbas = new LinearLayoutManager(getContext());
         llmSbas.setAutoMeasureEnabled(true);
@@ -237,6 +291,8 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         mSbasStatusList.setFocusableInTouchMode(false);
         mSbasStatusList.setLayoutManager(llmSbas);
         mSbasStatusList.setNestedScrollingEnabled(false);
+
+        mSbasStatusList.setBackgroundColor(Color.parseColor("#bc6d6e"));
 
         GpsTestActivity.getInstance().addListener(this);
 
@@ -404,6 +460,11 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
             // Fragment isn't visible, so return to avoid IllegalStateException (see #85)
             return;
         }
+
+        pd.dismiss();
+        mLocationCard.setCardBackgroundColor(Color.parseColor("#7c9e8a"));
+        mGnssStatusList.setBackgroundColor(Color.parseColor("#ffffff"));
+        mSbasStatusList.setBackgroundColor(Color.parseColor("#ffffff"));
 
         // Cache location for copy to clipboard operation
         mLocation = location;
@@ -758,6 +819,7 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         dialog.show();
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void showTimeErrorDialog(long time) {
         java.text.DateFormat format = SimpleDateFormat.getDateTimeInstance(java.text.DateFormat.LONG, java.text.DateFormat.LONG);
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ProgressDialogCustom" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#4f9e33</item>
+        <item name="android:indeterminateTint">#FFF</item>
+
+    </style>
+</resources>

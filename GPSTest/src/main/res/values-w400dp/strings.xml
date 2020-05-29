@@ -1,0 +1,21 @@
+<resources>
+
+    <string name="app_name">Light Point Scanner</string>
+    <string name="add_textbox_hint">Add a ToDo item</string>
+    <string name="add_button_text">Invia</string>
+    <string name="service_title">Riepilogo Dati Punto Luce</string>
+    <string name="menu_refresh">Aggiorna</string>
+    <string name="checkbox_text">Elemento nel DB</string>
+    <string name="sto_registrando_le_coordinate">Sto registrando le coordinate aspetta...</string>
+    <string name="attiva_gps">Ora si apriranno le impostazioni : attiva il GPS</string>
+    <string name="title_activity_power">PowerActivity</string>
+    <string name="selezionare_il_valore_corrispondente_al_campo1_come_da_immagine">Selezionare il valore corrispondente al \"CAMPO1\" come da immagine :</string>
+    <string name="ho_letto">\"ok\"</string>
+
+    <string name="get_location">GPS</string>
+    <string name="address_text">"Indirizzo: %1$s"</string>
+    <string name="no_address">Segnale GPS debole,attendi</string>
+
+
+
+</resources>
