@@ -402,22 +402,9 @@ public class NavigationDrawerFragment extends Fragment {
         mNavDrawerItems.add(NAVDRAWER_ITEM_MAP);
         mNavDrawerItems.add(NAVDRAWER_ITEM_SKY);
         mNavDrawerItems.add(NAVDRAWER_ITEM_ACCURACY);
-
         mNavDrawerItems.add(NAVDRAWER_ITEM_SEPARATOR_SPECIAL);
-
-        mNavDrawerItems.add(NAVDRAWER_ITEM_INJECT_PSDS_DATA);
-        mNavDrawerItems.add(NAVDRAWER_ITEM_INJECT_TIME_DATA);
-        mNavDrawerItems.add(NAVDRAWER_ITEM_CLEAR_AIDING_DATA);
-
-        mNavDrawerItems.add(NAVDRAWER_ITEM_SEPARATOR);
-
-        mNavDrawerItems.add(NAVDRAWER_ITEM_OPEN_SOURCE);
-
-        mNavDrawerItems.add(NAVDRAWER_ITEM_SEPARATOR);
-
         mNavDrawerItems.add(NAVDRAWER_ITEM_SETTINGS);
-        mNavDrawerItems.add(NAVDRAWER_ITEM_HELP);
-        mNavDrawerItems.add(NAVDRAWER_ITEM_SEND_FEEDBACK);
+
 
         createNavDrawerItems();
     }

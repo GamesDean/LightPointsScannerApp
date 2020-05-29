@@ -81,6 +81,7 @@ public class PowerActivity extends AppCompatActivity implements AdapterView.OnIt
                 }else{
                     intent.putExtra("valore_corrente", valoreCorrente);
                     startActivity(intent);
+                    finish();
                 }
 
 

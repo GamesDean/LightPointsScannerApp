@@ -4,10 +4,10 @@ The #1 open-source global navigation satellite system (GNSS) testing app
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
       alt="Get it on Google Play"
-      height="80">](https://play.google.com/store/apps/details?id=com.android.gpstest)
+      height="80">](https://play.google.com/store/apps/details?id=com.menowattge.lightpointscanner)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
       alt="Get it on F-Droid"
-      height="80">](https://f-droid.org/packages/com.android.gpstest.osmdroid/)
+      height="80">](https://f-droid.org/packages/com.menowattge.lightpointscanner.osmdroid/)
 
 It supports dual-frequency¹ GNSS for:
 

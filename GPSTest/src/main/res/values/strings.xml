@@ -179,12 +179,12 @@
 
     <!-- Permissions -->
     <string name="title_location_permission">Need location permission</string>
-    <string name="text_location_permission">GPSTest needs access to your location to show GNSS data. If you select \"Never ask again\" you will need to reinstall the app or enable permissions via system settings.</string>
+    <string name="text_location_permission">LPS needs access to your location to show GNSS data. If you select \"Never ask again\" you will need to reinstall the app or enable permissions via system settings.</string>
     <string name="ok">OK</string>
     <string name="exit">EXIT</string>
 
     <!-- Send feedback -->
-    <string name="feedback_subject">GPSTest: Feedback</string>
+    <string name="feedback_subject">LPS: Feedback</string>
     <string name="feedback_body">Complaints, kudos, or bug reports are welcome!\n\n\n</string>
     <string name="feedback_error">Unable to send feedback: no suitable application found.
     </string>
@@ -192,16 +192,15 @@
     <!-- What's New -->
     <string name="main_help_whatsnew_title">What\'s New?</string>
     <string name="main_help_whatsnew">&#8226;\u0020
-        <b>Improved feedback</b>
-        - Only show email apps when providing feedback.\n&#8226;\u0020
-        <b>Improved \"# Sats\"</b>
-        - now shows \"Used / In View (valid signal strength) / Total\", with correct counts for dual-frequency.\n&#8226;\u0020
-        <b>XTRA renamed to PSDS</b>
-        - Predicted Satellite Data Service is the generic term. Injecting PSDS on Android 10 and higher is now supported.\n&#8226;\u0020
-        <b>Identify GPS week rollover issues</b>
-        - Time is now highlighted in red on devices with wrong times due to the GPS week rollover issue (http://bit.ly/gps-week-rollover).\n&#8226;\u0020
-        <b>Bug fixes</b>
-        - See https://bit.ly/gpstest-releases
+        <b>Nuovo sistema di rilevazione GPS\n</b>
+        * Precisione aumentata grazie all utilizzo incrociato di GPS-GLONASS-GALILEO-BEIDOU\n
+        <b>Menù Laterale per accedere alla Mappa ed alla Bussola\n</b>
+        * Controlla la tua posizione in tempo reale\n
+        <b>Premere il tasto OK in basso per accedere allo SCANNER\n</b>
+        <b>Inserimento  Potenza in Watt manualmente\n</b>
+        * Leggi dall etichetta il valore della potenza, inseriscilo nel campo apposito\n
+        <b>Nuova grafica più leggibile</b>
+
     </string>
     <string name="main_help_close">Close</string>
 
@@ -320,7 +319,7 @@
 
     <string name="help_text">
         <b>Frequently Asked Questions (FAQ)</b>
-        - https://github.com/barbeau/gpstest/blob/master/FAQ.md\n\n
+
 
         <b>*** Status View ***</b>\n\n&#8226;\u0020
         <b>Latitude</b>
@@ -395,25 +394,14 @@
         <b>Vertical error</b>
         - Vertical error measurements, unlike horizontal error, can be positive or negative.  When displayed in the Accuracy view, vertical error, and average vertical error, are both calculated using the absolute value of the error measurement.\n\n
 
-        &#8226;\u0020Set your real location quickly using QR codes. See http://bit.ly/gpstest-qr-codes for details.\n\n
+        &#8226;\u0020Set your real location quickly using QR codes.
 
         <b>*** File Logging ***</b>\n\n
-        &#8226;\u0020Enable file logging in Settings for NMEA, raw measurments, nav messages, and location fixes. See http://bit.ly/gpstest-file for details.\n\n
+        &#8226;\u0020Enable file logging in Settings for NMEA, raw measurments, nav messages, and location fixes.
 
         <b>*** Acknowledgments ***</b>\n\n
-        &#8226;\u0020 <b>Mike Lockwood</b> - original developer for v1.x\n
-        &#8226;\u0020 <b>Sean Barbeau</b> - developer for v2.x and higher\n
-        &#8226;\u0020 GPSTest launcher icon is derived from the Android Material Design "satellite" icon, licensed by Google under Apache v2.0.  Other Google material design icons are also used under Apache v2.0. QR code icon by Austin Andrews from https://materialdesignicons.com/icon/qrcode.\n
-        &#8226;\u0020 Chinese translation provided by wangkf, liuyunli, SakuraSa233 &amp; Skimige\n
-        &#8226;\u0020 German translation provided by SIRSteiner\n
-        &#8226;\u0020 Dutch translation provided by Dennis Dolman, Meteor0id\n
-        &#8226;\u0020 Greek translation provided by Jimmy Golfi\n
-        &#8226;\u0020 Japanese translation provided by SakuraSa233\n
-        &#8226;\u0020 Czech translation provided by llzn.cz\n
-        &#8226;\u0020 Italian translation provided by Giolly90\n
-        &#8226;\u0020 Spanish translation provided by Sergi Pellicer\n
-        &#8226;\u0020 Indonesian translation provided by Adiitya Andre90\n
-        &#8226;\u0020 Polish translation provided by Adam Wandelt\n
-        &#8226;\u0020 French translation provided by Olivier Merlin &amp; Jérémy Belloir\n
+        &#8226;\u0020 <b>GPSTest app </b> - open source GPS app, n.1 in Android charts\n
+        &#8226;\u0020 <b>Sean Barbeau and all the Team</b> - developer of GPSTest for v2.x and higher
+
     </string>
 </resources>

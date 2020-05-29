@@ -974,6 +974,7 @@ public class SendDataActivity extends Activity {
     public void backToScan(){
         Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**

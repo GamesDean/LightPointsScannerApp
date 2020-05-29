@@ -43,11 +43,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -101,13 +101,15 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
 
     private Resources mRes;
 
+    private Button GotoScan;
+
     private TextView mLatitudeView, mLongitudeView, mFixTimeView, mTTFFView, mAltitudeView,
             mAltitudeMslView, mHorVertAccuracyLabelView, mHorVertAccuracyView,
             mSpeedView, mSpeedAccuracyView, mBearingView, mBearingAccuracyView, mNumSats,
             mPdopLabelView, mPdopView, mHvdopLabelView, mHvdopView, mGnssNotAvailableView,
-            mSbasNotAvailableView, mFixTimeErrorView;
+            mSbasNotAvailableView, mFixTimeErrorView,mCity;
 
-    private CardView mLocationCard;
+    private CardView mLocationCard,mCityCard;
 
     private Location mLocation;
 
@@ -188,6 +190,9 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         mPdopView = v.findViewById(R.id.pdop);
         mHvdopLabelView = v.findViewById(R.id.hvdop_label);
         mHvdopView = v.findViewById(R.id.hvdop);
+        mCity = v.findViewById(R.id.address);
+
+        GotoScan = v.findViewById(R.id.button_goto_scan);
 
         mSpeedBearingAccuracyRow = v.findViewById(R.id.speed_bearing_acc_row);
 
@@ -206,62 +211,69 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         mFlagICAO = getResources().getDrawable(R.drawable.ic_flag_icao);
 
         mLocationCard = v.findViewById(R.id.status_location_card);
+        mCityCard = v.findViewById(R.id.city_card);
 
         mLocationCard.setCardBackgroundColor(Color.parseColor("#bc6d6e"));
         mLocationCard.setCardElevation(50);
+        mCityCard.setCardElevation(50);
 
         pd = new ProgressDialog(new ContextThemeWrapper(GpsTestActivity.getInstance(),R.style.ProgressDialogCustom));
 
-        pd.setMessage("Sto calcolando le coordinate\npuoi controllare la tua posizione sulla mappa,\nClicca sul riquadro verde in alto e tieni premuto per accedere alla scansione...");
+        pd.setMessage("\nGeolocalizzazione in corso : DURATA MEDIA 3 MINUTI\nAl termine si potrà controllare la propria posizione sulla mappa.\nCliccare sul pulsante OK verde in basso per scansionare l'etichetta...");
         pd.show();
         pd.setCanceledOnTouchOutside(false);
 
         mLocationCard.setOnLongClickListener(view -> {
 
             final Location location = mLocation;
-            // Copy location to clipboard
+
             if (location != null) {
                 boolean includeAltitude = Application.getPrefs().getBoolean(Application.get().getString(R.string.pref_key_share_include_altitude), false);
                 String coordinateFormat = Application.getPrefs().getString(Application.get().getString(R.string.pref_key_coordinate_format), Application.get().getString(R.string.preferences_coordinate_format_dd_key));
                 String formattedLocation = UIUtils.formatLocationForDisplay(location, null, includeAltitude,
                         null, null, null, coordinateFormat);
                 if (!TextUtils.isEmpty(formattedLocation)) {
-                   // IOUtils.copyToClipboard(formattedLocation);
-                   // Toast.makeText(getActivity(), R.string.copied_to_clipboard, Toast.LENGTH_LONG).show();
 
 
-                    // ---------------------------------------------
-
-                    Geocoder mGeocoder = new Geocoder(GpsTestActivity.getInstance(), Locale.getDefault());
-                    String latitude = String.valueOf(location.getLatitude());
-                    String longitude = String.valueOf(location.getLongitude());
-                    double latitude_ = location.getLatitude();
-                    double longitude_ = location.getLongitude();
-
-                    List<Address> addresses = null;
-                    try {
-                        addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    String address = addresses.get(0).getAddressLine(0);
-                    String city = addresses.get(0).getLocality();
-
-                    Intent intentQr = new Intent(GpsTestActivity.getInstance(), QrCodeActivity.class);
-                    intentQr.putExtra("citta", city);
-                    intentQr.putExtra("indirizzo", address);
-                    intentQr.putExtra("latitudine", latitude_);
-                    intentQr.putExtra("longitudine", longitude_);
-                    startActivity(intentQr);
-
-                    // --------------------------------------------------------
-                }
-                else{
-                    Toast.makeText(getActivity(), "Aspetta che il campo diventi verde per favore", Toast.LENGTH_LONG).show();
                 }
             }
             return false;
+        });
+
+        GotoScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // ---------------------------------------------
+                final Location location = mLocation;
+
+                Geocoder mGeocoder = new Geocoder(GpsTestActivity.getInstance(), Locale.getDefault());
+                double latitude_ = location.getLatitude();
+                double longitude_ = location.getLongitude();
+
+                List<Address> addresses = null;
+                try {
+                    addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                String address = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getLocality();
+
+                Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
+                intentQr.putExtra("citta", city);
+                intentQr.putExtra("indirizzo", address);
+                intentQr.putExtra("latitudine", latitude_);
+                intentQr.putExtra("longitudine", longitude_);
+
+                startActivity(intentQr);
+                getActivity().finish();
+                getActivity().getSupportFragmentManager().popBackStack();
+
+                // --------------------------------------------------------
+
+            }
         });
 
         // GNSS
@@ -461,13 +473,33 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
             return;
         }
 
+        // coloro di verde il primo che va cliccato, bianco gli altri
         pd.dismiss();
-        mLocationCard.setCardBackgroundColor(Color.parseColor("#7c9e8a"));
-        mGnssStatusList.setBackgroundColor(Color.parseColor("#ffffff"));
-        mSbasStatusList.setBackgroundColor(Color.parseColor("#ffffff"));
+        mLocationCard.setCardBackgroundColor(Color.parseColor("#edf4f0"));
+        mGnssStatusList.setBackgroundColor(Color.parseColor("#edf4f0"));
+        mSbasStatusList.setBackgroundColor(Color.parseColor("#edf4f0"));
+        mCityCard.setBackgroundColor(Color.parseColor("#edf4f0"));
 
         // Cache location for copy to clipboard operation
         mLocation = location;
+
+        Geocoder mGeocoder = new Geocoder(GpsTestActivity.getInstance(), Locale.getDefault());
+        double latitude_ = location.getLatitude();
+        double longitude_ = location.getLongitude();
+
+        List<Address> addresses = null;
+        try {
+            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String address = addresses.get(0).getAddressLine(0);
+        String city = addresses.get(0).getLocality();
+
+
+
+        //Toast.makeText(getActivity(), city+"\n"+address, Toast.LENGTH_LONG).show();
 
         // Make sure TTFF is shown, if the TTFF is acquired before the mTTFFView is initialized
         mTTFFView.setText(mTtff);
@@ -498,6 +530,13 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         }
 
         mFixTime = location.getTime();
+
+        String coordinate[] = address.split(",");
+        String a = coordinate[0];
+        String b = coordinate[1];
+        String c = coordinate[2];
+        mCity.setText(a+b+"\n"+c);
+
 
         if (location.hasAltitude()) {
             if (mPrefDistanceUnits.equalsIgnoreCase(METERS)) {

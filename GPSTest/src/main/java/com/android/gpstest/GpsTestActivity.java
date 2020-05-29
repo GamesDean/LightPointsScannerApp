@@ -78,7 +78,6 @@ import androidx.fragment.app.FragmentManager;
 import com.android.gpstest.io.FileLogger;
 import com.android.gpstest.map.MapConstants;
 import com.android.gpstest.util.IOUtils;
-import com.android.gpstest.util.LocationUtils;
 import com.android.gpstest.util.MathUtils;
 import com.android.gpstest.util.PermissionUtils;
 import com.android.gpstest.util.PreferenceUtils;
@@ -90,13 +89,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 
 import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_ACCURACY;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_CLEAR_AIDING_DATA;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_HELP;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_INJECT_PSDS_DATA;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_INJECT_TIME_DATA;
 import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_MAP;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_OPEN_SOURCE;
-import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_SEND_FEEDBACK;
 import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_SETTINGS;
 import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_SKY;
 import static com.android.gpstest.NavigationDrawerFragment.NAVDRAWER_ITEM_STATUS;
@@ -122,6 +115,8 @@ public class GpsTestActivity extends AppCompatActivity
     private static final String GPS_STARTED = "gps_started";
 
     private static final int LOCATION_PERMISSION_REQUEST = 1;
+
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
 
     private static final String[] REQUIRED_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -413,7 +408,31 @@ public class GpsTestActivity extends AppCompatActivity
             init();
         } else {
             // Request permissions from the user
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+
+                builder.setTitle("INFO Geolocalizzazione");
+                builder.setMessage("In applicazione del Regolamento generale sulla protezione dei dati (GDPR) del 27 aprile 2016 " +
+                        "si dichiara all’utilizzatore dell’app, denominata LightPointScanner, che nessun dato personale" +
+                        " verrà archiviato e/o trasferito e/o sarà oggetto di proliferazione. Si dichiara che il dato geografico," +
+                        " relativo alla sola posizione del palo di illuminazione, verrà archiviato e/o trasferito solo dopo " +
+                        "specifica autorizzazione da parte dell'utilizzatore dell'app LightPointScanner . " +
+                        "Si ricorda che l’uscita dall’app LightPointScanner  rende non più necessario " +
+                        "l’uso del circuito GPS: per risparmiare energia si consiglia di disattivarlo");
+                builder.setPositiveButton("OK", null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        ActivityCompat.requestPermissions(GpsTestActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
+                    }
+                });
+
+                builder.show();
+            }
+
             ActivityCompat.requestPermissions(mActivity, REQUIRED_PERMISSIONS, LOCATION_PERMISSION_REQUEST);
+
         }
     }
 
@@ -578,7 +597,7 @@ public class GpsTestActivity extends AppCompatActivity
                     mCurrentNavDrawerPosition = item;
                 }
                 break;
-            case NAVDRAWER_ITEM_INJECT_PSDS_DATA:
+          /*  case NAVDRAWER_ITEM_INJECT_PSDS_DATA:
                 forcePsdsInjection();
                 break;
             case NAVDRAWER_ITEM_INJECT_TIME_DATA:
@@ -591,19 +610,19 @@ public class GpsTestActivity extends AppCompatActivity
                 } else {
                     deleteAidingData();
                 }
-                break;
+                break;*/
             case NAVDRAWER_ITEM_SETTINGS:
                 startActivity(new Intent(this, Preferences.class));
                 break;
-            case NAVDRAWER_ITEM_HELP:
+         /*   case NAVDRAWER_ITEM_HELP:
                 showDialog(HELP_DIALOG);
                 break;
             case NAVDRAWER_ITEM_OPEN_SOURCE:
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(getString(R.string.open_source_github)));
                 startActivity(i);
-                break;
-            case NAVDRAWER_ITEM_SEND_FEEDBACK:
+                break;*/
+            /*case NAVDRAWER_ITEM_SEND_FEEDBACK:
                 // Send App feedback
                 String email = getString(R.string.app_feedback_email);
                 String locationString = null;
@@ -612,7 +631,7 @@ public class GpsTestActivity extends AppCompatActivity
                 }
 
                 UIUtils.sendEmail(this, email, locationString);
-                break;
+                break;*/
         }
         invalidateOptionsMenu();
     }
@@ -1574,8 +1593,8 @@ public class GpsTestActivity extends AppCompatActivity
                 return createWhatsNewDialog();
             case HELP_DIALOG:
                 return createHelpDialog();
-            case CLEAR_ASSIST_WARNING_DIALOG:
-                return createClearAssistWarningDialog();
+         //   case CLEAR_ASSIST_WARNING_DIALOG:
+         //       return createClearAssistWarningDialog();
         }
         return super.onCreateDialog(id);
     }
@@ -1585,10 +1604,9 @@ public class GpsTestActivity extends AppCompatActivity
         TextView textView = (TextView) getLayoutInflater().inflate(R.layout.whats_new_dialog, null);
         textView.setText(R.string.main_help_whatsnew);
 
-        AlertDialog.Builder builder
-                = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.main_help_whatsnew_title);
-        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setIcon(R.drawable.ic_launcher);
         builder.setView(textView);
         builder.setNeutralButton(R.string.main_help_close,
                 new DialogInterface.OnClickListener() {
