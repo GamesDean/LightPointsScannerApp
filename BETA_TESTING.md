@@ -6,8 +6,8 @@ Please note that these versions are not as heavily tested as production releases
 
 ## Register as a beta tester
 
-1. Go to https://play.google.com/apps/testing/com.android.gpstest and opt in for testing
-1. Download the app from [Google Play](https://play.google.com/store/apps/details?id=com.android.gpstest) (using the same Google account) - you'll now have access to the beta version!
+1. Go to https://play.google.com/apps/testing/com.menowattge.lightpointscanner and opt in for testing
+1. Download the app from [Google Play](https://play.google.com/store/apps/details?id=com.menowattge.lightpointscanner) (using the same Google account) - you'll now have access to the beta version!
 
 Please be patient - it may take a few hours for the beta version to become available after you opt in.  You only have to complete the above steps once. Unless you opt-out (using the same link in #1 above), you'll continue to receive new beta versions as they are released.
 

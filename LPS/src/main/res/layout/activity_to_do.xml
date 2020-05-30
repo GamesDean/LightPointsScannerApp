@@ -1,0 +1,177 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scaleType="centerCrop"
+    android:background="#FFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4f9e33"
+        android:padding="6dip" >
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="0dip"
+            android:layout_height="69dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="0.12"
+            android:gravity="center"
+            android:text="Riepilogo dati Punto Luce"
+            android:textColor="#FFF"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/recap_card"
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardCornerRadius="7sp"
+            android:layout_marginTop="3sp"
+
+            android:foreground="?attr/selectableItemBackground">
+
+            <TableLayout
+                android:id="@+id/recap_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/status_margin"
+                android:gravity="center_horizontal">
+
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/devid_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="ID : " />
+                    <TextView
+                        android:id="@+id/devid"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/code_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nCodice :  " />
+                    <TextView
+                        android:id="@+id/code"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/address_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nIndirizzo : " />
+                    <TextView
+                        android:id="@+id/address"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/latitude_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nLatitudine : " />
+                    <TextView
+                        android:id="@+id/latitude"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/longitude_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nLongitudine : " />
+                    <TextView
+                        android:id="@+id/longitude"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/watt_label"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nCorrente : " />
+                    <TextView
+                        android:id="@+id/watt"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+
+
+
+
+
+            </TableLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+
+
+    <Button
+        android:id="@+id/buttonAddToDo"
+        android:layout_width="151dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginEnd="130dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="#4f9e33"
+        android:onClick="addItem"
+        android:alpha="0.8"
+        android:text="invia"
+        android:textColor="#FFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</LinearLayout>

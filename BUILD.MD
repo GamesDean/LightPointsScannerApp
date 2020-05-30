@@ -20,7 +20,7 @@ The below steps will help you build and run the project.
 ### Building from the command line using Gradle
 
 1. To build and push the app to the device, run `gradlew installGoogleDebug` from the command line at the root of the project for the version of GPSTest on Google Play.  If you want to build the Fdroid version with OSM Droid, then use `gradlew installOsmdroidDebug`.
-3. To start the app, run `adb shell am start -n com.android.gpstest/.GpsTestActivity` for the Google Play version, or `adb shell am start -n com.android.gpstest.fdroid/.GpsTestActivity` for the Fdroid version (alternately, you can manually start the app)
+3. To start the app, run `adb shell am start -n com.menowattge.lightpointscanner/.GpsTestActivity` for the Google Play version, or `adb shell am start -n com.menowattge.lightpointscanner.fdroid/.GpsTestActivity` for the Fdroid version (alternately, you can manually start the app)
 
 ### Release builds
 
