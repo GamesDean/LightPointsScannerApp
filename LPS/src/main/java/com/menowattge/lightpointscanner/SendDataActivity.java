@@ -553,8 +553,7 @@ public class SendDataActivity extends Activity {
                                 .setMessage("Vuoi cancellare il PL esistente ed inserire il nuovo?")
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        putData(retrofit,token,id_comune);                                    }
+                                    public void onClick(DialogInterface dialogInterface, int i) { putData(retrofit,token,id_comune);                                    }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
@@ -745,7 +744,7 @@ public class SendDataActivity extends Activity {
 
         // ad inserimento completato rendo il pulsante non cliccabile, invisibile ed il testo colorato
         //mTextNewToDo.setTextColor(Color.parseColor("#9EAFB8"));
-        button.setVisibility(View.INVISIBLE);
+        //button.setVisibility(View.INVISIBLE);
         button.setClickable(false);
 
     }
