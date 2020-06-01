@@ -66,6 +66,7 @@
                 <action android:name="com.google.android.radar.SHOW_RADAR" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.menowattge.lightpointscanner.QrCodeActivity"
@@ -97,12 +98,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.menowattge.lightpointscanner.MapsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="true"
-            tools:ignore="LockedOrientationActivity" />
 
         <receiver android:name="com.menowattge.lightpointscanner.GpsLocationReceiver" >
             <intent-filter>

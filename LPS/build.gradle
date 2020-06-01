@@ -2,6 +2,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'upload_key'
+            storePassword 'menowattge'
+            keyPassword 'menowattge'
+            storeFile file('/Users/Lorenzo/Development/Menowatt_GE/menowattge.jks')
+        }
+        debug {
+            storeFile file('/Users/Lorenzo/Development/Menowatt_GE/menowattge.jks')
+            storePassword 'menowattge'
+            keyPassword 'menowattge'
+            keyAlias 'upload_key'
+        }
+    }
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
@@ -10,7 +24,7 @@ android {
         targetSdkVersion 28
         // versionCode scheme - first two digits are minSdkVersion, last three digits are build number
         versionCode 18066
-        versionName "2.0.2"
+        versionName "2.0.4"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -72,7 +86,7 @@ android {
             }
 
             release {
-                // Nothing here
+                storeFile file("lightpointscanner.debug.keystore")
             }
         }
     }

@@ -23,7 +23,7 @@ public class GpsLocationReceiver extends BroadcastReceiver  {
 
             if(statusOfGPS) {
                 //Intent intenT = new Intent(context, com.menowattge.lightpointscanner.GetLatLong.class);
-                Intent intenT = new Intent(context, MapsActivity.class);
+                Intent intenT = new Intent(context, GpsTestActivity.class);
                 intenT.setFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intenT);
 

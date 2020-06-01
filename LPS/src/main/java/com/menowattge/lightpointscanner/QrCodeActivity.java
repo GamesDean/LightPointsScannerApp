@@ -125,6 +125,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             intent.putExtra("qrLongitudine_",qrlongitudine);
 
             startActivity(intent);
+            finish();
 
 
         } else {

@@ -45,7 +45,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
     /**
      *  Se il GPS non è attivo, un dialog invita l'utente ad accenderlo
      *  al termine di 3 secondi carica la mappa
-     *  Se il GPS è attivo, viene avviata la classe MapsActivity per geolocalizzarsi
+     *  Se il GPS è attivo, viene avviata la classe GpsTestActivity per geolocalizzarsi
      */
     @Override
     protected void onResume(){
