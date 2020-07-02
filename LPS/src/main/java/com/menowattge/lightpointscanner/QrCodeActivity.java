@@ -129,7 +129,10 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
 
 
         } else {
-            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
+   //         Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"testo : "+rawResult.getText(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"formato : "+rawResult.getBarcodeFormat(),Toast.LENGTH_LONG).show();
+
         }
             //ripropone all'utente lo scan
             mScannerView.resumeCameraPreview(this);

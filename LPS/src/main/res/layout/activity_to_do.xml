@@ -138,7 +138,7 @@
                         android:textSize="20sp"
                         android:textColor="#666"
                         android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nCorrente : " />
+                        android:text="\nPotenza : " />
                     <TextView
                         android:id="@+id/watt"
                         android:textSize="20sp"

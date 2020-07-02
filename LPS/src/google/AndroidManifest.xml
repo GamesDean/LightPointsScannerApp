@@ -16,6 +16,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.menowattge.lightpointscanner">
 
     <!-- Below attributes are added to the manifest in /main folder -->
@@ -23,8 +24,10 @@
         android:glEsVersion="0x00020000"
         android:required="true"/>
 
-    <application>
+    <application
+        tools:ignore="HardcodedDebugMode">
         <!-- For Google Maps API v2 - Enable manifest merging -->
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCXmi_FECyycWt20AA7pRz9VHsYink78T0"/>

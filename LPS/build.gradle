@@ -23,8 +23,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         // versionCode scheme - first two digits are minSdkVersion, last three digits are build number
-        versionCode 18066
-        versionName "2.0.4"
+        versionCode 18067
+        versionName "2.0.5"
 
         vectorDrawables.useSupportLibrary = true
 
@@ -69,7 +69,7 @@ android {
 
         signingConfigs {
             debug {
-                storeFile file("lightpointscanner.debug.keystore")
+              //  storeFile file("lightpointscanner.debug.keystore")
             }
 
             release {
@@ -82,19 +82,19 @@ android {
     } else {
         signingConfigs {
             debug {
-                storeFile file("lightpointscanner.debug.keystore")
+         //       storeFile file("lightpointscanner.debug.keystore")
             }
 
             release {
-                storeFile file("lightpointscanner.debug.keystore")
+         //       storeFile file("lightpointscanner.debug.keystore")
             }
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            //minifyEnabled true
+            //shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
             signingConfig signingConfigs.release
         }
