@@ -34,8 +34,10 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
     public String qrIndirizzo;
     public double qrlatitudine;
     public double qrlongitudine;
-   // solo gli ID che iniziano con D735 (in minuscolo perchè nel qr è così) sono accettati in quanto Menowatt
+    // solo gli ID che iniziano con D735 (in minuscolo perchè nel qr è così) sono accettati in quanto Menowatt
     private String menowattCode = "d735";
+    // contatori acqua
+    private String menowattCodeMad = "MAD0"; // TODO vedere se lower o uppercase
 
 
     //PERMESSI CAMERA
@@ -106,11 +108,11 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         Log.v("risultato", rawResult.getText().substring(0,16));
         Log.v("risultato_qrcodeformat", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         //prelevo solo l'inizio dell'indirizzo radio ovvero d735
-        String d735 = rawResult.getText().substring(0,4);
-        Log.i("d735", d735);
+        String d735_MAD = rawResult.getText().substring(0,4);
+        Log.i("d735", d735_MAD);
 
-        // controllo che sia un nostro qrcode controllando  D735
-        if (d735.equals(menowattCode)) {
+        // controllo che sia un nostro qrcode controllando  D735 per RLU, MAD0 per contatori acqua
+        if (d735_MAD.equals(menowattCode)) {
             Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
             // prelevo il valore dal qrcode letto
             String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...
@@ -128,7 +130,21 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             finish();
 
 
-        } else {
+        }
+        else if (d735_MAD.equals(menowattCodeMad)){
+
+            // TODO creare LDN a partire dal codice scansionato
+            // MAD0 07 87 19 70 01 04
+            //MAD0 à 2434 poi vai al contrario 04 01 70 19 87 07
+            // String qrCodeData = rawResult.getText().substring(0,16); fare prove per vedere cosa prendere
+            // e come invertire le coppie di numeri
+
+            // ottenuto LDN lo incapsulo con citta,lat,lon ed indirizzo e lo invio a SendDataActivity
+            // che fara un UPDATE dato che LDN e chiavi saranno gia inserite.
+
+
+        }
+        else {
    //         Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(),"testo : "+rawResult.getText(),Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(),"formato : "+rawResult.getBarcodeFormat(),Toast.LENGTH_LONG).show();
