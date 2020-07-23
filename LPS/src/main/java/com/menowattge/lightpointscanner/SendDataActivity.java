@@ -696,7 +696,10 @@ public class SendDataActivity extends Activity {
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
+                        .readTimeout(60,TimeUnit.SECONDS)
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .build();
                 // end-debug
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://citymonitor-staging.azurewebsites.net/")

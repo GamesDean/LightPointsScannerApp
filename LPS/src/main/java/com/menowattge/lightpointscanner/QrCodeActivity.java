@@ -133,6 +133,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         }
         else if (d735_MAD.equals(menowattCodeMad)){
 
+            Log.d("MAD","acqua");
             // TODO creare LDN a partire dal codice scansionato
             // MAD0 07 87 19 70 01 04
             //MAD0 à 2434 poi vai al contrario 04 01 70 19 87 07
