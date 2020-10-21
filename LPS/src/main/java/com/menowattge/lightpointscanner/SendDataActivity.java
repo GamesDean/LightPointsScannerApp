@@ -702,7 +702,7 @@ public class SendDataActivity extends Activity {
                         .build();
                 // end-debug
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://citymonitor-staging.azurewebsites.net/")
+                        .baseUrl("https://citymonitor.azurewebsites.net/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .client(client)
                         .addConverterFactory(ScalarsConverterFactory.create())

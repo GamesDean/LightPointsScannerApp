@@ -244,6 +244,11 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
                 double latitude_ = location.getLatitude();
                 double longitude_ = location.getLongitude();
 
+                //test debug comuni frazioni
+              //  double latitude_ = 44.992932;
+              //  double longitude_ = 9.0754435;
+                //test debug comuni frazioni
+
                 List<Address> addresses = null;
                 try {
                     addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
@@ -253,6 +258,7 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
 
                 String address = addresses.get(0).getAddressLine(0);
                 String city = addresses.get(0).getLocality();
+                String city2 = addresses.get(0).getSubLocality(); //TODO SE NOT NULL city=city2
 
                 Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
                 intentQr.putExtra("citta", city);
@@ -478,6 +484,9 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         double latitude_ = location.getLatitude();
         double longitude_ = location.getLongitude();
 
+       // double latitude_ = 44.992932;
+        //double longitude_ = 9.0754435;
+
         List<Address> addresses = null;
         try {
             addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
@@ -486,8 +495,28 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         }
 
         String address = addresses.get(0).getAddressLine(0);
-        String city = addresses.get(0).getLocality();
+/*
+        String city = addresses.get(0).getAdminArea(); //regione
+        String city2 = addresses.get(0).getSubAdminArea(); // Provincia 
+        String city3 = addresses.get(0).getSubLocality(); // null
+        String city4 = addresses.get(0).getFeatureName(); //civico
+        String city5 = addresses.get(0).getLocality(); // Città esatta
+        String city6 = addresses.get(0).getPremises(); // null
+        String city7 = addresses.get(0).getThoroughfare(); //via breve
 
+        String city8 = addresses.get(0).getSubThoroughfare(); // 49
+        String city9 = addresses.get(0).getAddressLine(0); // indirizzo
+
+        Log.d(city,"citta normale");
+        Log.d(city2,"citta subadmin");
+        Log.d(city3,"citta sublocality");
+        Log.d(city4,"citta feat");
+        Log.d(city5,"citta locality");
+        Log.d(city6,"citta prem");
+        Log.d(city7,"citta  flare");
+        Log.d(city8,"citta  sub");
+        Log.d(city9,"citta  addr");
+*/
 
 
         //Toast.makeText(getActivity(), city+"\n"+address, Toast.LENGTH_LONG).show();
