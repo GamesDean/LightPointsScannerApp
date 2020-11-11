@@ -39,6 +39,7 @@
             <androidx.cardview.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/status_location_card"
+                android:theme="@style/Theme.MaterialComponents.Light"
                 android:layout_gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -225,6 +226,7 @@
             <androidx.cardview.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/city_card"
+                android:theme="@style/Theme.MaterialComponents.Light"
                 android:layout_gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -263,6 +265,7 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/gnss_status_card"
+            android:theme="@style/Theme.MaterialComponents.Light"
             android:layout_gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -287,6 +290,7 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/sbas_status_card"
+            android:theme="@style/Theme.MaterialComponents.Light"
             android:layout_gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

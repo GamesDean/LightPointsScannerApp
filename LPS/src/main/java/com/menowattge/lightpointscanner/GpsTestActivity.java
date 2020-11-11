@@ -17,6 +17,7 @@
 
 package com.menowattge.lightpointscanner;
 
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -505,7 +506,7 @@ public class GpsTestActivity extends AppCompatActivity
             mFileLogger.startNewLog();
         }
 
-        autoShowWhatsNew();
+//        autoShowWhatsNew();
     }
 
     @Override
@@ -1411,9 +1412,10 @@ public class GpsTestActivity extends AppCompatActivity
             case R.id.gps_switch:
                 return true;
             case R.id.share:
-                share();
+          //      share();
                 return true;
             default:
+
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -1579,7 +1581,7 @@ public class GpsTestActivity extends AppCompatActivity
         final int newVer = appInfo.versionCode;
 
         if (oldVer < newVer) {
-            showDialog(WHATSNEW_DIALOG);
+//            showDialog(WHATSNEW_DIALOG);
             PreferenceUtils.saveInt(WHATS_NEW_VER, appInfo.versionCode);
         }
     }

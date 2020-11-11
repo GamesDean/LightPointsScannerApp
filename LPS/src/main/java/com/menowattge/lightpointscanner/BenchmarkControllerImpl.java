@@ -305,7 +305,7 @@ public class BenchmarkControllerImpl implements BenchmarkController {
                 }
             }
 
-            @Override
+          //  @Override
             public boolean allowsTransition(MotionScene.Transition transition) {
                 return true;
             }
