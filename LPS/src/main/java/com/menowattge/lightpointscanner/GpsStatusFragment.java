@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -245,19 +246,19 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
                 double longitude_ = location.getLongitude();
 
                 //test debug comuni frazioni
-              //  double latitude_ = 44.992932;
-              //  double longitude_ = 9.0754435;
+               // double latitude_ = 44.992932;
+               // double longitude_ = 9.0754435;
                 //test debug comuni frazioni
 
                 List<Address> addresses = null;
                 try {
-                    addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+                    addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                String address = addresses.get(0).getAddressLine(0);
-                String city = addresses.get(0).getLocality();
+                String address = addresses.get(1).getAddressLine(0);
+                String city = addresses.get(1).getLocality();
                 String city2 = addresses.get(0).getSubLocality(); //TODO SE NOT NULL city=city2
 
                 Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
@@ -484,17 +485,24 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         double latitude_ = location.getLatitude();
         double longitude_ = location.getLongitude();
 
-       // double latitude_ = 44.992932;
+        //double latitude_ = 44.992932;
         //double longitude_ = 9.0754435;
 
         List<Address> addresses = null;
         try {
-            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String address = addresses.get(0).getAddressLine(0);
+        String address = addresses.get(1).getAddressLine(0);
+
+        //// TEST PER COMUNI-FRAZIONI
+
+            Log.d("frazioni : ",address);
+
+        ///// END TEST PER COMUNI-FRAZIONI
 /*
         String city = addresses.get(0).getAdminArea(); //regione
         String city2 = addresses.get(0).getSubAdminArea(); // Provincia 
