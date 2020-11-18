@@ -1173,7 +1173,7 @@ public class GpsTestActivity extends AppCompatActivity
                 PreferenceUtils.saveInt(Application.get().getString(R.string.capability_key_nmea), PreferenceUtils.CAPABILITY_SUPPORTED);
             };
         }
-        mLocationManager.addNmeaListener(mLegacyNmeaListener);
+        mLocationManager.addNmeaListener( mLegacyNmeaListener);
     }
 
     private void removeNmeaListener() {

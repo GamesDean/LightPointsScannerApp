@@ -251,13 +251,13 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
 
                 List<Address> addresses = null;
                 try {
-                    addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+                    addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                String address = addresses.get(0).getAddressLine(0);
-                String city = addresses.get(0).getLocality();
+                String address = addresses.get(1).getAddressLine(0);
+                String city = addresses.get(1).getLocality();
                 String city2 = addresses.get(0).getSubLocality(); //TODO SE NOT NULL city=city2
 
                 Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
@@ -489,12 +489,12 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
 
         List<Address> addresses = null;
         try {
-            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 1);
+            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String address = addresses.get(0).getAddressLine(0);
+        String address = addresses.get(1).getAddressLine(0);
 /*
         String city = addresses.get(0).getAdminArea(); //regione
         String city2 = addresses.get(0).getSubAdminArea(); // Provincia 

@@ -16,6 +16,7 @@ android {
             keyAlias 'upload_key'
         }
     }
+    //noinspection GradleCompatible
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
@@ -23,8 +24,10 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         // versionCode scheme - first two digits are minSdkVersion, last three digits are build number
+
         versionCode 18069
         versionName "2.0.7"
+
 
         vectorDrawables.useSupportLibrary = true
 
