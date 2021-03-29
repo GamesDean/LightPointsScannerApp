@@ -61,7 +61,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         CheckPermission();
-        // prendo dall'activity GetLatLong dei dati per poi passarli a SendDataActivity
+        // prendo dall'activity SelectActivity dei dati per poi passarli a SendDataActivity
         qrCitta = getIntent().getStringExtra("citta");
         qrIndirizzo = getIntent().getStringExtra("indirizzo");
         qrlatitudine = getIntent().getDoubleExtra("latitudine",0);
@@ -113,18 +113,26 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
 
         // controllo che sia un nostro qrcode controllando  D735 per RLU, MAD0 per contatori acqua
         if (d735_MAD.equals(menowattCode)) {
-            Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
+
+            // se scansiono un RLU devo poi scansionare l' etichetta del modello in QrCodeActivityDue
+            // TODO al posto di PowerActivity ci sara QrCodeActivityDue per altra etichetta
+
             // prelevo il valore dal qrcode letto
             String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...
+            // TODO DOPO gestire BUG dei tre caratteri es : 5A prende anche un terzo ma non dovrebbe, 15A è ok
             String name       = rawResult.getText().substring(17,21);  // es : 30A
 
+            //Intent intent = new Intent(getApplicationContext(), PowerActivity.class);
+            Intent intent = new Intent(getApplicationContext(), QrCodeActivityDue.class);
             // invio a PowerActivity il valore del qrcode letto ed i valori dei dati acquisiti in GetLatLong
-            intent.putExtra("qrCode_", qrCodeData);
+            intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
             intent.putExtra("name", name);
             intent.putExtra("qrCitta_",qrCitta);
             intent.putExtra("qrIndirizzo_",qrIndirizzo);
             intent.putExtra("qrLatitudine_",qrlatitudine);
             intent.putExtra("qrLongitudine_",qrlongitudine);
+
+            Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
 
             startActivity(intent);
             finish();

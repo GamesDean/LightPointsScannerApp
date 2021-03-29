@@ -406,10 +406,12 @@ public class SendDataActivity extends Activity {
      * Effettua il login al portale
      * @param retrofit
      */
-    public void login(Retrofit retrofit){
+    public void login(Retrofit retrofit,String token){
         //login
         JsonApi login = retrofit.create(JsonApi.class);
-        Call<ResponseBody> call_login = login.loginWithCredentials(new LoginCredentials(username, password));
+        //Call<ResponseBody> call_login = login.loginWithCredentials(new LoginCredentials(username, password));
+        Call<ResponseBody> call_login = login.loginWithCredentials(token);
+
 
         call_login.enqueue(new Callback<ResponseBody>() {
             @Override

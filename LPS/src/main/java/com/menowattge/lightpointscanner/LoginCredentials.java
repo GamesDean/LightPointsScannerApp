@@ -6,16 +6,19 @@ import android.util.Base64;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Utile per effettuare il Login ; non la uso perchè da user e pass genero un token
+ * Per effettuare il Login da user e pass genero un token
  */
 public class LoginCredentials {
 
-    private String name;
-    private String pass;
+    //private String name;
+    //private String pass;
 
-    public LoginCredentials(String name, String pass) {
-        this.name = name;
-        this.pass = pass;
+    private String Email;
+    private String Password;
+
+    public LoginCredentials(String Email, String Password) {
+        this.Email = Email;
+        this.Password = Password;
     }
 
 

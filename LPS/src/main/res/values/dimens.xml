@@ -65,4 +65,5 @@
     <!-- Share layout dimensions -->
     <dimen name="button_margin">16dp</dimen>
     <dimen name="button_size">28dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

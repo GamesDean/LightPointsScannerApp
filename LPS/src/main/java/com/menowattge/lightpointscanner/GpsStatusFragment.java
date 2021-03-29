@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -256,17 +257,20 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
                     e.printStackTrace();
                 }
 
+                Log.d("DEBUG",addresses.toString());
+
                 String address = addresses.get(1).getAddressLine(0);
                 String city = addresses.get(1).getLocality();
                 String city2 = addresses.get(0).getSubLocality(); //TODO SE NOT NULL city=city2
 
-                Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
-                intentQr.putExtra("citta", city);
-                intentQr.putExtra("indirizzo", address);
-                intentQr.putExtra("latitudine", latitude_);
-                intentQr.putExtra("longitudine", longitude_);
+                //Intent intentQr = new Intent(getActivity(), QrCodeActivity.class);
+                Intent intentSelect = new Intent(getActivity(), SelectActivity.class);
+                intentSelect.putExtra("citta", city);
+                intentSelect.putExtra("indirizzo", address);
+                intentSelect.putExtra("latitudine", latitude_);
+                intentSelect.putExtra("longitudine", longitude_);
 
-                startActivity(intentQr);
+                startActivity(intentSelect);
                 getActivity().finish();
                 getActivity().getSupportFragmentManager().popBackStack();
 
@@ -484,17 +488,33 @@ public class GpsStatusFragment extends Fragment implements GpsTestListener {
         double latitude_ = location.getLatitude();
         double longitude_ = location.getLongitude();
 
-       // double latitude_ = 44.992932;
-        //double longitude_ = 9.0754435;
+        // DEBUG
+        //LISCIANO
+        //42.83034840619562, 13.601854824094545
+        //PIATTONI
+        //42.87358067411861, 13.70593183468471
+        //CONCA ULIVI
+        //42.93959549451618, 13.842534494862702
+        // TORRAZZA
+        //  double latitude_ = 44.992932;
+        //  double longitude_ = 9.0754435;
+        //RIPA
+        //42.9549479,13.7793035
 
+         //double latitude_ =  42.87358067411861;
+
+         //double longitude_ = 13.70593183468471;
+        // DEBUG
         List<Address> addresses = null;
         try {
-            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2);
+            addresses = mGeocoder.getFromLocation(latitude_,longitude_, 2); // 2 lps light, 1 normal
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String address = addresses.get(1).getAddressLine(0);
+        String address = addresses.get(1).getAddressLine(0); // get(1) light, get(0) normal
+
+        Log.d("DEBUG",addresses.toString());
 /*
         String city = addresses.get(0).getAdminArea(); //regione
         String city2 = addresses.get(0).getSubAdminArea(); // Provincia 

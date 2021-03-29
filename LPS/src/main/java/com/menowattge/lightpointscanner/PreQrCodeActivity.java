@@ -78,6 +78,8 @@ public class PreQrCodeActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    // avvia schermata selezione punti luce / contatori
+                    //Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
                     Intent intent = new Intent(getApplicationContext(), GpsTestActivity.class);
                     startActivity(intent);
                     finish();
