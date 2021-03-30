@@ -24,9 +24,25 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
+        <activity android:name=".DeleteDeviceActivity"></activity>
+        <activity
+            android:name=".QrCodeActivityDelete"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".InsertOrDeleteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".QrCodeActivityTre"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".QrCodeActivityQuestion"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SelectActivity"
             android:label="@string/title_activity_select"
@@ -88,7 +104,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PowerActivity"
+            android:name=".ManualValueActivity"
             android:label="@string/title_activity_power"
             android:parentActivityName=".QrCodeActivity"
             android:screenOrientation="portrait"

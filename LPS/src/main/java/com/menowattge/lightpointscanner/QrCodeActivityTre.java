@@ -1,16 +1,17 @@
 package com.menowattge.lightpointscanner;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.zxing.Result;
+
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -19,69 +20,40 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
-public class QrCodeActivityQuestion extends AppCompatActivity {
-
+public class QrCodeActivityTre extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza;
+    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza,identificativo;
+    private ZXingScannerView mScannerView;
 
+    //PERMESSI CAMERA
+    @SuppressLint("NewApi")
+    public void CheckPermission() {
 
+        if (this.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr_code_question);
+        setContentView(R.layout.activity_qr_code_tre);
+
         // total fullscreen
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        // TODO decommentare OK
+        CheckPermission();
+
+        // TODO decommentare
         //getVariables();
 
-        ExtendedFloatingActionButton fabNo = findViewById(R.id.fab_no);
-        fabNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Ok, nessuna etichetta da scansionare", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        mScannerView = new ZXingScannerView(this);
+        setContentView(mScannerView);
+        mScannerView.startCamera();
 
-                // passo le variabili alla classe che le invierà al server
-                //TODO decommentare ok
-                //Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
-                //passVariables(intent);
-                //startActivity(intent);
-            }
-        });
-
-        ExtendedFloatingActionButton fabManual = findViewById(R.id.fab_manual);
-        fabManual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Inserire manualmente il codice", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                // passo le variabili alla classe che consente l'inserimento manuale del codice del palo
-                // TODO cambiare classe con InsertCodePalo.class poi DECOMMENTARE ok
-                Intent intent = new Intent(getApplicationContext(), ManualValueActivity.class);
-               // passVariables(intent);
-                startActivity(intent);
-            }
-        });
-
-        ExtendedFloatingActionButton fabSi = findViewById(R.id.fab_si);
-        fabSi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Scansionare l'etichetta", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                // passo le variabili alla classe che scansiona l'etichetta del palo
-                Intent intent = new Intent(getApplicationContext(), QrCodeActivityTre.class);
-                // TODO decommentare ok
-                //passVariables(intent);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -93,11 +65,42 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
+        CheckPermission();
+        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
+        mScannerView.startCamera();          // Start camera on resume
+    }
+
+    @Override
+    public void onPause() {
+
+        super.onPause();
+        mScannerView.stopCamera();           // Stop camera on pause
     }
 
 
 
+    @Override
+    public void handleResult(Result result) {
+
+        identificativo = result.getText();
+        Log.d("identificativo",identificativo);
+
+        if(identificativo.length()==8){
+            //TODO ok DEBUG DECOMMENTARE
+            //Intent intent = new Intent(getApplicationContext(),SendDataActivity.class);
+            //passVariables(intent);
+            //startActivity(intent);
+            Toast.makeText(getApplicationContext(),"id : "+identificativo,Toast.LENGTH_LONG).show();
+        }
+
+
+        //ripropone all'utente lo scan
+        mScannerView.resumeCameraPreview(this);
+
+    }
+
     public void passVariables(Intent intent){
+
         intent.putExtra("qrCitta_",qrCitta);
         intent.putExtra("qrIndirizzo_",qrIndirizzo);
         intent.putExtra("qrLatitudine_",qrlatitudine);
@@ -111,9 +114,14 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         intent.putExtra("corrente",secondAndThirdChar);
         intent.putExtra("dimensione",fourthChar);
         intent.putExtra("potenza",potenza);
+
+        //etichetta Palo
+        intent.putExtra("id_palo",identificativo);
     }
 
+
     public void getVariables(){
+
         // RLU scan
         qrCodeData = getIntent().getStringExtra("qrCode_"); // indirizzo radio D735...
         name = getIntent().getStringExtra("name");
@@ -129,5 +137,6 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         secondAndThirdChar = getIntent().getStringExtra("corrente");
         fourthChar = getIntent().getStringExtra("dimensione");
         potenza = getIntent().getStringExtra("potenza");
+
     }
 }

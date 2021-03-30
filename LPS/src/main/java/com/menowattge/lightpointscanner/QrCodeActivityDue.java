@@ -113,14 +113,12 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
         // Qui è possibile gestire il risultato
 
-
+        // Salvo la lettura in un array usando i ":" per separare le stringhe
         String etichetta[] = rawResult.getText().split(":");
 
-
-
         //prelevo solo i primi 4 caratteri, gli altri non mi servono
-        String firstFourChars = etichetta[2].substring(1,5);
-        String potenza = etichetta[3];
+        String firstFourChars = etichetta[2].substring(1,5); //H70S
+        String potenza = etichetta[3]; // 30W
         String firstChar = firstFourChars.substring(0,1); // M,G,H
         String secondAndThirdChar = firstFourChars.substring(1,3); // corrente da dividere per 100
         String fourthChar = firstFourChars.substring(3,4); // E,S...

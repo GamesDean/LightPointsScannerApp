@@ -2,15 +2,13 @@ package com.menowattge.lightpointscanner;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.View;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -18,86 +16,83 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+import static com.menowattge.lightpointscanner.SendDataActivity.valoreCorrente;
 
-public class QrCodeActivityQuestion extends AppCompatActivity {
-
+/**
+ *  Permette all'utente di selezionare la potenza del Meridio. Passa poi questi dati a SendDataActivity
+ */
+public class ManualValueActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza;
-
-
+    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza,identificativo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr_code_question);
+        setContentView(R.layout.activity_manual_value);
+
         // total fullscreen
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        // TODO decommentare OK
+        // TODO decommentare ok
         //getVariables();
 
-        ExtendedFloatingActionButton fabNo = findViewById(R.id.fab_no);
-        fabNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Ok, nessuna etichetta da scansionare", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+       // final Spinner spinner = (Spinner) findViewById(R.id.spinner_power);
+        final EditText editText = findViewById(R.id.editText);
+        editText.setSelection(0);
+        Button button_ok = findViewById(R.id.button_ok);
 
-                // passo le variabili alla classe che le invierà al server
-                //TODO decommentare ok
-                //Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
-                //passVariables(intent);
-                //startActivity(intent);
+
+        final Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
+
+
+        button_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                identificativo = editText.getText().toString();
+
+                if(identificativo==""|| identificativo.isEmpty()){
+                    Toast.makeText(ManualValueActivity.this,"Inserire ID palo",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(ManualValueActivity.this,"id : "+identificativo,Toast.LENGTH_LONG).show();
+                    // TODO decommentare ok
+                    //passVariables(intent);
+                    //startActivity(intent);
+                    //finish();
+                }
+
+
             }
         });
 
-        ExtendedFloatingActionButton fabManual = findViewById(R.id.fab_manual);
-        fabManual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Inserire manualmente il codice", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                // passo le variabili alla classe che consente l'inserimento manuale del codice del palo
-                // TODO cambiare classe con InsertCodePalo.class poi DECOMMENTARE ok
-                Intent intent = new Intent(getApplicationContext(), ManualValueActivity.class);
-               // passVariables(intent);
-                startActivity(intent);
-            }
-        });
 
-        ExtendedFloatingActionButton fabSi = findViewById(R.id.fab_si);
-        fabSi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Scansionare l'etichetta", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                // passo le variabili alla classe che scansiona l'etichetta del palo
-                Intent intent = new Intent(getApplicationContext(), QrCodeActivityTre.class);
-                // TODO decommentare ok
-                //passVariables(intent);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
-    public void onResume() {
+    protected void onResume(){
         super.onResume();
 
         //total fullscreen
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
 
-
     public void passVariables(Intent intent){
+
         intent.putExtra("qrCitta_",qrCitta);
         intent.putExtra("qrIndirizzo_",qrIndirizzo);
         intent.putExtra("qrLatitudine_",qrlatitudine);
@@ -111,9 +106,14 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         intent.putExtra("corrente",secondAndThirdChar);
         intent.putExtra("dimensione",fourthChar);
         intent.putExtra("potenza",potenza);
+
+        //etichetta Palo
+        intent.putExtra("id_palo",identificativo);
     }
 
+
     public void getVariables(){
+
         // RLU scan
         qrCodeData = getIntent().getStringExtra("qrCode_"); // indirizzo radio D735...
         name = getIntent().getStringExtra("name");
@@ -129,5 +129,8 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         secondAndThirdChar = getIntent().getStringExtra("corrente");
         fourthChar = getIntent().getStringExtra("dimensione");
         potenza = getIntent().getStringExtra("potenza");
+
     }
+
+
 }

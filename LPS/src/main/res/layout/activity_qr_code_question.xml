@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_gravity="center_horizontal"
         android:text="Scansione"
         />
@@ -21,7 +22,8 @@
         android:id="@+id/fab_manual"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_marginTop="60dp"
         android:layout_gravity="center"
         android:text="Manuale"
          />
@@ -31,7 +33,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="400dp"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_marginTop="500dp"
         android:text="Nessuno"
         />
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ge_splash_"
+    tools:context=".SelectActivity">
+
+
+    <ImageButton
+        android:id="@+id/imageButtonInsertDevice"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="270dp"
+        android:scaleType="fitXY"
+        android:background="#FFFFFF"
+        android:contentDescription="TODO"
+        android:src="@drawable/lampione" />
+
+    <ImageButton
+        android:id="@+id/imageButtonDeleteDevice"
+        android:layout_width="250dp"
+        android:scaleType="fitXY"
+        android:background="#FFFFFF"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="270dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/lampione_delete" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="600dp"
+        android:text="Selezionare se INSERIRE o ELIMINARE un PUNTO LUCE " />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

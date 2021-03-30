@@ -62,7 +62,7 @@ public class SelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO QrCodeActivityWater
+                // TODO QrCodeActivityWater (forse non necessario)
                 Intent intent = new Intent(getApplicationContext(), QrCodeActivity.class);
 
                 intent.putExtra("citta", citta);
