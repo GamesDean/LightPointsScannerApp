@@ -152,8 +152,8 @@ public class SendDataActivity extends Activity {
     private String  InfoQuadroElettrico="";
     private String  Palo="";
     private int     AltezzaPaloMm =0;
-    private boolean Portella =false;
-    private boolean Pozzetto =false;
+    private boolean Portella =false;   // TODO from boolean to String e si chiamera serialeApparecchio
+    private boolean Pozzetto =false;   // TODO from boolean to String e si chiamera codiceApparecchio
     private boolean Terra=false ;
     private String  TecnologiaLampada = "LED";
     private double  PotenzaLampadaWatt ;

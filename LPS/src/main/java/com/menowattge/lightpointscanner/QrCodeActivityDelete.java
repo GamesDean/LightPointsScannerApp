@@ -108,8 +108,8 @@ public class QrCodeActivityDelete  extends AppCompatActivity implements ZXingSca
             Log.d("name", name);
 
             Intent intent = new Intent(getApplicationContext(), DeleteDeviceActivity.class);
-            intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
-            intent.putExtra("name", name);
+            intent.putExtra("qrCode_delete", qrCodeData); // indirizzo radio D735...
+            intent.putExtra("name_delete", name);
 
 
             startActivity(intent);

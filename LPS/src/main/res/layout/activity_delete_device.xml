@@ -1,9 +1,110 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DeleteDeviceActivity">
+    android:orientation="vertical"
+    android:scaleType="centerCrop"
+    android:background="#FFF">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4f9e33"
+        android:padding="6dip" >
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="0dip"
+            android:layout_height="69dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="0.12"
+            android:gravity="center"
+            android:text="Riepilogo dati"
+            android:textColor="#FFF"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/recap_card_delete"
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardCornerRadius="7sp"
+            android:layout_marginTop="3sp"
+
+            android:foreground="?attr/selectableItemBackground">
+
+            <TableLayout
+                android:id="@+id/recap_table_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/status_margin"
+                android:gravity="center_horizontal">
+
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/devid_label_delete"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="ID : " />
+                    <TextView
+                        android:id="@+id/devid_delete"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/code_label_delete"
+                        style="@style/info_label"
+                        android:layout_gravity="right"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        android:layout_marginRight="@dimen/status_label_right_margin"
+                        android:text="\nCodice :  " />
+                    <TextView
+                        android:id="@+id/code_delete"
+                        android:textSize="20sp"
+                        android:textColor="#666"
+                        style="@style/info_value" />
+                </TableRow>
+
+            </TableLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="151dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginEnd="130dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="#4f9e33"
+        android:onClick="deleteItem"
+        android:alpha="0.8"
+        android:text="Elimina"
+        android:textColor="#FFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</LinearLayout>

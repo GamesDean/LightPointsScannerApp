@@ -107,26 +107,34 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
         // TODO PRELEVARE I PRIMI 4 CARATTERI :
         //      TODO * PRIMO CARATTERE -> MODELLO : M oppure G oppure H [ MERIDIO GIANO HIPERION ]
-        //      TODO * SECONDO E TERZO CARATTERE : Corrente Massima  DA DIVIDERE PER 100
+        //      TODO * SECONDO E TERZO CARATTERE : "id_configurazione" [ex corrente]
         //      TODO * QUARTO CARATTERE -> DIMENSIONE : E,S,J,M,L,X,U,F [ ENTRY_LEVEL, SMALL, JUNIOR, MEDIUM ,LARGE, EXTRA-LARGE,UP,FULL]
 
 
-        // Qui è possibile gestire il risultato
+        // TODO PRELEVARE ANCHE IL *SERIALE (es : 10G190800001) ED IL *CODICE(es: H70SAHXS2090C040P01) PER INTERO
+        // TODO che si chiameranno "seriale_apparecchio" e "codice_apparecchio" rispettivamente [al posto di POZZETTO e PORTELLA]
+
+        // TODO QUANDO MI DARANNO UN ETICHETTA DEFINITIVA O QUASI, CON IL CODICE AGGIORNATO, DOVRO PRELEVARE DUE CARATTERI DA QUESTO
+        // TODO E CREARE UNA NUOVA VARIABILE CHIAMATA "profilo"
 
         // Salvo la lettura in un array usando i ":" per separare le stringhe
         String etichetta[] = rawResult.getText().split(":");
 
+        String serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
+        String codiceApparecchio = etichetta[2].substring(1,20);  // H70SAHXS2090C040P01
+
         //prelevo solo i primi 4 caratteri, gli altri non mi servono
         String firstFourChars = etichetta[2].substring(1,5); //H70S
         String potenza = etichetta[3]; // 30W
-        String firstChar = firstFourChars.substring(0,1); // M,G,H
-        String secondAndThirdChar = firstFourChars.substring(1,3); // corrente da dividere per 100
-        String fourthChar = firstFourChars.substring(3,4); // E,S...
+        String modello = firstFourChars.substring(0,1); // M,G,H
+        String idConfigurazione = firstFourChars.substring(1,3); // id_configurazione ex corrente
+        String dimensione = firstFourChars.substring(3,4); // E,S...
+        //String profilo = etichetta[2].substring(x,x); TODO TBD
 
         Log.d("firstFourChars", firstFourChars);
 
         //Controllo che inizi per M ,G , H : meglio di niente
-        if (firstChar.equals("M") || firstChar.equals("G") || firstChar.equals("H")) {
+        if (modello.equals("M") || modello.equals("G") || modello.equals("H")) {
 
            // Intent intent = new Intent(getApplicationContext(), SendDataActivity.class); // TODO QrCodeActivityQuestion
 
@@ -144,9 +152,11 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
             intent.putExtra("name", name); // 15A
     */
             // etichetta Meridio
-            intent.putExtra("modello",firstChar);
-            intent.putExtra("corrente",secondAndThirdChar);
-            intent.putExtra("dimensione",fourthChar);
+            intent.putExtra("seriale_apparecchio",serialeApparecchio);
+            intent.putExtra("codice_apparecchio",codiceApparecchio);
+            intent.putExtra("modello",modello);
+            intent.putExtra("id_configurazione",idConfigurazione);
+            intent.putExtra("dimensione",dimensione);
             intent.putExtra("potenza",potenza);
 
 
