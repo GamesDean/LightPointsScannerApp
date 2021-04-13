@@ -365,7 +365,7 @@ public class DeleteDeviceActivity extends Activity {
 
         JsonApi deletePuntoLuce = retrofit.create(JsonApi.class);
 
-        Call<Void> call_pl = deletePuntoLuce.deleteDevices(token,id);
+        Call<Void> call_pl = deletePuntoLuce.deleteDevices(id,token);
 
         call_pl.enqueue(new Callback<Void>() {
             @Override

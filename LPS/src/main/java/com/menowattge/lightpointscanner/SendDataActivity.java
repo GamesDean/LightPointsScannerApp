@@ -161,6 +161,7 @@ public class SendDataActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
+    // TODO AGGIUNGERE CAMPI MANCANTI SCANSIONE SECONDA E TERZA ETICHETTA
 
     //ftp db
     File db_saved ;

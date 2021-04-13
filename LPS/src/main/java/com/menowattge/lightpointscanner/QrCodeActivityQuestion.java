@@ -23,7 +23,7 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
 
 
     public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza;
+    public String qrCodeData,name,qrCitta,qrIndirizzo,tipo,idConfigurazione,modello,profilo,potenza;
 
 
 
@@ -107,10 +107,11 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         intent.putExtra("name", name); // 15A
 
         // etichetta Meridio
-        intent.putExtra("modello",firstChar);
-        intent.putExtra("corrente",secondAndThirdChar);
-        intent.putExtra("dimensione",fourthChar);
+        intent.putExtra("tipo",tipo);
+        intent.putExtra("id_configurazione",idConfigurazione);
+        intent.putExtra("modello",modello);
         intent.putExtra("potenza",potenza);
+        intent.putExtra("profilo",profilo);
     }
 
     public void getVariables(){
@@ -125,9 +126,11 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         qrCitta = getIntent().getStringExtra("qrCitta_");
 
         // from etichetta device
-        firstChar = getIntent().getStringExtra("modello");
-        secondAndThirdChar = getIntent().getStringExtra("corrente");
-        fourthChar = getIntent().getStringExtra("dimensione");
+        tipo = getIntent().getStringExtra("tipo");
+        idConfigurazione = getIntent().getStringExtra("idConfigurazione");
+        modello = getIntent().getStringExtra("modello");
+        profilo = getIntent().getStringExtra("profilo");
         potenza = getIntent().getStringExtra("potenza");
+
     }
 }
