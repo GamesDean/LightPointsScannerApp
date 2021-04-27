@@ -29,11 +29,16 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
 
 
     private ZXingScannerView mScannerView;
+    // prelevate dalla precedente activity
+    public String citta;
+    public String indirizzo;
+    public double latitudine;
+    public double longitudine;
 
-    public String qrCitta;
-    public String qrIndirizzo;
-    public double qrlatitudine;
-    public double qrlongitudine;
+    // da inviare alla prossima activity
+    public String indirizzoRadio;
+    public String nomePuntoLuce;
+
     // solo gli ID che iniziano con D735 (in minuscolo perchè nel qr è così) sono accettati in quanto Menowatt
     private String menowattCode = "d735";
     // contatori acqua
@@ -61,17 +66,32 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         CheckPermission();
-        // prendo dall'activity SelectActivity dei dati per poi passarli a SendDataActivity
-        qrCitta = getIntent().getStringExtra("citta");
-        qrIndirizzo = getIntent().getStringExtra("indirizzo");
-        qrlatitudine = getIntent().getDoubleExtra("latitudine",0);
-        qrlongitudine = getIntent().getDoubleExtra("longitudine",0);
+        // prendo dall'activity SelectActivity dei dati per poi passarli alla prossima activity
+        getVariables();
 
         // Programmatically initialize the scanner view
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         mScannerView.startCamera();
 
+    }
+
+    public void getVariables(){
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
+    }
+
+    public void putVariables(Intent intent){
+
+        intent.putExtra("indirizzo_radio", indirizzoRadio); // indirizzo radio D735...
+        intent.putExtra("nome_punto_luce", nomePuntoLuce);
+
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
     }
 
 
@@ -114,23 +134,13 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         // controllo che sia un nostro qrcode controllando  D735 per RLU, MAD0 per contatori acqua
         if (d735_MAD.equals(menowattCode)) {
 
-            // se scansiono un RLU devo poi scansionare l' etichetta del modello in QrCodeActivityDue
-            // TODO al posto di ManualValueActivity ci sara QrCodeActivityDue per altra etichetta
-
-            // prelevo il valore dal qrcode letto
-            String qrCodeData = rawResult.getText().substring(0,16); // indirizzo radio D735...
+             indirizzoRadio = rawResult.getText().substring(0,16); // indirizzo radio D735...
             // TODO DOPO gestire BUG dei tre caratteri es : 5A prende anche un terzo ma non dovrebbe, 15A è ok
-            String name       = rawResult.getText().substring(17,21);  // es : 30A
+             nomePuntoLuce  = rawResult.getText().substring(17,21);  // es : 30A
 
-            //Intent intent = new Intent(getApplicationContext(), ManualValueActivity.class);
             Intent intent = new Intent(getApplicationContext(), QrCodeActivityDue.class);
-            // invio a ManualValueActivity il valore del qrcode letto ed i valori dei dati acquisiti in GetLatLong
-            intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
-            intent.putExtra("name", name);
-            intent.putExtra("qrCitta_",qrCitta);
-            intent.putExtra("qrIndirizzo_",qrIndirizzo);
-            intent.putExtra("qrLatitudine_",qrlatitudine);
-            intent.putExtra("qrLongitudine_",qrlongitudine);
+            // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
+            putVariables(intent);
 
             Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
 

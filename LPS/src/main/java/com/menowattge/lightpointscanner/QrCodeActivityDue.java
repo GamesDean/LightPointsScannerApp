@@ -25,9 +25,9 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
     private ZXingScannerView mScannerView;
 
-    public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo;
-
+    public double latitudine,longitudine;
+    public String indirizzoRadio,nomePuntoLuce,citta,indirizzo,
+            serialeApparecchio,codiceApparecchio,tipo,idConfigurazione,modello,potenza,profilo;
 
 
     //PERMESSI CAMERA
@@ -53,24 +53,56 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
         CheckPermission();
 
-        /*
-        // TODO PER DEBUG SALTO DALLO SPLASH A QUESTA CLASSE QUINDI COMMENTO  : RIPRISTINARE
-        //prelevo i dati della scansione del primo QRCODE dell' RLU
-        qrCodeData = getIntent().getStringExtra("qrCode_"); // indirizzo radio D735...
-        name = getIntent().getStringExtra("name");
 
-        qrIndirizzo = getIntent().getStringExtra("qrIndirizzo_");
-        qrlatitudine = getIntent().getDoubleExtra("qrLatitudine_",0);
-        qrlongitudine = getIntent().getDoubleExtra("qrLongitudine_",0);
-        qrCitta = getIntent().getStringExtra("qrCitta_");
+        // TODO PER DEBUG SALTO DALLO SPLASH A QUESTA CLASSE QUINDI PER ORA COMMENTO  : RIPRISTINARE
+        // prelevo i dati da QrCodeActivity quindi coordinate e scansione etichetta RLU
+        getVariables();
 
-
-         */
         // Programmatically initialize the scanner view
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         mScannerView.startCamera();
 
+    }
+
+    public void getVariables(){
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
+
+        indirizzoRadio = getIntent().getStringExtra("indirizzo_radio");
+        nomePuntoLuce = getIntent().getStringExtra("nome_punto_luce");
+    }
+
+    public void putVariables(Intent intent){
+        // GPS
+        // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
+
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
+
+        // Prima etichetta
+        intent.putExtra("indirizzo_radio", indirizzoRadio); // indirizzo radio D735...
+        intent.putExtra("nome_punto_luce", nomePuntoLuce);
+
+        Log.d("TEST_QrCodeActivity2", citta);
+        Log.d("TEST_QrCodeActivity2", indirizzo);
+        Log.d("TEST_QrCodeActivity2", String.valueOf(latitudine));
+        Log.d("TEST_QrCodeActivity2", String.valueOf(longitudine));
+        Log.d("TEST_QrCodeActivity2", indirizzoRadio);
+        Log.d("TEST_QrCodeActivity2", nomePuntoLuce);
+
+        // Seconda etichetta
+        intent.putExtra("seriale_apparecchio",serialeApparecchio);
+        intent.putExtra("codice_apparecchio",codiceApparecchio);
+        intent.putExtra("tipo",tipo);
+        intent.putExtra("id_configurazione",idConfigurazione);
+        intent.putExtra("modello",modello);
+        intent.putExtra("potenza",potenza);
+        intent.putExtra("profilo",profilo);
     }
 
     @Override
@@ -140,62 +172,41 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
         // Salvo la lettura in un array usando i ":" per separare le stringhe
         String etichetta[] = rawResult.getText().split(":");
 
-        String serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
-        String codiceApparecchio = etichetta[2].substring(1,19);  // H13M39A4A03050VP01 18 caratteri
+         serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
+         codiceApparecchio = etichetta[2].substring(1,19);  // H13M39A4A03050VP01 18 caratteri
 
         //prelevo i primi quattro caratteri
         String firstFourChars = etichetta[2].substring(1,5); //H70S
 
-        String tipo = firstFourChars.substring(0,1); // M,G,H
-        String idConfigurazione = firstFourChars.substring(1,3); // id_configurazione ex corrente
-        String potenza = etichetta[3].trim(); // 30W
-        String modello = firstFourChars.substring(3,4); // E,S...
+        tipo = firstFourChars.substring(0,1); // M,G,H
+        idConfigurazione = firstFourChars.substring(1,3); // id_configurazione ex corrente
+        potenza = etichetta[3].trim(); // 30W
+        modello = firstFourChars.substring(3,4); // E,S...
 
         String lettera = etichetta[2].substring(15,16); // V
-        String profilo = Integer.toString(fromLetterToNumber(lettera));
+        profilo = Integer.toString(fromLetterToNumber(lettera));
 
         // TEST EFFETTUATI OK
-        Log.d("YYY", serialeApparecchio);
-        Log.d("YYY", codiceApparecchio);
-        Log.d("YYY", firstFourChars);
-        Log.d("YYY", idConfigurazione);
-        Log.d("YYY", tipo);
-        Log.d("YYY", potenza);
-        Log.d("YYY", modello);
-        Log.d("YYY", lettera);
-        Log.d("YYY", profilo);
+        Log.d("TEST_QrCodeActivity2", serialeApparecchio);
+        Log.d("TEST_QrCodeActivity2", codiceApparecchio);
+       // Log.d("TEST_QrCodeActivity2", firstFourChars);
+        Log.d("TEST_QrCodeActivity2", idConfigurazione);
+        Log.d("TEST_QrCodeActivity2", tipo);
+        Log.d("TEST_QrCodeActivity2", potenza);
+        Log.d("TEST_QrCodeActivity2", modello);
+        //Log.d("TEST_QrCodeActivity2", lettera);
+        Log.d("TEST_QrCodeActivity2", profilo);
 
         //Controllo che inizi per M ,G , H : meglio di niente
         if (tipo.equals("M") || tipo.equals("G") || tipo.equals("H")) {
 
             Intent intent = new Intent(getApplicationContext(), QrCodeActivityQuestion.class);
-            // invio a QrCodeActivityQuestion il valore del qrcode letto ora ed i valori dei dati acquisiti dal primo QrCodeActivity
-            // che a sua volta aveva le coordinate.
-/*
-            TODO RIPRISTINARE
-            // coordinate
-            intent.putExtra("qrCitta_",qrCitta);
-            intent.putExtra("qrIndirizzo_",qrIndirizzo);
-            intent.putExtra("qrLatitudine_",qrlatitudine);
-            intent.putExtra("qrLongitudine_",qrlongitudine);
-            // etichetta RLU
-            intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
-            intent.putExtra("name", name); // 15A
-    */
-            // Seconda etichetta
-            intent.putExtra("seriale_apparecchio",serialeApparecchio);
-            intent.putExtra("codice_apparecchio",codiceApparecchio);
-
-            intent.putExtra("tipo",tipo);
-            intent.putExtra("id_configurazione",idConfigurazione);
-            intent.putExtra("modello",modello);
-            intent.putExtra("potenza",potenza);
-            intent.putExtra("profilo",profilo);
-
+            // invio a QrCodeActivityQuestion i valori cumulativi delle letture effettuate dai 2 qrcode
+            //TODO RIPRISTINARE al suo interno questa funzione
+            putVariables(intent);
 
             startActivity(intent);
             finish();
-
 
         }
 

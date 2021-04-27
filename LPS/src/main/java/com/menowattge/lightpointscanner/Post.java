@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class Post {
 
+// TODO aggiungere campi mancanti, in attesa API
 
     @SerializedName("ID")
     @Expose

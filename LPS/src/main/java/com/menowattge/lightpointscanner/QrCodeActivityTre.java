@@ -22,9 +22,11 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
 public class QrCodeActivityTre extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
-    public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza,identificativo;
+    public double longitudine,latitudine;
+    public String indirizzo,name,nomePuntoLuce,indirizzoRadio,serialeApparecchio,citta,
+            codiceApparecchio,tipo,potenza,identificativo,idConfigurazione,modello,profilo;
     private ZXingScannerView mScannerView;
+
 
     //PERMESSI CAMERA
     @SuppressLint("NewApi")
@@ -48,7 +50,7 @@ public class QrCodeActivityTre extends AppCompatActivity implements ZXingScanner
         CheckPermission();
 
         // TODO decommentare
-        //getVariables();
+        getVariables();
 
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
@@ -87,10 +89,10 @@ public class QrCodeActivityTre extends AppCompatActivity implements ZXingScanner
 
         if(identificativo.length()==8){
             //TODO ok DEBUG DECOMMENTARE
-            //Intent intent = new Intent(getApplicationContext(),SendDataActivity.class);
-            //passVariables(intent);
-            //startActivity(intent);
-            Toast.makeText(getApplicationContext(),"id : "+identificativo,Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(),SendDataActivity.class);
+            putVariables(intent);
+            startActivity(intent);
+            //Toast.makeText(getApplicationContext(),"id : "+identificativo,Toast.LENGTH_LONG).show();
         }
 
 
@@ -99,44 +101,72 @@ public class QrCodeActivityTre extends AppCompatActivity implements ZXingScanner
 
     }
 
-    public void passVariables(Intent intent){
 
-        intent.putExtra("qrCitta_",qrCitta);
-        intent.putExtra("qrIndirizzo_",qrIndirizzo);
-        intent.putExtra("qrLatitudine_",qrlatitudine);
-        intent.putExtra("qrLongitudine_",qrlongitudine);
-        // etichetta RLU
-        intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
-        intent.putExtra("name", name); // 15A
+    public void putVariables(Intent intent){
+        // GPS
+        // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
 
-        // etichetta Meridio
-        intent.putExtra("modello",firstChar);
-        intent.putExtra("corrente",secondAndThirdChar);
-        intent.putExtra("dimensione",fourthChar);
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
+
+        // Prima etichetta
+        intent.putExtra("indirizzo_radio", indirizzoRadio); // indirizzo radio D735...
+        intent.putExtra("nome_punto_luce", nomePuntoLuce);
+
+        // Seconda etichetta
+        intent.putExtra("seriale_apparecchio",serialeApparecchio);
+        intent.putExtra("codice_apparecchio",codiceApparecchio);
+        intent.putExtra("tipo",tipo);
+        intent.putExtra("id_configurazione",idConfigurazione);
+        intent.putExtra("modello",modello);
         intent.putExtra("potenza",potenza);
+        intent.putExtra("profilo",profilo);
 
-        //etichetta Palo
-        intent.putExtra("id_palo",identificativo);
+        // Dato inserito manualmente
+        intent.putExtra("identificativo_palo",identificativo);
     }
+
 
 
     public void getVariables(){
 
-        // RLU scan
-        qrCodeData = getIntent().getStringExtra("qrCode_"); // indirizzo radio D735...
-        name = getIntent().getStringExtra("name");
+        //TODO DECOMMENTARE
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
 
-        // coordinate
-        qrIndirizzo = getIntent().getStringExtra("qrIndirizzo_");
-        qrlatitudine = getIntent().getDoubleExtra("qrLatitudine_",0);
-        qrlongitudine = getIntent().getDoubleExtra("qrLongitudine_",0);
-        qrCitta = getIntent().getStringExtra("qrCitta_");
+        // prima etichetta
+        indirizzoRadio = getIntent().getStringExtra("indirizzo_radio");
+        nomePuntoLuce = getIntent().getStringExtra("nome_punto_luce");
 
-        // from etichetta device
-        firstChar = getIntent().getStringExtra("modello");
-        secondAndThirdChar = getIntent().getStringExtra("corrente");
-        fourthChar = getIntent().getStringExtra("dimensione");
+        Log.d("TEST_QrCodeActivity3", citta);
+        Log.d("TEST_QrCodeActivity3", indirizzo);
+        Log.d("TEST_QrCodeActivity3", String.valueOf(latitudine));
+        Log.d("TEST_QrCodeActivity3", String.valueOf(longitudine));
+        Log.d("TEST_QrCodeActivity3", indirizzoRadio);
+        Log.d("TEST_QrCodeActivity3", nomePuntoLuce);
+
+
+        // seconda etichetta
+        serialeApparecchio = getIntent().getStringExtra("seriale_apparecchio");
+        codiceApparecchio =  getIntent().getStringExtra("codice_apparecchio");
+        tipo = getIntent().getStringExtra("tipo");
+        idConfigurazione = getIntent().getStringExtra("id_configurazione");
+        modello = getIntent().getStringExtra("modello");
         potenza = getIntent().getStringExtra("potenza");
+        profilo = getIntent().getStringExtra("profilo");
+
+
+        Log.d("TEST_QrCodeActivity3", serialeApparecchio);
+        Log.d("TEST_QrCodeActivity3", codiceApparecchio);
+        Log.d("TEST_QrCodeActivity3", idConfigurazione);
+        Log.d("TEST_QrCodeActivity3", tipo);
+        Log.d("TEST_QrCodeActivity3", potenza);
+        Log.d("TEST_QrCodeActivity3", modello);
+        Log.d("TEST_QrCodeActivity3", profilo);
 
     }
 }

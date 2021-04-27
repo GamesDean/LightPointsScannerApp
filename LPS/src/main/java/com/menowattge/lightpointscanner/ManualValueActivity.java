@@ -2,6 +2,7 @@ package com.menowattge.lightpointscanner;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,15 +17,16 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-import static com.menowattge.lightpointscanner.SendDataActivity.valoreCorrente;
 
 /**
  *  Permette all'utente di selezionare la potenza del Meridio. Passa poi questi dati a SendDataActivity
  */
 public class ManualValueActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    public double qrlongitudine,qrlatitudine;
-    public String qrCodeData,name,qrCitta,qrIndirizzo,firstChar,secondAndThirdChar,fourthChar,potenza,identificativo;
+    public double longitudine,latitudine;
+    public String indirizzoRadio,nomePuntoLuce,citta,indirizzo,potenza,identificativo,
+            serialeApparecchio, codiceApparecchio, tipo, idConfigurazione, modello,profilo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,8 @@ public class ManualValueActivity extends AppCompatActivity implements AdapterVie
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        // TODO decommentare ok
-        //getVariables();
+        // TODO decommentare all interno ok
+        getVariables();
 
        // final Spinner spinner = (Spinner) findViewById(R.id.spinner_power);
         final EditText editText = findViewById(R.id.editText);
@@ -53,22 +55,18 @@ public class ManualValueActivity extends AppCompatActivity implements AdapterVie
             public void onClick(View v) {
 
                 identificativo = editText.getText().toString();
-
+                // TODO controlli lunghezza
                 if(identificativo==""|| identificativo.isEmpty()){
                     Toast.makeText(ManualValueActivity.this,"Inserire ID palo",Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(ManualValueActivity.this,"id : "+identificativo,Toast.LENGTH_LONG).show();
                     // TODO decommentare ok
-                    //passVariables(intent);
-                    //startActivity(intent);
-                    //finish();
+                    putVariables(intent);
+                    startActivity(intent);
+                    finish();
                 }
-
-
             }
         });
-
-
     }
 
     @Override
@@ -91,44 +89,69 @@ public class ManualValueActivity extends AppCompatActivity implements AdapterVie
     }
 
 
-    public void passVariables(Intent intent){
+    public void putVariables(Intent intent){
+        // GPS
+        // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
 
-        intent.putExtra("qrCitta_",qrCitta);
-        intent.putExtra("qrIndirizzo_",qrIndirizzo);
-        intent.putExtra("qrLatitudine_",qrlatitudine);
-        intent.putExtra("qrLongitudine_",qrlongitudine);
-        // etichetta RLU
-        intent.putExtra("qrCode_", qrCodeData); // indirizzo radio D735...
-        intent.putExtra("name", name); // 15A
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
 
-        // etichetta Meridio
-        intent.putExtra("modello",firstChar);
-        intent.putExtra("corrente",secondAndThirdChar);
-        intent.putExtra("dimensione",fourthChar);
+        // Prima etichetta
+        intent.putExtra("indirizzo_radio", indirizzoRadio); // indirizzo radio D735...
+        intent.putExtra("nome_punto_luce", nomePuntoLuce);
+
+        Log.d("TEST_QrCodeActivityM", citta);
+        Log.d("TEST_QrCodeActivityM", indirizzo);
+        Log.d("TEST_QrCodeActivityM", String.valueOf(latitudine));
+        Log.d("TEST_QrCodeActivityM", String.valueOf(longitudine));
+        Log.d("TEST_QrCodeActivityM", indirizzoRadio);
+        Log.d("TEST_QrCodeActivityM", nomePuntoLuce);
+
+        // Seconda etichetta
+        intent.putExtra("seriale_apparecchio",serialeApparecchio);
+        intent.putExtra("codice_apparecchio",codiceApparecchio);
+        intent.putExtra("tipo",tipo);
+        intent.putExtra("id_configurazione",idConfigurazione);
+        intent.putExtra("modello",modello);
         intent.putExtra("potenza",potenza);
+        intent.putExtra("profilo",profilo);
 
-        //etichetta Palo
-        intent.putExtra("id_palo",identificativo);
+        // Dato inserito manualmente
+        intent.putExtra("identificativo_palo",identificativo);
     }
 
 
     public void getVariables(){
 
-        // RLU scan
-        qrCodeData = getIntent().getStringExtra("qrCode_"); // indirizzo radio D735...
-        name = getIntent().getStringExtra("name");
+        //TODO DECOMMENTARE
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
 
-        // coordinate
-        qrIndirizzo = getIntent().getStringExtra("qrIndirizzo_");
-        qrlatitudine = getIntent().getDoubleExtra("qrLatitudine_",0);
-        qrlongitudine = getIntent().getDoubleExtra("qrLongitudine_",0);
-        qrCitta = getIntent().getStringExtra("qrCitta_");
+        // prima etichetta
+        indirizzoRadio = getIntent().getStringExtra("indirizzo_radio");
+        nomePuntoLuce = getIntent().getStringExtra("nome_punto_luce");
 
-        // from etichetta device
-        firstChar = getIntent().getStringExtra("modello");
-        secondAndThirdChar = getIntent().getStringExtra("corrente");
-        fourthChar = getIntent().getStringExtra("dimensione");
+
+        // seconda etichetta
+        serialeApparecchio = getIntent().getStringExtra("seriale_apparecchio");
+        codiceApparecchio =  getIntent().getStringExtra("codice_apparecchio");
+        tipo = getIntent().getStringExtra("tipo");
+        idConfigurazione = getIntent().getStringExtra("id_configurazione");
+        modello = getIntent().getStringExtra("modello");
         potenza = getIntent().getStringExtra("potenza");
+        profilo = getIntent().getStringExtra("profilo");
+
+        Log.d("TEST_QrCodeActivityM", serialeApparecchio);
+        Log.d("TEST_QrCodeActivityM", codiceApparecchio);
+        Log.d("TEST_QrCodeActivityM", idConfigurazione);
+        Log.d("TEST_QrCodeActivityM", tipo);
+        Log.d("TEST_QrCodeActivityM", potenza);
+        Log.d("TEST_QrCodeActivityM", modello);
+        Log.d("TEST_QrCodeActivityM", profilo);
 
     }
 

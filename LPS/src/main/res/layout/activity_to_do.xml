@@ -1,5 +1,5 @@
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
@@ -12,158 +12,274 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4f9e33"
-        android:padding="6dip" >
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="0dip"
-            android:layout_height="69dp"
-            android:layout_marginLeft="2dp"
-            android:layout_weight="0.12"
-            android:gravity="center"
-            android:text="Riepilogo dati Punto Luce"
-            android:textColor="#FFF"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/recap_card"
-            android:layout_gravity="center"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:cardUseCompatPadding="true"
-            card_view:cardCornerRadius="7sp"
-            android:layout_marginTop="3sp"
+            android:background="#4f9e33"
+            android:padding="6dip" >
 
-            android:foreground="?attr/selectableItemBackground">
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="0dip"
+                android:layout_height="69dp"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="0.12"
+                android:gravity="center"
+                android:text="Riepilogo dati Punto Luce"
+                android:textColor="#FFF"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
 
-            <TableLayout
-                android:id="@+id/recap_table"
-                android:layout_width="wrap_content"
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/recap_card"
+                android:layout_gravity="center"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/status_margin"
-                android:gravity="center_horizontal">
+                card_view:cardUseCompatPadding="true"
+                card_view:cardCornerRadius="7sp"
+                android:layout_marginTop="3sp"
+
+                android:foreground="?attr/selectableItemBackground">
+
+                <TableLayout
+                    android:id="@+id/recap_table"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/status_margin"
+                    android:gravity="center_horizontal">
 
 
-                <TableRow>
-                    <TextView
-                        android:id="@+id/devid_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="ID : " />
-                    <TextView
-                        android:id="@+id/devid"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/code_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nCodice :  " />
-                    <TextView
-                        android:id="@+id/code"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/address_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nIndirizzo : " />
-                    <TextView
-                        android:id="@+id/address"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/latitude_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nLatitudine : " />
-                    <TextView
-                        android:id="@+id/latitude"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/longitude_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nLongitudine : " />
-                    <TextView
-                        android:id="@+id/longitude"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/watt_label"
-                        style="@style/info_label"
-                        android:layout_gravity="right"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        android:layout_marginRight="@dimen/status_label_right_margin"
-                        android:text="\nPotenza : " />
-                    <TextView
-                        android:id="@+id/watt"
-                        android:textSize="20sp"
-                        android:textColor="#666"
-                        style="@style/info_value" />
-                </TableRow>
-            </TableLayout>
-        </androidx.cardview.widget.CardView>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/devid_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="ID : " />
+                        <TextView
+                            android:id="@+id/devid"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/code_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nCodice :  " />
+                        <TextView
+                            android:id="@+id/code"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/address_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nIndirizzo : " />
+                        <TextView
+                            android:id="@+id/address"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/latitude_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nLatitudine : " />
+                        <TextView
+                            android:id="@+id/latitude"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/longitude_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nLongitudine : " />
+                        <TextView
+                            android:id="@+id/longitude"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/watt_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nPotenza : " />
+                        <TextView
+                            android:id="@+id/watt"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/seriale_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nSeriale : " />
+                        <TextView
+                            android:id="@+id/seriale"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/codice_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nCodice : " />
+                        <TextView
+                            android:id="@+id/codice"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/id_conf_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nID Config : " />
+                        <TextView
+                            android:id="@+id/id_config"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/tipo_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nTipo : " />
+                        <TextView
+                            android:id="@+id/tipo"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/modello_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nModello : " />
+                        <TextView
+                            android:id="@+id/modello"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/profilo_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nProfilo : " />
+                        <TextView
+                            android:id="@+id/profilo"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/identificativo_label"
+                            style="@style/info_label"
+                            android:layout_gravity="right"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            android:layout_marginRight="@dimen/status_label_right_margin"
+                            android:text="\nID palo : " />
+                        <TextView
+                            android:id="@+id/identificativo"
+                            android:textSize="20sp"
+                            android:textColor="#666"
+                            style="@style/info_value" />
+                    </TableRow>
+                </TableLayout>
+            </androidx.cardview.widget.CardView>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonAddToDo"
+            android:layout_width="151dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="130dp"
+            android:layout_marginEnd="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="#4f9e33"
+            android:onClick="addItem"
+            android:alpha="0.8"
+            android:text="invia"
+            android:textColor="#FFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonAddToDo"
-        android:layout_width="151dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginEnd="130dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="#4f9e33"
-        android:onClick="addItem"
-        android:alpha="0.8"
-        android:text="invia"
-        android:textColor="#FFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

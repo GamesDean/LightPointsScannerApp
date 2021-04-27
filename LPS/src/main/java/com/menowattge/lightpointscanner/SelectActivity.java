@@ -36,10 +36,7 @@ public class SelectActivity extends AppCompatActivity {
         buttonContatore= findViewById(R.id.imageButtonContatore);
 
         // prendo da GpsStatusFragment citta indirizzo e le coordinate
-        citta = getIntent().getStringExtra("citta");
-        indirizzo = getIntent().getStringExtra("indirizzo");
-        latitudine = getIntent().getDoubleExtra("latitudine",0);
-        longitudine = getIntent().getDoubleExtra("longitudine",0);
+        getVariables();
 
 
         buttonLampione.setOnClickListener(new View.OnClickListener() {
@@ -65,15 +62,32 @@ public class SelectActivity extends AppCompatActivity {
                 // TODO QrCodeActivityWater (forse non necessario)
                 Intent intent = new Intent(getApplicationContext(), QrCodeActivity.class);
 
-                intent.putExtra("citta", citta);
-                intent.putExtra("indirizzo", indirizzo);
-                intent.putExtra("latitudine", latitudine);
-                intent.putExtra("longitudine", longitudine);
+               // inoltro i dati raccolti fin qui(coordinate citta indirizzo) alla prossima activity
+               putVariables(intent);
 
-                startActivity(intent);
+               startActivity(intent);
             }
         });
 
 
+    }
+
+    /**
+     * Prende da GPSTestActivity citta indirizzo e coordinate
+     */
+
+    public void getVariables(){
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
+    }
+
+    public void putVariables(Intent intent){
+
+        intent.putExtra("citta", citta);
+        intent.putExtra("indirizzo", indirizzo);
+        intent.putExtra("latitudine", latitudine);
+        intent.putExtra("longitudine", longitudine);
     }
 }

@@ -56,6 +56,7 @@ import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -103,7 +104,8 @@ public class SendDataActivity extends Activity {
     /**
      * EditText containing the "New To Do" text
      */
-    public static TextView devid_tw,code_tw,address_tw,latitude_tw,longitude_tw,corrente_tw;
+    public static TextView devid_tw,code_tw,address_tw,latitude_tw,longitude_tw,corrente_tw,
+                           seriale_tw,codice_tw,idConf_tw,tipo_tw,modello_tw,profilo_tw,idPalo_tw;
 
     public CardView recap;
     /**
@@ -115,14 +117,21 @@ public class SendDataActivity extends Activity {
     private android.widget.Button buttonExit;
     private ProgressDialog pd;
 
+
     public static String name;
-    public static String qrCitta;
-    public static Double qrLatitudine;
-    public static Double qrLongitudine;
-    public static String qrAddress;
-    public static String valoreCorrente;
+    public static String citta;
+    public static Double latitudine;
+    public static Double longitudine;
+    public static String indirizzo_;
+    public static String indirizzoRadio;
+    // --------TODO in attesa API ELIOS--------
+    public static String serialeApparecchio,codiceApparecchio,tipo,idConfigurazione,modello,potenza,profilo;
+    public static String identificativo =""; // può anche essere vuoto ovvero NON presente
+    //-------------------------
+    public static String nomePuntoLuce;
     public        String conn_string;
     public        String key="";
+
 
     // API login
     String username="tecnico@citymonitor.it";
@@ -183,23 +192,32 @@ public class SendDataActivity extends Activity {
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        //mTextNewToDo = findViewById(R.id.textNewToDo);
         devid_tw = findViewById(R.id.devid);
         code_tw = findViewById(R.id.code);
         address_tw = findViewById(R.id.address);
         latitude_tw = findViewById(R.id.latitude);
         longitude_tw = findViewById(R.id.longitude);
         corrente_tw = findViewById(R.id.watt);
+        seriale_tw = findViewById(R.id.seriale);
+        codice_tw = findViewById(R.id.codice);
+        idConf_tw = findViewById(R.id.id_config);
+        tipo_tw = findViewById(R.id.tipo);
+        modello_tw = findViewById(R.id.modello);
+        profilo_tw = findViewById(R.id.profilo);
+        idPalo_tw = findViewById(R.id.identificativo);
+
         recap = findViewById(R.id.recap_card);
 
         recap.setCardBackgroundColor(Color.parseColor("#edf4f0"));
         recap.setCardElevation(5);
 
-
         button = findViewById(R.id.buttonAddToDo);
         pd = new ProgressDialog(new ContextThemeWrapper(SendDataActivity.this,R.style.ProgressDialogCustom));
 
+        // prelevo i dati acquisiti dalle scansioni
         getQrCodeData();
+        // mostro i dati a video
+        showData();
 
         // creo un file .db nella cartella dell'app nel caso in cui dovesse servirmi per il download effttivo dall' FTP
         try {
@@ -339,38 +357,69 @@ public class SendDataActivity extends Activity {
     }
 
 
+    /**
+     * Ottiene i dati delle scansioni dei qrcode
+     */
     public void getQrCodeData(){
+        try {
+            citta = getIntent().getStringExtra("citta");
+            indirizzo_ = getIntent().getStringExtra("indirizzo");
+            latitudine = getIntent().getDoubleExtra("latitudine", 0);
+            longitudine = getIntent().getDoubleExtra("longitudine", 0);
 
-        //prelevo i dati della scansione del qrcode
-        String qrCodeData = getIntent().getStringExtra("qrCode");
-        // prelevo le altre info che ho trasferito tra le activity
-        String qrAddress = getIntent().getStringExtra("qrIndirizzo");
-        Double qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-        Double qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-        String valoreCorrente = getIntent().getStringExtra("valore_corrente");
-        //Double valoreWatt = Double.parseDouble(valoreCorrente)*0.36;
-        //Integer valoreWatt_ = valoreWatt.intValue();
-        String name = getIntent().getStringExtra("name_").trim();
+            // prima etichetta
+            indirizzoRadio = getIntent().getStringExtra("indirizzo_radio");
+            nomePuntoLuce = getIntent().getStringExtra("nome_punto_luce").trim();
 
-        String data[] = qrAddress.split(",");
-        String a = data[0];
-        String b = data[1];
-        String c = data[2];
-        devid_tw.setText(qrCodeData);
-        code_tw.setText("\n"+name);
-        address_tw.setText("\n"+a+b+"\n"+c);
-        latitude_tw.setText("\n"+qrLatitudine.toString());
-        longitude_tw.setText("\n"+qrLongitudine.toString());
-        corrente_tw.setText("\n"+valoreCorrente+" W");
+            // seconda etichetta
+            serialeApparecchio = getIntent().getStringExtra("seriale_apparecchio");
+            codiceApparecchio = getIntent().getStringExtra("codice_apparecchio");
+            tipo = getIntent().getStringExtra("tipo");
+            idConfigurazione = getIntent().getStringExtra("id_configurazione");
+            modello = getIntent().getStringExtra("modello");
+            potenza = getIntent().getStringExtra("potenza");
+            profilo = getIntent().getStringExtra("profilo");
 
+            // terza etichetta / inserimento manuale
+            identificativo = getIntent().getStringExtra("identificativo_palo");
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Errore : Ripetere le Scansioni", Toast.LENGTH_LONG).show();
+        }
+    }
 
-        // mostro a video i  valori soprastanti usando la formattazione HTML
-        /*mTextNewToDo.setText(Html.fromHtml("<br />"+"<font color=#4f9e33>" + "<b>"+"ID : "+ "</b>"+"</font>"+"<font color=#656d66>"+qrCodeData+"</font>"+"<br />"+"<br />"));
-        mTextNewToDo.append(Html.fromHtml("<font color=#4f9e33>" +"<b>"+"Codice : "+"</b>"+"</font>"+"<font color=#656d66>"+name+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Indirizzo : "+"</b>"+"</font>"+"<font color=#656d66>"+qrAddress+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Latitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLatitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Longitudine : "+"</b>"+"</font>"+"<font color=#656d66>"+qrLongitudine+"</font>"+"<br />"+"<br />"
-                                                +"<font color=#4f9e33>" +"<b>"+"Corrente : "+"</b>"+"</font>"+"<font color=#656d66>"+valoreCorrente+" W"+"</font>"+"<br />"));*/
+    /**
+     * Mostra a video i dati acquisiti dalle scansioni
+     */
+    public void showData(){
+
+        try {
+            seriale_tw.setText("\n" + serialeApparecchio);
+            codice_tw.setText("\n" + codiceApparecchio);
+            idConf_tw.setText("\n" + idConfigurazione);
+            tipo_tw.setText("\n" + tipo);
+            corrente_tw.setText("\n" + potenza);
+            modello_tw.setText("\n" + modello);
+            profilo_tw.setText("\n" + profilo);
+            idPalo_tw.setText("\n" + identificativo);
+
+            String data[] = indirizzo_.split(",");
+            String a = data[0];
+            String b = data[1];
+            String c = data[2];
+            devid_tw.setText(indirizzoRadio);
+            code_tw.setText("\n" + nomePuntoLuce);
+            address_tw.setText("\n" + a + b + "\n" + c);
+            latitude_tw.setText("\n" + latitudine.toString());
+            longitude_tw.setText("\n" + longitudine.toString());
+            corrente_tw.setText("\n" + potenza);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Errore : Ripetere le Scansioni", Toast.LENGTH_LONG).show();
+
+        }
 
     }
 
@@ -446,7 +495,7 @@ public class SendDataActivity extends Activity {
      * @param id_comune id del comune nel quale inserire il punto luce
      */
     public void postData(Retrofit retrofit,String token,String id_comune){
-
+    // TODO cambiare variabili passate a Post con quelle "nuove" DOPO API ovviamente
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
         Call<Void> call_pl = postPuntoLuce.postData(new Post(id,Nome_PL,
                 TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
@@ -486,6 +535,7 @@ public class SendDataActivity extends Activity {
      * @param id_comune id del comune nel quale inserire il punto luce
      */
     public void putData(Retrofit retrofit,String token,String id_comune){
+        // TODO cambiare variabili passate a Post con quelle "nuove" DOPO API ovviamente
 
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
         Call<Void> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
@@ -617,7 +667,7 @@ public class SendDataActivity extends Activity {
                         myMap.put(keyValue[0], keyValue[1].trim());
                     }
                     for (Map.Entry<String, String> entry : myMap.entrySet()) {
-                        if (entry.getValue().contains(qrCitta)) {
+                        if (entry.getValue().contains(citta)) {
                             id_comune=entry.getKey().replace("\"",""); // rimuovo le virgolette
                             System.out.println("IDCOMUNE : "+id_comune);
                         }
@@ -662,15 +712,17 @@ public class SendDataActivity extends Activity {
         protected Void doInBackground(Void... params) {
 
             try {
+
+                // TODO SOSTITUIRE CON UNA GETVARIABLES ed AGGIUNGERE I CAMPI MANCANTI QUELLI "nuovi"
                 // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
-                id  = getIntent().getStringExtra("qrCode").toUpperCase();
-                Nome_PL = getIntent().getStringExtra("name_").trim();
+                id  = getIntent().getStringExtra("indirizzo_radio").toUpperCase();
+                Nome_PL = getIntent().getStringExtra("nome_punto_luce").trim();
                 //Nome_PL = "prova_app_jk"; // DEBUG lo uso se ho un solo qrcode per i test
-                qrCitta =getIntent().getStringExtra("qrCitta");
-                qrLatitudine = getIntent().getDoubleExtra("qrLatitudine",0);
-                qrLongitudine = getIntent().getDoubleExtra("qrLongitudine",0);
-                indirizzo = getIntent().getStringExtra("qrIndirizzo");
-                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("valore_corrente") );
+                citta =getIntent().getStringExtra("citta");
+                latitudine = getIntent().getDoubleExtra("latitudine",0);
+                longitudine = getIntent().getDoubleExtra("longitudine",0);
+                indirizzo = getIntent().getStringExtra("indirizzo");
+                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("potenza") );
 
                 conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
 
@@ -690,8 +742,8 @@ public class SendDataActivity extends Activity {
                 // ----------------------------------------------------- END -------------------------------------------------- //
 
                 chiaviCrittografia.add(conn_string);
-                coordinate.setLat(qrLatitudine);
-                coordinate.setLong(qrLongitudine);
+                coordinate.setLat(latitudine);
+                coordinate.setLong(longitudine);
                 coordinateGps.add(coordinate);
                 // DEBUG
                 //id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
