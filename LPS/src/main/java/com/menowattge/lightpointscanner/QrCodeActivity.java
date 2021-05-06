@@ -44,7 +44,6 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
     // contatori acqua
     private String menowattCodeMad = "MAD0"; // TODO vedere se lower o uppercase
 
-
     //PERMESSI CAMERA
     @SuppressLint("NewApi")
     public void CheckPermission() {
@@ -87,6 +86,16 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
 
         intent.putExtra("indirizzo_radio", indirizzoRadio); // indirizzo radio D735...
         intent.putExtra("nome_punto_luce", nomePuntoLuce);
+
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
+    }
+
+    public void putVariablesContatore(Intent intent, String ldnContatore){
+
+        intent.putExtra("ldn", ldnContatore); // indirizzo radio D735...
 
         intent.putExtra("citta",citta);
         intent.putExtra("indirizzo",indirizzo);
@@ -151,16 +160,29 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         }
         else if (d735_MAD.equals(menowattCodeMad)){
 
-            Log.d("MAD","acqua");
-            // TODO creare LDN a partire dal codice scansionato
-            // MAD0 07 87 19 70 01 04
-            //MAD0 à 2434 poi vai al contrario 04 01 70 19 87 07
-            // String qrCodeData = rawResult.getText().substring(0,16); fare prove per vedere cosa prendere
-            // e come invertire le coppie di numeri
+            // es: MAD0 078719700104
+            // MAD0 -> 2434 poi vai al contrario 2434040170198707
+            String indirizzoContatore = rawResult.getText().substring(0,16);
+            String ldnContatore="2434";
 
-            // ottenuto LDN lo incapsulo con citta,lat,lon ed indirizzo e lo invio a SendDataActivity
-            // che fara un UPDATE dato che LDN e chiavi saranno gia inserite.
+            int k=indirizzoContatore.length(); // lunghezza indirizzo del contatore, 16
+            // ciclo 6 volte perche devo prelevare sei coppie
+            for(int i=6;i>0;i--){
+                 ldnContatore += indirizzoContatore.substring(k-2,k); // 14,16 - 12,14, etc
+                k-=2;// sottraggo due perche prelevo delle coppie
+            }
 
+            // inviare a classe per seconda etichetta
+            // SendDatache fara un UPDATE dato che LDN e chiavi saranno gia inserite.
+            Intent intent = new Intent(getApplicationContext(), QrCodeActivityContatore.class);
+            // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
+            putVariablesContatore(intent,ldnContatore);
+
+            Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
+
+            startActivity(intent);
+            finish();
+            Log.d("LDN : ",ldnContatore);
 
         }
         else {

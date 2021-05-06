@@ -24,7 +24,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
-        <activity android:name=".DeleteDeviceActivity"></activity>
+        <activity android:name=".SendDataContActivity"></activity>
+        <activity android:name=".InsertMatrContActivity" />
+        <activity android:name=".QrCodeActivityContatore" />
+        <activity android:name=".DeleteDeviceActivity" />
         <activity
             android:name=".QrCodeActivityDelete"
             android:screenOrientation="portrait"

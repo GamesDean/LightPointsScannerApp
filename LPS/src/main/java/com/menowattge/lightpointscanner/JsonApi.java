@@ -44,9 +44,11 @@ public interface JsonApi {
     Call<Void> deleteDevices( @Query("idPuntoLuce") String id , @Header("Authorization") String authkey ) ;
 
 
+    //-------------------CONTATORI------------------------------------------------------------------------------//
 
-    // @POST("/api/ComandoStatoPuntoLuce/")
-   // Call<Post> onOff(@Body OnOff data,@Header("Authorization") String authkey);
+    // inserisco il contatore
+    @POST("/api/ContatoreAcquaV2")
+    Call<Void> postDataContatori(@Body PostContatori data, @Header("Authorization") String authkey);
 
 
 
