@@ -26,7 +26,8 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
     private ZXingScannerView mScannerView;
 
     public double latitudine,longitudine;
-    public String ldnContatore,citta,indirizzo,cognome,nome,numeroUtenza,numeroContratto,indirizzoUtenza, numeroCivico;
+    public String ldnContatore,citta,indirizzo,cognome,nome,numeroUtenza,numeroContratto,indirizzoUtenza, numeroCivico,
+    numeroSerialeRadio;
 
 
     //PERMESSI CAMERA
@@ -70,6 +71,7 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
        // longitudine = getIntent().getDoubleExtra("longitudine",0);
 
         ldnContatore = getIntent().getStringExtra("ldn");
+        numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
 
     }
 
@@ -82,6 +84,7 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
 
         // Prima etichetta
         intent.putExtra("ldn", ldnContatore);
+        intent.putExtra("numero_seriale_radio",numeroSerialeRadio);
 
         // Seconda etichetta
         intent.putExtra("cognome",cognome);

@@ -1,7 +1,7 @@
 package com.menowattge.lightpointscanner;
 
 /**
- * Inserisce o aggiorna i dati del deivice nel portale
+ * Inserisce o aggiorna i dati del device nel portale
  */
 
 
@@ -119,9 +119,9 @@ public class SendDataContActivity extends Activity {
     private android.widget.Button buttonExit;
     private ProgressDialog pd;
 
-    public String citta,cognome,nome,indirizzoUtenza,numeroCivico,ldnContatore;
+    public String citta,nome,cognome;
 
-    public String matricolaCont = "";
+
 
     public static Double latitudine;
     public static Double longitudine;
@@ -135,9 +135,9 @@ public class SendDataContActivity extends Activity {
     String username="tecnico@citymonitor.it";
     String password="tecnico";
 
-    // per creare il JSON
+    //-------- per creare il JSON------
     public  static String  id ;
-    private String  Nome ;
+    private String  Nome ; // associare il numeroUtente
     private boolean Ripetitore = true;
     private String  Note ="";
     private List<String> chiaviCrittografia   = new ArrayList<>();
@@ -149,12 +149,16 @@ public class SendDataContActivity extends Activity {
     private String  nomeUtente;
     private String  numeroUtente;
     private String  numeroContratto;
-    private String  matricola;
-    private String  numeroSerialeRadio;
+    private String  indirizzoUtenza,numeroCivico,ldnContatore;
+    public String   matricolaCont = "";
+    private String  numeroSerialeRadio; // LDN (MAD067643..) TODO prendere dalla prima etichetta
+
+    // ------end JSON---------
 
     //ftp db
     File db_saved ;
 
+    String [] cryptoKeys = new String[17]; // chiavi prelevate dal JSON con getKeys()
 
 
     /**
@@ -196,60 +200,35 @@ public class SendDataContActivity extends Activity {
         pd = new ProgressDialog(new ContextThemeWrapper(SendDataContActivity.this,R.style.ProgressDialogCustom));
 
         // prelevo i dati acquisiti dalle scansioni
-        getQrCodeData();
+       // getQrCodeData();
         // mostro i dati a video
-        showData();
-
-        // creo un file .db nella cartella dell'app nel caso in cui dovesse servirmi per il download effttivo dall' FTP
-        try {
-            db_saved = new File(this.getExternalFilesDir(null), "rluDB.db");
-            if (!db_saved.exists())
-                db_saved.createNewFile();
-            Log.d("DB_DB","creato file db");
-        }catch (IOException e ){
-            e.printStackTrace();
-        }
+       // showData();
 
 
+        // TODO *****************DEBUG*****************
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
+                .readTimeout(60,TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
 
-        // -------------------------------------------------------------------------------------------------------------------------
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://citymonitor.azurewebsites.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
 
-        // ----------- Definisco il link dove risiede la mia app su Azure poi creo l'istanza della tabella del DB ------------------
+        // prendo il token generato a partire da user e pass
+        String token = LoginCredentials.getAuthToken(username,password);
 
-        // -------------------------------------------------------------------------------------------------------------------------
+        ldnContatore= "2434003070208707";
+        getKey(retrofit,token,ldnContatore);
 
-        try {
-            // Create the client instance, using the provided mobile app URL.
-            mClient = new MobileServiceClient(
-                    "https://menowattgeqrcodescanner.azurewebsites.net", // fondamentale
-                    this).withFilter(new ProgressFilter());
-
-            // Extend timeout from default of 10s to 120s
-            mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                @Override
-                public OkHttpClient createOkHttpClient() {
-                    OkHttpClient client = new OkHttpClient.Builder()
-                            .connectTimeout(120, TimeUnit.SECONDS)
-                            .readTimeout(120, TimeUnit.SECONDS)
-                            .retryOnConnectionFailure(true)
-                            .build();
-
-                    return client;
-                }
-            });
-
-            // Get the remote table instance to use.
-            mDevicesLightPointsTemp = mClient.getTable(DevicesLightPointsTemp.class);
-
-            //Init local storage
-            initLocalStore().get();
+        // TODO *****************DEBUG*****************
 
 
-        } catch (MalformedURLException e) {
-            createAndShowDialog(new Exception("C'è un problema con il Mobile Service. Controlla l'URL"), "Error");
-        } catch (Exception e){
-
-        }
     }
 
 
@@ -323,40 +302,33 @@ public class SendDataContActivity extends Activity {
         timeout.start();
     }
 
-    /**
-     * Mark an item as completed
-     *
-     * @param item
-     *            The item to mark
-     */
-    public void checkItem(final DevicesLightPointsTemp item) {   // -L
-        if (mClient == null) {
-            return;
-        }
-        // Set the item as completed and update it in the table
-        item.setComplete(true);
-    }
-
 
     /**
      * Ottiene i dati delle scansioni dei qrcode
      */
     public void getQrCodeData(){
         try {
-            citta = getIntent().getStringExtra("citta");
-            indirizzo = getIntent().getStringExtra("indirizzo");
-            latitudine = getIntent().getDoubleExtra("latitudine", 0);
-            longitudine = getIntent().getDoubleExtra("longitudine", 0);
+            // TODO decommentare
+            //citta = getIntent().getStringExtra("citta");
+            //indirizzo = getIntent().getStringExtra("indirizzo");
+            //latitudine = getIntent().getDoubleExtra("latitudine", 0);
+            //longitudine = getIntent().getDoubleExtra("longitudine", 0);
 
             ldnContatore = getIntent().getStringExtra("ldn");
+            numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
 
             // seconda etichetta
-            cognome = getIntent().getStringExtra("cognome");
+            cognome= getIntent().getStringExtra("cognome");
             nome =  getIntent().getStringExtra("nome");
+            nomeUtente = cognome+" "+nome;
+
             numeroUtente = getIntent().getStringExtra("numero_utenza");
             numeroContratto = getIntent().getStringExtra("numero_contratto");
+            // TODO gestire che se indirizzo vuoto allora uso quello delle coordinate
             indirizzoUtenza = getIntent().getStringExtra("indirizzo_utenza");
             numeroCivico = getIntent().getStringExtra("numero_civico");
+
+            matricolaCont=getIntent().getStringExtra("matricola_contatore");
         }
         catch (NullPointerException e) {
             e.printStackTrace();
@@ -371,23 +343,19 @@ public class SendDataContActivity extends Activity {
 
         try {
 
-            ldn_tw.setText("\n" + ldnContatore);
-            citta_tw.setText("\n" + citta);
-            address_tw.setText("\n" + indirizzo);
-            latitude_tw.setText("\n" + latitudine);
-            longitude_tw.setText("\n" + longitudine);
+            ldn_tw.setText(ldnContatore);
+           // citta_tw.setText("\n" + citta);
+            address_tw.setText("\n" + numeroSerialeRadio);
+           // latitude_tw.setText("\n" + latitudine);
+           // longitude_tw.setText("\n" + longitudine);
             cognome_tw.setText("\n" + cognome);
             nome_tw.setText("\n" + nome);
             numeroUtenza_tw.setText("\n" + numeroUtente);
+            numeroContratto_tw.setText("\n"+numeroContratto);
+            indirizzoUtenza_tw.setText("\n"+indirizzoUtenza);
+            numeroCivico_tw.setText("\n"+numeroCivico);
+            matricolaCont_tw.setText("\n"+matricolaCont);
 
-            String data[] = indirizzo.split(",");
-            String a = data[0];
-            String b = data[1];
-            String c = data[2];
-
-            address_tw.setText("\n" + a + b + "\n" + c);
-            latitude_tw.setText("\n" + latitudine.toString());
-            longitude_tw.setText("\n" + longitudine.toString());
         }
         catch (NullPointerException e){
             e.printStackTrace();
@@ -657,18 +625,54 @@ public class SendDataContActivity extends Activity {
     }
 
 
-    /**
-     * Mostra sulla mappa il punto luce installato
-     * @param citta
-     * @param lat
-     * @param lon
-     */
-    public void showLightPointOnMap(String citta, String lat,String lon){
 
-        String geoUri = "http://maps.google.com/maps?q=loc:" + lat + "," + lon + " (" + citta + ")";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
+    public void getKey(Retrofit retrofit,String token,String ldnContatore) {
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<JsonObject> call = jsonApi.getJsonContatore(ldnContatore,token);
+
+        call.enqueue(new Callback <JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String rc = String.valueOf(response.code());
+                if (!response.isSuccessful()) {
+                    Log.d("http_get_ko_rc : ", rc);
+                }
+                else{
+                    Log.d("http_get_ok_rc : ", rc);
+                    //JSON in risposta, lo salvo in una stringa unica
+                    String data = response.body().toString();
+                    // divido gli elementi sfruttando la virgola
+                    String[] pairs = data.split(",");
+                    int k=0;
+                    try {
+                        for (int i = 10; i < 27; i++) { // le chiavi sono 17, le trovo nell'array dalla 10 alla 27
+                            if (i == 10) {
+                                cryptoKeys[k] = pairs[i].substring(23, 55); // tolgo la scritta "ChiaviCrittografia"
+                            } else {
+                                cryptoKeys[k] = pairs[i].substring(1, 33); // tolgo virgolette
+                            }
+                            k++;
+                        }
+                        // inserisco le singole chiavi nell' arraylist
+                        for (String item : cryptoKeys) {
+                            Log.d("crypto", item);
+                            chiaviCrittografia.add(item);
+                        }
+                        Log.d("KEYS","Chiavi  presenti - PUT");
+                        // TODO call PUT
+                    }catch (Error e){e.printStackTrace();
+                    Log.d("KEYS","Chiavi non presenti - POST");
+
+                    // TODO call POST
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("http_rc_fail : ", t.getMessage());
+            }
+        });
+
     }
 
 

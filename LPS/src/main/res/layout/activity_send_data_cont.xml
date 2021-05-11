@@ -98,7 +98,7 @@
                             android:textSize="20sp"
                             android:textColor="#666"
                             android:layout_marginRight="@dimen/status_label_right_margin"
-                            android:text="\nIndirizzo : " />
+                            android:text="\nN°Seriale : " />
                         <TextView
                             android:id="@+id/address"
                             android:textSize="20sp"

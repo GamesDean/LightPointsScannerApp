@@ -93,9 +93,10 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         intent.putExtra("longitudine",longitudine);
     }
 
-    public void putVariablesContatore(Intent intent, String ldnContatore){
+    public void putVariablesContatore(Intent intent, String ldnContatore, String indirizzoContatore){
 
-        intent.putExtra("ldn", ldnContatore); // indirizzo radio D735...
+        intent.putExtra("ldn", ldnContatore);
+        intent.putExtra("numero_seriale_radio",indirizzoContatore);
 
         intent.putExtra("citta",citta);
         intent.putExtra("indirizzo",indirizzo);
@@ -176,7 +177,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             // SendDatache fara un UPDATE dato che LDN e chiavi saranno gia inserite.
             Intent intent = new Intent(getApplicationContext(), QrCodeActivityContatore.class);
             // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
-            putVariablesContatore(intent,ldnContatore);
+            putVariablesContatore(intent,ldnContatore,indirizzoContatore);
 
             Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
 

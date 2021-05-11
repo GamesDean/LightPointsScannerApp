@@ -50,6 +50,8 @@ public interface JsonApi {
     @POST("/api/ContatoreAcquaV2")
     Call<Void> postDataContatori(@Body PostContatori data, @Header("Authorization") String authkey);
 
+    @GET("/api/ContatoreAcquaV2")
+    Call<JsonObject> getJsonContatore(@Query("idContatore") String ldnContatore ,@Header("Authorization") String authkey);
 
 
 }

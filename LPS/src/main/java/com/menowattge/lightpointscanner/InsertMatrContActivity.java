@@ -24,7 +24,8 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 public class InsertMatrContActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public double longitudine,latitudine;
-    public String citta,indirizzo,cognome,nome, numeroUtenza, numeroContratto,indirizzoUtenza,numeroCivico,ldnContatore;
+    public String citta,indirizzo,cognome,nome, numeroUtenza, numeroContratto,indirizzoUtenza,numeroCivico,ldnContatore,
+            numeroSerialeRadio;
 
     public String matricolaCont = "";
 
@@ -48,7 +49,7 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
 
 
         // TODO SendDataActivityContatore
-        final Intent intent = new Intent(getApplicationContext(), SendDataActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), SendDataContActivity.class);
 
 
         button_ok.setOnClickListener(new View.OnClickListener() {
@@ -60,11 +61,10 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
                 if(matricolaCont==""|| matricolaCont.isEmpty()){
                     Toast.makeText(InsertMatrContActivity.this,"Vuoto",Toast.LENGTH_LONG).show();
                 }else{
-                    Toast.makeText(InsertMatrContActivity.this,"Matricola : "+matricolaCont,Toast.LENGTH_LONG).show();
                     // TODO decommentare ok
-                  //  putVariables(intent);
-                  //  startActivity(intent);
-                  //  finish();
+                    putVariables(intent);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -94,10 +94,10 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
         // GPS
         // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
 
-        intent.putExtra("citta",citta);
-        intent.putExtra("indirizzo",indirizzo);
-        intent.putExtra("latitudine",latitudine);
-        intent.putExtra("longitudine",longitudine);
+        //intent.putExtra("citta",citta);
+        //intent.putExtra("indirizzo",indirizzo);
+        //intent.putExtra("latitudine",latitudine);
+        //intent.putExtra("longitudine",longitudine);
 
         // Seconda etichetta
         intent.putExtra("cognome",cognome);
@@ -108,6 +108,7 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
         intent.putExtra("numero_civico",numeroCivico);
 
         intent.putExtra("ldn",ldnContatore);
+        intent.putExtra("numero_seriale_radio",numeroSerialeRadio);
 
 
         // Dato inserito manualmente
@@ -123,7 +124,7 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
         //latitudine = getIntent().getDoubleExtra("latitudine",0);
         //longitudine = getIntent().getDoubleExtra("longitudine",0);
 
-
+        numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
         ldnContatore = getIntent().getStringExtra("ldn");
 
         // seconda etichetta
