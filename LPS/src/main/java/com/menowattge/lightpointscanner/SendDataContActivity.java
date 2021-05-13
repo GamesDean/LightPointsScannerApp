@@ -138,7 +138,7 @@ public class SendDataContActivity extends Activity {
     //-------- per creare il JSON------
     public  static String  id ;
     private String  Nome ; // associare il numeroUtente
-    private boolean Ripetitore = true;
+    private boolean Ripetitore = false;
     private String  Note ="";
     private List<String> chiaviCrittografia   = new ArrayList<>();
     private    String      id_comune="";
@@ -200,9 +200,9 @@ public class SendDataContActivity extends Activity {
         pd = new ProgressDialog(new ContextThemeWrapper(SendDataContActivity.this,R.style.ProgressDialogCustom));
 
         // prelevo i dati acquisiti dalle scansioni
-       // getQrCodeData();
+        getQrCodeDataTest();
         // mostro i dati a video
-       // showData();
+        showData();
 
 
         // TODO *****************DEBUG*****************
@@ -223,8 +223,8 @@ public class SendDataContActivity extends Activity {
         // prendo il token generato a partire da user e pass
         String token = LoginCredentials.getAuthToken(username,password);
 
-        ldnContatore= "2434003070208707";
-        getKey(retrofit,token,ldnContatore);
+        //ldnContatore= "2434003070208707";
+       // getKeys(retrofit,token,ldnContatore);
 
         // TODO *****************DEBUG*****************
 
@@ -329,6 +329,41 @@ public class SendDataContActivity extends Activity {
             numeroCivico = getIntent().getStringExtra("numero_civico");
 
             matricolaCont=getIntent().getStringExtra("matricola_contatore");
+
+            id=ldnContatore;
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Errore : Ripetere le Scansioni", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void getQrCodeDataTest(){
+        try {
+            // TODO decommentare
+            citta = "Grottammare";
+            indirizzo = "Via Bolivia";
+            latitudine = 42.123456;
+            longitudine = 14.45678;
+
+            ldnContatore = "2434040170198708";
+            numeroSerialeRadio = "123456";
+
+            // seconda etichetta
+            cognome= "Plutoz";
+            nome =  "Pippoz";
+            nomeUtente = cognome+" "+nome;
+
+            numeroUtente = "7892346";
+            numeroContratto = "A34B5678";
+            indirizzoUtenza = "Via Bontempo";
+            numeroCivico = "42";
+
+            matricolaCont="777777C";
+
+            id=ldnContatore;
+
+            Nome=numeroUtente;
         }
         catch (NullPointerException e) {
             e.printStackTrace();
@@ -344,10 +379,10 @@ public class SendDataContActivity extends Activity {
         try {
 
             ldn_tw.setText(ldnContatore);
-           // citta_tw.setText("\n" + citta);
+            citta_tw.setText("\n" + citta);
             address_tw.setText("\n" + numeroSerialeRadio);
-           // latitude_tw.setText("\n" + latitudine);
-           // longitude_tw.setText("\n" + longitudine);
+            latitude_tw.setText("\n" + latitudine);
+            longitude_tw.setText("\n" + longitudine);
             cognome_tw.setText("\n" + cognome);
             nome_tw.setText("\n" + nome);
             numeroUtenza_tw.setText("\n" + numeroUtente);
@@ -438,9 +473,10 @@ public class SendDataContActivity extends Activity {
      */
     public void postData(Retrofit retrofit,String token,String id_comune){
 
+
         JsonApi postPuntoContatore = retrofit.create(JsonApi.class);
         Call<Void> call_pl = postPuntoContatore.postDataContatori(new PostContatori(id,Nome
-                ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
+                ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzoUtenza,coordinate,
                 nomeUtente,numeroUtente,numeroContratto,matricolaCont,numeroSerialeRadio),token);
 
         call_pl.enqueue(new Callback<Void>() {
@@ -476,9 +512,9 @@ public class SendDataContActivity extends Activity {
      */
     public void putData(Retrofit retrofit,String token,String id_comune){
 
-        JsonApi postPuntoContatore = retrofit.create(JsonApi.class);
-        Call<Void> call_pl = postPuntoContatore.postDataContatori(new PostContatori(id,Nome
-                ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
+        JsonApi putPuntoContatore = retrofit.create(JsonApi.class);
+        Call<Void> call_pl = putPuntoContatore.putDataContatori(new PostContatori(id,Nome
+                ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzoUtenza,coordinate,
                 nomeUtente,numeroUtente,numeroContratto,matricolaCont,numeroSerialeRadio),token);
 
         call_pl.enqueue(new Callback<Void>() {
@@ -488,11 +524,11 @@ public class SendDataContActivity extends Activity {
                 String rc = String.valueOf(response.code());
 
                 if (!response.isSuccessful()) {
-                    Log.d("http_post_rc : ", rc);
+                    Log.d("http_put_rc : ", rc);
                     return;
                 }
                 else{
-                    Log.d("http_ok_post__rc : ", rc);
+                    Log.d("http_ok_put__rc : ", rc);
                     createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
 
                 }
@@ -543,7 +579,10 @@ public class SendDataContActivity extends Activity {
                                 .setMessage("Vuoi cancellare il PL esistente ed inserire il nuovo?")
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) { putData(retrofit,token,id_comune);                                    }
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        // se aggiorno, prendo le chiavi, questo per evitare di sovrascrivere con chiavi vuote
+                                        //getKeys(retrofit,token,ldnContatore);
+                                        putData(retrofit,token,id_comune);                                    }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
@@ -580,7 +619,7 @@ public class SendDataContActivity extends Activity {
      * @param token generato a partire da user e pass
      */
 
-    public void insertLightPoint(Retrofit retrofit,String token) {
+    public void getIdComune(Retrofit retrofit,String token) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonObject> call = jsonApi.getJson(token);
 
@@ -626,7 +665,7 @@ public class SendDataContActivity extends Activity {
 
 
 
-    public void getKey(Retrofit retrofit,String token,String ldnContatore) {
+    public void getKeys(Retrofit retrofit,String token,String ldnContatore) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonObject> call = jsonApi.getJsonContatore(ldnContatore,token);
 
@@ -635,35 +674,52 @@ public class SendDataContActivity extends Activity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 String rc = String.valueOf(response.code());
                 if (!response.isSuccessful()) {
-                    Log.d("http_get_ko_rc : ", rc);
+                    Log.d("http_get_keys_ko_rc : ", rc);
+                    chiaviCrittografia.clear();
+                    if (chiaviCrittografia.isEmpty()) {
+                        for (int i = 0; i < 17; i++) {
+                            chiaviCrittografia.add("0000000000000000000000000000000d");
+                            Log.d("cryptoK", "0" + i);
+                        }
+                    }
                 }
                 else{
-                    Log.d("http_get_ok_rc : ", rc);
+                    Log.d("http_get_keys_ok_rc : ", rc);
                     //JSON in risposta, lo salvo in una stringa unica
                     String data = response.body().toString();
                     // divido gli elementi sfruttando la virgola
                     String[] pairs = data.split(",");
                     int k=0;
                     try {
+                        // vedere la questione VIRGOLA nel CIVICO che sposa da 10 ad 11 posizioni
                         for (int i = 10; i < 27; i++) { // le chiavi sono 17, le trovo nell'array dalla 10 alla 27
                             if (i == 10) {
+                                Log.d("crypto",pairs[i].substring(23, 55));
                                 cryptoKeys[k] = pairs[i].substring(23, 55); // tolgo la scritta "ChiaviCrittografia"
+                               // chiaviCrittografia.add(pairs[i].substring(23, 55));
                             } else {
                                 cryptoKeys[k] = pairs[i].substring(1, 33); // tolgo virgolette
+                                Log.d("crypto2",pairs[i].substring(1, 33));
+
+                               // chiaviCrittografia.add(pairs[i].substring(1, 33));
                             }
                             k++;
-                        }
-                        // inserisco le singole chiavi nell' arraylist
-                        for (String item : cryptoKeys) {
-                            Log.d("crypto", item);
-                            chiaviCrittografia.add(item);
-                        }
-                        Log.d("KEYS","Chiavi  presenti - PUT");
-                        // TODO call PUT
-                    }catch (Error e){e.printStackTrace();
-                    Log.d("KEYS","Chiavi non presenti - POST");
 
-                    // TODO call POST
+
+
+                        }
+
+                        // inserisco le singole chiavi nell' arraylist
+                           for (String item : cryptoKeys) {
+                                Log.d("cryptoK", item);
+                                chiaviCrittografia.add(item);
+                            }
+
+
+
+                    }catch (Error e){e.printStackTrace();
+
+
                     }
                 }
             }
@@ -686,28 +742,11 @@ public class SendDataContActivity extends Activity {
 
             try {
 
-                // TODO SOSTITUIRE CON UNA GETVARIABLES e CAMBIARE I NOMI CHE SONO ERRATI
-                // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
-                id  = getIntent().getStringExtra("indirizzo_radio").toUpperCase();
-                Nome = getIntent().getStringExtra("nome_punto_luce").trim();
-                //Nome_PL = "prova_app_jk"; // DEBUG lo uso se ho un solo qrcode per i test
-                citta =getIntent().getStringExtra("citta");
-                latitudine = getIntent().getDoubleExtra("latitudine",0);
-                longitudine = getIntent().getDoubleExtra("longitudine",0);
-                indirizzo = getIntent().getStringExtra("indirizzo");
-
-                conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
-
-
-                // ------------------------------------------------------------------------------------------------------------- //
-                // ----------------------------------------------------- END -------------------------------------------------- //
-
-                chiaviCrittografia.add(conn_string);
                 coordinate.setLat(latitudine);
                 coordinate.setLong(longitudine);
                 coordinateGps.add(coordinate);
                 // DEBUG
-                //id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
+               // id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
 
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -726,8 +765,11 @@ public class SendDataContActivity extends Activity {
 
                 // prendo il token generato a partire da user e pass
                 String token = LoginCredentials.getAuthToken(username,password);
-                // inserisco o aggiorno il punto luce
-                insertLightPoint(retrofit,token);
+                // inserisco o aggiorno il contatore
+
+                getKeys(retrofit,token,ldnContatore); // fondamentale
+
+                getIdComune(retrofit,token);
 
             } catch (final Exception e) {
                 //createAndShowDialogFromTask(e, "Errore");
@@ -748,11 +790,8 @@ public class SendDataContActivity extends Activity {
      * @param view
      * The view that originated the call
      */
-    public void addItem(View view) {
+    public void addItemCont(View view) {
 
-        if (mClient == null) {
-            return;
-        }
         // progress dialog
         pd.setMessage("Registrazione in corso...");
         pd.show();
