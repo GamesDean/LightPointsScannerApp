@@ -54,7 +54,6 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
         CheckPermission();
 
 
-        // TODO PER DEBUG SALTO DALLO SPLASH A QUESTA CLASSE QUINDI PER ORA COMMENTO  : RIPRISTINARE
         getVariablesContatore();
 
         // Programmatically initialize the scanner view
@@ -65,10 +64,10 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
     }
 
     public void getVariablesContatore(){
-       // citta = getIntent().getStringExtra("citta");
-       // indirizzo = getIntent().getStringExtra("indirizzo");
-       // latitudine = getIntent().getDoubleExtra("latitudine",0);
-       // longitudine = getIntent().getDoubleExtra("longitudine",0);
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
 
         ldnContatore = getIntent().getStringExtra("ldn");
         numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
@@ -77,10 +76,10 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
 
     public void putVariables(Intent intent){
 
-       // intent.putExtra("citta",citta);
-       // intent.putExtra("indirizzo",indirizzo);
-       // intent.putExtra("latitudine",latitudine);
-       // intent.putExtra("longitudine",longitudine);
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
 
         // Prima etichetta
         intent.putExtra("ldn", ldnContatore);

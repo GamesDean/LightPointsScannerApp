@@ -21,14 +21,16 @@
     <TextView
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="se non si ha la matricola, lasciare in bianco e premere OK"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="70dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="570dp"
-        android:gravity="center">
+        android:layout_marginBottom="500dp"
+        android:gravity="center"
+        android:text="se non si ha la matricola, lasciare in bianco e premere OK">
 
     </TextView>
 

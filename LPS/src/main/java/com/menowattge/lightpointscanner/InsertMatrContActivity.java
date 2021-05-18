@@ -47,25 +47,17 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
         editText.setSelection(0);
         Button button_ok = findViewById(R.id.button_ok_cont);
 
-
-        // TODO SendDataActivityContatore
         final Intent intent = new Intent(getApplicationContext(), SendDataContActivity.class);
-
 
         button_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 matricolaCont = editText.getText().toString();
-                // TODO togliere perche può essere anche vuoto
-                if(matricolaCont==""|| matricolaCont.isEmpty()){
-                    Toast.makeText(InsertMatrContActivity.this,"Vuoto",Toast.LENGTH_LONG).show();
-                }else{
-                    // TODO decommentare ok
+
                     putVariables(intent);
                     startActivity(intent);
                     finish();
-                }
             }
         });
     }
@@ -92,12 +84,11 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
 
     public void putVariables(Intent intent){
         // GPS
-        // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
 
-        //intent.putExtra("citta",citta);
-        //intent.putExtra("indirizzo",indirizzo);
-        //intent.putExtra("latitudine",latitudine);
-        //intent.putExtra("longitudine",longitudine);
+        intent.putExtra("citta",citta);
+        intent.putExtra("indirizzo",indirizzo);
+        intent.putExtra("latitudine",latitudine);
+        intent.putExtra("longitudine",longitudine);
 
         // Seconda etichetta
         intent.putExtra("cognome",cognome);
@@ -118,11 +109,10 @@ public class InsertMatrContActivity extends AppCompatActivity implements Adapter
 
     public void getVariables(){
 
-        //TODO DECOMMENTARE
-        //citta = getIntent().getStringExtra("citta");
-        //indirizzo = getIntent().getStringExtra("indirizzo");
-        //latitudine = getIntent().getDoubleExtra("latitudine",0);
-        //longitudine = getIntent().getDoubleExtra("longitudine",0);
+        citta = getIntent().getStringExtra("citta");
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
 
         numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
         ldnContatore = getIntent().getStringExtra("ldn");

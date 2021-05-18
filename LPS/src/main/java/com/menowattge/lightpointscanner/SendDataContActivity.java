@@ -151,12 +151,9 @@ public class SendDataContActivity extends Activity {
     private String  numeroContratto;
     private String  indirizzoUtenza,numeroCivico,ldnContatore;
     public String   matricolaCont = "";
-    private String  numeroSerialeRadio; // LDN (MAD067643..) TODO prendere dalla prima etichetta
+    private String  numeroSerialeRadio; // LDN (MAD067643..)
 
     // ------end JSON---------
-
-    //ftp db
-    File db_saved ;
 
     String [] cryptoKeys = new String[17]; // chiavi prelevate dal JSON con getKeys()
 
@@ -200,34 +197,10 @@ public class SendDataContActivity extends Activity {
         pd = new ProgressDialog(new ContextThemeWrapper(SendDataContActivity.this,R.style.ProgressDialogCustom));
 
         // prelevo i dati acquisiti dalle scansioni
-        getQrCodeDataTest();
+        //getQrCodeDataTest();
+        getQrCodeData();
         // mostro i dati a video
         showData();
-
-
-        // TODO *****************DEBUG*****************
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
-                .readTimeout(60,TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://citymonitor.azurewebsites.net/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
-        // prendo il token generato a partire da user e pass
-        String token = LoginCredentials.getAuthToken(username,password);
-
-        //ldnContatore= "2434003070208707";
-       // getKeys(retrofit,token,ldnContatore);
-
-        // TODO *****************DEBUG*****************
-
 
     }
 
@@ -308,11 +281,10 @@ public class SendDataContActivity extends Activity {
      */
     public void getQrCodeData(){
         try {
-            // TODO decommentare
-            //citta = getIntent().getStringExtra("citta");
-            //indirizzo = getIntent().getStringExtra("indirizzo");
-            //latitudine = getIntent().getDoubleExtra("latitudine", 0);
-            //longitudine = getIntent().getDoubleExtra("longitudine", 0);
+            citta = getIntent().getStringExtra("citta");
+            indirizzo = getIntent().getStringExtra("indirizzo");
+            latitudine = getIntent().getDoubleExtra("latitudine", 0);
+            longitudine = getIntent().getDoubleExtra("longitudine", 0);
 
             ldnContatore = getIntent().getStringExtra("ldn");
             numeroSerialeRadio = getIntent().getStringExtra("numero_seriale_radio");
@@ -325,12 +297,14 @@ public class SendDataContActivity extends Activity {
             numeroUtente = getIntent().getStringExtra("numero_utenza");
             numeroContratto = getIntent().getStringExtra("numero_contratto");
             // TODO gestire che se indirizzo vuoto allora uso quello delle coordinate
-            indirizzoUtenza = getIntent().getStringExtra("indirizzo_utenza");
             numeroCivico = getIntent().getStringExtra("numero_civico");
+            indirizzoUtenza = getIntent().getStringExtra("indirizzo_utenza")+" "+numeroCivico;
+
 
             matricolaCont=getIntent().getStringExtra("matricola_contatore");
 
             id=ldnContatore;
+            Nome=numeroUtente;
         }
         catch (NullPointerException e) {
             e.printStackTrace();
@@ -575,13 +549,11 @@ public class SendDataContActivity extends Activity {
                         AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(SendDataContActivity.this,R.style.AlertDialogCustom))
 
                                 .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setTitle("PL già presente")
-                                .setMessage("Vuoi cancellare il PL esistente ed inserire il nuovo?")
+                                .setTitle("Contatore già presente")
+                                .setMessage("Vuoi cancellarlo ed inserirne uno nuovo?")
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        // se aggiorno, prendo le chiavi, questo per evitare di sovrascrivere con chiavi vuote
-                                        //getKeys(retrofit,token,ldnContatore);
                                         putData(retrofit,token,id_comune);                                    }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -648,6 +620,7 @@ public class SendDataContActivity extends Activity {
                             System.out.println("IDCOMUNE : "+id_comune);
                         }
                     }
+
                     /**
                      * Ottiene la lista degli ID registrati nel portale ed a seconda
                      * triggera un metodo POST per inserire o PUT per aggiornare
@@ -663,7 +636,12 @@ public class SendDataContActivity extends Activity {
 
     }
 
-
+    /**
+     * Ottiene la lista delle chiavi ddi un contatore
+     * @param retrofit
+     * @param token
+     * @param ldnContatore
+     */
 
     public void getKeys(Retrofit retrofit,String token,String ldnContatore) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
@@ -678,8 +656,7 @@ public class SendDataContActivity extends Activity {
                     chiaviCrittografia.clear();
                     if (chiaviCrittografia.isEmpty()) {
                         for (int i = 0; i < 17; i++) {
-                            chiaviCrittografia.add("0000000000000000000000000000000d");
-                            Log.d("cryptoK", "0" + i);
+                            chiaviCrittografia.add("00000000000000000000000000000000");
                         }
                     }
                 }
@@ -704,9 +681,6 @@ public class SendDataContActivity extends Activity {
                                // chiaviCrittografia.add(pairs[i].substring(1, 33));
                             }
                             k++;
-
-
-
                         }
 
                         // inserisco le singole chiavi nell' arraylist
@@ -715,10 +689,7 @@ public class SendDataContActivity extends Activity {
                                 chiaviCrittografia.add(item);
                             }
 
-
-
                     }catch (Error e){e.printStackTrace();
-
 
                     }
                 }
@@ -746,7 +717,6 @@ public class SendDataContActivity extends Activity {
                 coordinate.setLong(longitudine);
                 coordinateGps.add(coordinate);
                 // DEBUG
-               // id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
 
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
