@@ -137,7 +137,7 @@ public class SendDataContActivity extends Activity {
 
     //-------- per creare il JSON------
     public  static String  id ;
-    private String  Nome ; // associare il numeroUtente
+    private String  Nome ; // è in pratica il numeroUtente
     private boolean Ripetitore = false;
     private String  Note ="";
     private List<String> chiaviCrittografia   = new ArrayList<>();
@@ -447,9 +447,8 @@ public class SendDataContActivity extends Activity {
      */
     public void postData(Retrofit retrofit,String token,String id_comune){
 
-
-        JsonApi postPuntoContatore = retrofit.create(JsonApi.class);
-        Call<Void> call_pl = postPuntoContatore.postDataContatori(new PostContatori(id,Nome
+        JsonApi postContatore = retrofit.create(JsonApi.class);
+        Call<Void> call_pl = postContatore.postDataContatori(new PostContatori(id,Nome
                 ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzoUtenza,coordinate,
                 nomeUtente,numeroUtente,numeroContratto,matricolaCont,numeroSerialeRadio),token);
 
@@ -486,8 +485,8 @@ public class SendDataContActivity extends Activity {
      */
     public void putData(Retrofit retrofit,String token,String id_comune){
 
-        JsonApi putPuntoContatore = retrofit.create(JsonApi.class);
-        Call<Void> call_pl = putPuntoContatore.putDataContatori(new PostContatori(id,Nome
+        JsonApi putContatore = retrofit.create(JsonApi.class);
+        Call<Void> call_pl = putContatore.putDataContatori(new PostContatori(id,Nome
                 ,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzoUtenza,coordinate,
                 nomeUtente,numeroUtente,numeroContratto,matricolaCont,numeroSerialeRadio),token);
 

@@ -175,27 +175,27 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
          serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
          codiceApparecchio = etichetta[2].substring(1,19);  // H13M39A4A03050VP01 18 caratteri
 
-        //prelevo i primi quattro caratteri
-        String firstFourChars = etichetta[2].substring(1,5); //H70S
+        //prelevo i primi sei caratteri
+        String firstSixChars = etichetta[2].substring(1,7); //H70S81
 
-        tipo = firstFourChars.substring(0,1); // M,G,H
-        idConfigurazione = firstFourChars.substring(1,3); // id_configurazione ex corrente
-        potenza = etichetta[3].trim(); // 30W
-        modello = firstFourChars.substring(3,4); // E,S...
+        tipo = firstSixChars.substring(0,1); // M,G,H
+        idConfigurazione = firstSixChars.substring(1,3); // id_configurazione ex corrente
+        potenza = firstSixChars.substring(4,6); // 30W
+        modello = firstSixChars.substring(3,4); // E,S...
 
         String lettera = etichetta[2].substring(15,16); // V
-        profilo = Integer.toString(fromLetterToNumber(lettera));
+        profilo = Integer.toString(fromLetterToNumber(lettera)); // 22
 
         // TEST EFFETTUATI OK
-        Log.d("TEST_QrCodeActivity2", serialeApparecchio);
-        Log.d("TEST_QrCodeActivity2", codiceApparecchio);
+        Log.d("TEST_SERIALE : ", serialeApparecchio);
+        Log.d("TEST_CODICE : ", codiceApparecchio);
        // Log.d("TEST_QrCodeActivity2", firstFourChars);
-        Log.d("TEST_QrCodeActivity2", idConfigurazione);
-        Log.d("TEST_QrCodeActivity2", tipo);
-        Log.d("TEST_QrCodeActivity2", potenza);
-        Log.d("TEST_QrCodeActivity2", modello);
+        Log.d("TEST_ID : ", idConfigurazione);
+        Log.d("TEST_TIPO : ", tipo);
+        Log.d("TEST_POTENZA", potenza);
+        Log.d("TEST_MODELLO : ", modello);
         //Log.d("TEST_QrCodeActivity2", lettera);
-        Log.d("TEST_QrCodeActivity2", profilo);
+        Log.d("TEST_PROFILO : ", profilo);
 
         //Controllo che inizi per M ,G , H : meglio di niente
         if (tipo.equals("M") || tipo.equals("G") || tipo.equals("H")) {
