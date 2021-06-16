@@ -59,7 +59,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                         //Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         // TODO DEBUG
                         //Intent intent = new Intent(getApplicationContext(), SendDataContActivity.class);
-                        Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class);
+                        //Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class); // okk
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(intent);
                         finish();
                     }

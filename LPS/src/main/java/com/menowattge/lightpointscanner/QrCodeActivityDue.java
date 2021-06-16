@@ -27,7 +27,7 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
     public double latitudine,longitudine;
     public String indirizzoRadio,nomePuntoLuce,citta,indirizzo,
-            serialeApparecchio,codiceApparecchio,tipo,idConfigurazione,modello,potenza,profilo;
+            serialeApparecchio,codiceApparecchio,tipo,idConfigurazione,modello,potenza,profilo,power;
 
 
     //PERMESSI CAMERA
@@ -101,7 +101,7 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
         intent.putExtra("tipo",tipo);
         intent.putExtra("id_configurazione",idConfigurazione);
         intent.putExtra("modello",modello);
-        intent.putExtra("potenza",potenza);
+        intent.putExtra("potenza",power);
         intent.putExtra("profilo",profilo);
     }
 
@@ -134,7 +134,7 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
     public int fromLetterToNumber(String letter){
 
         int number=1;
-        String [] lettereAlfabeto = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        String [] lettereAlfabeto = {"A","B","C","D","E","F","G","H","I","L","M","N","O","P","Q","R","S","T","U","V"};
 
         for (int i=0;i<lettereAlfabeto.length;i++){
             if (letter.equals(lettereAlfabeto[i])){
@@ -148,7 +148,6 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
     @Override
     public void handleResult(Result rawResult) {
 
-        // PER TEST DOPO LO SPLASH SALTO DIRETTAMENTE QUI
 
         // TODO PRELEVARE I PRIMI 4 CARATTERI :
         //      TODO * PRIMO CARATTERE -> TIPO : M oppure G oppure H [ MERIDIO GIANO HIPERION ]
@@ -169,40 +168,51 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
             • V: profilo in ordine alfabetico quindi A=1, B=2, C=3……….V=20
          */
 
-        // Salvo la lettura in un array usando i ":" per separare le stringhe
-        String etichetta[] = rawResult.getText().split(":");
+        String check = rawResult.getText().substring(0,3);
+        Log.d("CHECK",check);
 
-         serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
-         codiceApparecchio = etichetta[2].substring(1,19);  // H13M39A4A03050VP01 18 caratteri
+        if (!check.equals("S/N")){
+            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
 
-        //prelevo i primi sei caratteri
-        String firstSixChars = etichetta[2].substring(1,7); //H70S81
+        }else{
 
-        tipo = firstSixChars.substring(0,1); // M,G,H
-        idConfigurazione = firstSixChars.substring(1,3); // id_configurazione ex corrente
-        potenza = firstSixChars.substring(4,6); // 30W
-        modello = firstSixChars.substring(3,4); // E,S...
+            // Salvo la lettura in un array usando i ":" per separare le stringhe
+            String etichetta[] = rawResult.getText().split(":");
 
-        String lettera = etichetta[2].substring(15,16); // V
-        profilo = Integer.toString(fromLetterToNumber(lettera)); // 22
+            serialeApparecchio = etichetta[1].substring(1,13);  // 10G190800001
+            codiceApparecchio = etichetta[2].substring(1,19);  // H13M39A4A03050VP01 18 caratteri
 
-        // TEST EFFETTUATI OK
-        Log.d("TEST_SERIALE : ", serialeApparecchio);
-        Log.d("TEST_CODICE : ", codiceApparecchio);
-       // Log.d("TEST_QrCodeActivity2", firstFourChars);
-        Log.d("TEST_ID : ", idConfigurazione);
-        Log.d("TEST_TIPO : ", tipo);
-        Log.d("TEST_POTENZA", potenza);
-        Log.d("TEST_MODELLO : ", modello);
-        //Log.d("TEST_QrCodeActivity2", lettera);
-        Log.d("TEST_PROFILO : ", profilo);
+            //prelevo i primi sei caratteri
+            String firstSixChars = etichetta[2].substring(1,7); //H70S81
 
-        //Controllo che inizi per M ,G , H : meglio di niente
-        if (tipo.equals("M") || tipo.equals("G") || tipo.equals("H")) {
+            tipo = firstSixChars.substring(0,1); // M,G,H
+            idConfigurazione = firstSixChars.substring(1,3); // id_configurazione ex corrente
+            potenza = firstSixChars.substring(4,6); // 30W
+            modello = firstSixChars.substring(3,4); // E,S...
+
+            String lettera = etichetta[2].substring(15,16); // V
+            profilo = Integer.toString(fromLetterToNumber(lettera)); // 20
+
+
+            // NB la potenza è espressa in hex eseguo quindi la confersione
+            int num = Integer.parseInt(potenza,16);
+            power = String.valueOf(num);
+
+            // TEST EFFETTUATI OK
+            Log.d("TEST_SERIALE : ", serialeApparecchio);
+            Log.d("TEST_CODICE : ", codiceApparecchio);
+            // Log.d("TEST_QrCodeActivity2", firstFourChars);
+            Log.d("TEST_ID : ", idConfigurazione);
+            Log.d("TEST_TIPO : ", tipo);
+            Log.d("TEST_POTENZA", power);
+            Log.d("TEST_MODELLO : ", modello);
+            //Log.d("TEST_QrCodeActivity2", lettera);
+            Log.d("TEST_PROFILO : ", profilo);
+
+
 
             Intent intent = new Intent(getApplicationContext(), QrCodeActivityQuestion.class);
             // invio a QrCodeActivityQuestion i valori cumulativi delle letture effettuate dai 2 qrcode
-            //TODO RIPRISTINARE al suo interno questa funzione
             putVariables(intent);
 
             startActivity(intent);
@@ -210,10 +220,7 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
         }
 
-        else {
-            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
 
-        }
         //ripropone all'utente lo scan
         mScannerView.resumeCameraPreview(this);
 
@@ -221,4 +228,4 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
     }
 
 
-    }
+}

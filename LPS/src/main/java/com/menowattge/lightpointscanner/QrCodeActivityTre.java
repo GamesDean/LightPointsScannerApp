@@ -88,11 +88,14 @@ public class QrCodeActivityTre extends AppCompatActivity implements ZXingScanner
         Log.d("identificativo",identificativo);
 
         if(identificativo.length()==8){
-            //TODO ok DEBUG DECOMMENTARE
             Intent intent = new Intent(getApplicationContext(),SendDataActivity.class);
             putVariables(intent);
             startActivity(intent);
             //Toast.makeText(getApplicationContext(),"id : "+identificativo,Toast.LENGTH_LONG).show();
+        }else{
+
+            Toast.makeText(getApplicationContext(),"QrCode errato",Toast.LENGTH_LONG).show();
+
         }
 
 

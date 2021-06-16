@@ -24,6 +24,9 @@ public interface JsonApi {
     //Call<ResponseBody> loginWithCredentials(@Body LoginCredentials data);
     Call<ResponseBody> loginWithCredentials(@Header("Authorization") String authkey);
 
+    @POST("/api/Account/Login")
+    Call<Void> loginCitymonitor(@Body Login data, @Header("Authorization") String authkey);
+
 
     @GET("/api/Comuni")
     Call<JsonObject> getJson(@Header("Authorization") String authkey);

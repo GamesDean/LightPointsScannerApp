@@ -174,7 +174,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             }
 
             // inviare a classe per seconda etichetta
-            // SendDatache fara un UPDATE dato che LDN e chiavi saranno gia inserite.
+            // SendData  che fara un UPDATE dato che LDN e chiavi saranno gia inserite.
             Intent intent = new Intent(getApplicationContext(), QrCodeActivityContatore.class);
             // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
             putVariablesContatore(intent,ldnContatore,indirizzoContatore);
@@ -187,9 +187,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
 
         }
         else {
-   //         Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),"testo : "+rawResult.getText(),Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),"formato : "+rawResult.getBarcodeFormat(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
 
         }
             //ripropone all'utente lo scan

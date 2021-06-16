@@ -56,11 +56,9 @@ public class ManualValueActivity extends AppCompatActivity implements AdapterVie
 
                 identificativo = editText.getText().toString();
                 // TODO controlli lunghezza
-                if(identificativo==""|| identificativo.isEmpty()){
-                    Toast.makeText(ManualValueActivity.this,"Inserire ID palo",Toast.LENGTH_LONG).show();
+                if(identificativo.length() != 8){
+                    Toast.makeText(ManualValueActivity.this,"l'ID è di 8 caratteri",Toast.LENGTH_LONG).show();
                 }else{
-                    Toast.makeText(ManualValueActivity.this,"id : "+identificativo,Toast.LENGTH_LONG).show();
-                    // TODO decommentare ok
                     putVariables(intent);
                     startActivity(intent);
                     finish();

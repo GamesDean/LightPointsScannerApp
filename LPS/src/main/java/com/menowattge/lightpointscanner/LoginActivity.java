@@ -29,7 +29,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class LoginActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
-    final int MIN_PASSWORD_LENGTH = 8;
+    final int MIN_PASSWORD_LENGTH = 7; // altrimenti tecnico non funziona e non mi va di cambiarla
     String email, password;
 
     @Override
@@ -68,10 +68,10 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // checking minimum password Length
-    //    if (etPassword.getText().length() < MIN_PASSWORD_LENGTH) {
-     //       etPassword.setError("Password Length must be more than " + MIN_PASSWORD_LENGTH + "characters");
-      //      return false;
-      //  }
+        if (etPassword.getText().length() < MIN_PASSWORD_LENGTH) {
+            etPassword.setError("Password Length must be more than " + MIN_PASSWORD_LENGTH + "characters");
+            return false;
+        }
 
         return true;
     }
@@ -82,30 +82,29 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
-
-    // Hook Click Event
-
     /**
      * Effettua il login al portale
      * @param retrofit
      */
     public void login(Retrofit retrofit,String token){
-        //login
         JsonApi login = retrofit.create(JsonApi.class);
-        Call<ResponseBody> call_login = login.loginWithCredentials(token);
-        //Call<ResponseBody> call_login = login.loginWithCredentials(new LoginCredentials(email, password));
 
+        Call<Void> call_login = login.loginCitymonitor(new Login(email, password),token);
 
-        call_login.enqueue(new Callback<ResponseBody>() {
+        call_login.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     try {
 
                         String rc = String.valueOf(response.code());
                         Log.d("http_rc_login : ",rc);
+                        Toast.makeText(getApplicationContext(),"Benvenuto", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class);
+                        startActivity(intent);
+
+                        // TODO passare credenziali d'accesso alle altre activity fino a senddata
+                        // TODO perche le operazioni vanno effettuate con lo stesso utente che logga
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -114,7 +113,8 @@ public class LoginActivity extends AppCompatActivity {
                     try {
 
                         String rc = String.valueOf(response.code());
-                        Log.d("http_rc_login : ",rc);
+                        Log.d("http_rc_ko : ",rc);
+                        Toast.makeText(getApplicationContext(),"Username o Password errata ", Toast.LENGTH_LONG).show();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 // handle error
                 Log.d("http_error : ",t.getMessage());
             }
@@ -134,24 +134,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void performSignUp (View v) {
+
         if (validateInput()) {
 
-            // Input is valid, here send data to your server
-
-            //String email = etEmail.getText().toString();
              email = etEmail.getText().toString();
              password = etPassword.getText().toString();
 
-            // prendo il token generato a partire da user e pass
-            // Toast.makeText(this,"Login Success",Toast.LENGTH_SHORT).show();
 
-            // Here you can call you API
-            // Check this tutorial to call server api through Google Volley Library https://handyopinion.com
+            // ---------TODO DEBUG -----------------
 
-
-
-            // TODO chiaramente solo d'esempio, login e signup vanno gestiti con le API
-            if (email.equals("tecnico@citymonitor.it")){
 
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -160,33 +151,20 @@ public class LoginActivity extends AppCompatActivity {
                         .readTimeout(60, TimeUnit.SECONDS)
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .build();
-                // end-debug
+
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://citymonitor.azurewebsites.net/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .client(client)
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
-
+                //-------------- end-debug -----------------
 
                 String token = LoginCredentials.getAuthToken(email,password);
 
                 login(retrofit,token);
-                //login(retrofit,email,password);
 
-                Toast.makeText(getApplicationContext(),"Benvenuto",Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class);
-                startActivity(intent);
-            }
-            else if (email.equals("installatore@citymonitor.it")){
-                Toast.makeText(getApplicationContext(),"Installatore",Toast.LENGTH_LONG).show();
-                // TODO mandare l'utente alle sezioni dell'app idonee
-            }
-
-            else{
-                Toast.makeText(getApplicationContext(),"Utente non registrato",Toast.LENGTH_LONG).show();
-            }
 
         }
     }

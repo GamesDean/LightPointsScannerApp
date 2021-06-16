@@ -124,13 +124,19 @@ public class SendDataActivity extends Activity {
     public static Double longitudine;
     public static String indirizzo_;
     public static String indirizzoRadio;
-    // --------TODO in attesa API ELIOS--------
-    public static String serialeApparecchio,codiceApparecchio,tipo,idConfigurazione,modello,potenza,profilo;
-    public static String identificativo =""; // può anche essere vuoto ovvero NON presente
+
+    public static String serialeApparecchio,codiceApparecchio,idConfigurazione,modello,potenza,profilo;
+
+    public static int idProfilo ;
+    public static int idConfigurazione_ ;
+
+    public static String identificativoPalo =""; // può anche essere vuoto ovvero NON presente
     //-------------------------
     public static String nomePuntoLuce;
     public        String conn_string;
     public        String key="";
+    public        String idAlimentatore="";
+    public        String serialeQuadroElettrico="";
 
 
     // API login
@@ -157,20 +163,18 @@ public class SendDataActivity extends Activity {
     private Post.CoordinateGps coordinate = new Post.CoordinateGps();
     private String  TipoApparecchiatura="";
     private String  Marca="";
-    private String  Modello="Meridio";
     private String  InfoQuadroElettrico="";
-    private String  Palo="";
     private int     AltezzaPaloMm =0;
-    private boolean Portella =false;   // TODO from boolean to String e si chiamera serialeApparecchio
-    private boolean Pozzetto =false;   // TODO from boolean to String e si chiamera codiceApparecchio
+
     private boolean Terra=false ;
     private String  TecnologiaLampada = "LED";
-    private double  PotenzaLampadaWatt ;
+    private int  PotenzaLampadaWatt ;
     private String  Alimentatore="" ;
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
     // TODO AGGIUNGERE CAMPI MANCANTI SCANSIONE SECONDA E TERZA ETICHETTA
+
 
     //ftp db
     File db_saved ;
@@ -374,14 +378,17 @@ public class SendDataActivity extends Activity {
             // seconda etichetta
             serialeApparecchio = getIntent().getStringExtra("seriale_apparecchio");
             codiceApparecchio = getIntent().getStringExtra("codice_apparecchio");
-            tipo = getIntent().getStringExtra("tipo");
+            TipoApparecchiatura = getIntent().getStringExtra("tipo");
             idConfigurazione = getIntent().getStringExtra("id_configurazione");
             modello = getIntent().getStringExtra("modello");
             potenza = getIntent().getStringExtra("potenza");
             profilo = getIntent().getStringExtra("profilo");
 
             // terza etichetta / inserimento manuale
-            identificativo = getIntent().getStringExtra("identificativo_palo");
+            identificativoPalo = getIntent().getStringExtra("identificativo_palo");
+            // conversioni in int
+            idProfilo = Integer.parseInt(profilo); // lo converto in intero, il JSON vuole un numero
+            idConfigurazione_ = Integer.parseInt(idConfigurazione);
         }
         catch (NullPointerException e) {
             e.printStackTrace();
@@ -398,11 +405,11 @@ public class SendDataActivity extends Activity {
             seriale_tw.setText("\n" + serialeApparecchio);
             codice_tw.setText("\n" + codiceApparecchio);
             idConf_tw.setText("\n" + idConfigurazione);
-            tipo_tw.setText("\n" + tipo);
+            tipo_tw.setText("\n" + TipoApparecchiatura);
             corrente_tw.setText("\n" + potenza);
             modello_tw.setText("\n" + modello);
             profilo_tw.setText("\n" + profilo);
-            idPalo_tw.setText("\n" + identificativo);
+            idPalo_tw.setText("\n" + identificativoPalo);
 
             String data[] = indirizzo_.split(",");
             String a = data[0];
@@ -421,6 +428,25 @@ public class SendDataActivity extends Activity {
 
         }
 
+    }
+
+    public void loadData(){
+
+        // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
+        id  = getIntent().getStringExtra("indirizzo_radio").toUpperCase();
+        Nome_PL = getIntent().getStringExtra("nome_punto_luce").trim();
+        citta =getIntent().getStringExtra("citta");
+        latitudine = getIntent().getDoubleExtra("latitudine",0);
+        longitudine = getIntent().getDoubleExtra("longitudine",0);
+        indirizzo = getIntent().getStringExtra("indirizzo");
+        PotenzaLampadaWatt = Integer.parseInt( getIntent().getStringExtra("potenza") );
+        try {
+            conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -488,6 +514,7 @@ public class SendDataActivity extends Activity {
     }
 
 
+
     /**
      * Costruisce il JSON per INSERIRE i dati nel portale
      * @param retrofit istanza della libreria per le chiamate API
@@ -495,13 +522,12 @@ public class SendDataActivity extends Activity {
      * @param id_comune id del comune nel quale inserire il punto luce
      */
     public void postData(Retrofit retrofit,String token,String id_comune){
-    // TODO cambiare variabili passate a Post con quelle "nuove" DOPO API ovviamente
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
         Call<Void> call_pl = postPuntoLuce.postData(new Post(id,Nome_PL,
                 TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
-                TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
-                Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
-                Alimentatore,LineaAlimentazione,Telecontrollo),token);
+                TipoApparecchiatura,Marca,modello,InfoQuadroElettrico,identificativoPalo,AltezzaPaloMm,
+                codiceApparecchio,serialeApparecchio,idProfilo,idConfigurazione_,Terra,TecnologiaLampada,PotenzaLampadaWatt,
+                idAlimentatore,Alimentatore,LineaAlimentazione,Telecontrollo,serialeQuadroElettrico),token);
 
         call_pl.enqueue(new Callback<Void>() {
             @Override
@@ -540,9 +566,9 @@ public class SendDataActivity extends Activity {
         JsonApi postPuntoLuce = retrofit.create(JsonApi.class);
         Call<Void> call_pl = postPuntoLuce.putData(new Post(id,Nome_PL,
                 TipoLuce,Ripetitore,Note,chiaviCrittografia,id_comune,indirizzo,coordinate,
-                TipoApparecchiatura,Marca,Modello,InfoQuadroElettrico,Palo,AltezzaPaloMm,
-                Portella,Pozzetto,Terra,TecnologiaLampada,PotenzaLampadaWatt,
-                Alimentatore,LineaAlimentazione,Telecontrollo),token);
+                TipoApparecchiatura,Marca,modello,InfoQuadroElettrico,identificativoPalo,AltezzaPaloMm,
+                codiceApparecchio,serialeApparecchio,idProfilo,idConfigurazione_,Terra,TecnologiaLampada,PotenzaLampadaWatt,
+                idAlimentatore,Alimentatore,LineaAlimentazione,Telecontrollo,serialeQuadroElettrico),token);
 
         call_pl.enqueue(new Callback<Void>() {
             @Override
@@ -713,18 +739,8 @@ public class SendDataActivity extends Activity {
 
             try {
 
-                // TODO SOSTITUIRE CON UNA GETVARIABLES ed AGGIUNGERE I CAMPI MANCANTI QUELLI "nuovi"
-                // usate per costruire un oggetto della classe Post in postData() per creare quindi il JSON per l'invio
-                id  = getIntent().getStringExtra("indirizzo_radio").toUpperCase();
-                Nome_PL = getIntent().getStringExtra("nome_punto_luce").trim();
-                //Nome_PL = "prova_app_jk"; // DEBUG lo uso se ho un solo qrcode per i test
-                citta =getIntent().getStringExtra("citta");
-                latitudine = getIntent().getDoubleExtra("latitudine",0);
-                longitudine = getIntent().getDoubleExtra("longitudine",0);
-                indirizzo = getIntent().getStringExtra("indirizzo");
-                PotenzaLampadaWatt = Double.parseDouble( getIntent().getStringExtra("potenza") );
 
-                conn_string = selectFromTable(id); // prendo la key da DevicesLightPointsTemp dal DB di CityMonitor
+                loadData();
 
                 // --------------------------------------- CONN_STRING FROM FTP DB ---------------------------------------------- //
                 // ------------------------------------------------------------------------------------------------------------- //

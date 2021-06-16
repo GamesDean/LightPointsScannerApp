@@ -19,7 +19,7 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
 /**
- *  Permette all'utente di inserire l'id del palo. Passa poi questi dati a SendDataActivity
+ *  Permette all'utente di inserire la matricola del contatore. Passa poi questi dati a SendDataActivity
  */
 public class InsertMatrContActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

@@ -52,18 +52,24 @@ public class Post {
     @SerializedName("InfoQuadroElettrico")
     @Expose
     private String infoQuadroElettrico;
-    @SerializedName("Palo")
+    @SerializedName("IdentificativoPalo")
     @Expose
-    private String palo;
+    private String identificativoPalo;
     @SerializedName("AltezzaPaloMm")
     @Expose
     private Integer altezzaPaloMm;
-    @SerializedName("Portella")
+    @SerializedName("CodiceApparecchio")
     @Expose
-    private Boolean portella;
-    @SerializedName("Pozzetto")
+    private String codiceApparecchio;
+    @SerializedName("SerialeApparecchio")
     @Expose
-    private Boolean pozzetto;
+    private String serialeApparecchio;
+    @SerializedName("IdProfilo")
+    @Expose
+    private Integer idProfilo;
+    @SerializedName("IdConfigurazioneProfilo")
+    @Expose
+    private Integer idConfigurazioneProfilo;
     @SerializedName("Terra")
     @Expose
     private Boolean terra;
@@ -72,7 +78,10 @@ public class Post {
     private String tecnologiaLampada;
     @SerializedName("PotenzaLampadaWatt")
     @Expose
-    private Double potenzaLampadaWatt;
+    private Integer potenzaLampadaWatt;
+    @SerializedName("IdAlimentatore")
+    @Expose
+    private String idAlimentatore;
     @SerializedName("Alimentatore")
     @Expose
     private String alimentatore;
@@ -82,9 +91,15 @@ public class Post {
     @SerializedName("Telecontrollo")
     @Expose
     private Boolean telecontrollo;
+    @SerializedName("SerialeQuadroElettrico")
+    @Expose
+    private String serialeQuadroElettrico;
+
 
 
     /*
+
+serialeApparecchio codiceApparecchio idConfigurazione tipo  modello profilo identificativo
 
     Devo generare questo JSON
 
@@ -107,16 +122,18 @@ public class Post {
             "Marca": "",
             "Modello": "Meridio",
             "InfoQuadroElettrico": "",
-            "Palo": "",
+            "IdentificativoPalo": "",
             "AltezzaPaloMm": 0,
-            "Portella": true,
-            "Pozzetto": true,
+            "CodiceApparecchio": "",
+            "SerialeApparecchio": "",
             "Terra": true,
             "TecnologiaLampada": "led",
             "PotenzaLampadaWatt": 1800.00,
+            "IdAlimentatore" :"",
             "Alimentatore": "",
             "LineaAlimentazione": "",
-            "Telecontrollo": true
+            "Telecontrollo": true,
+            "SerialeQuadroElettrico":""
     }
 
     */
@@ -133,11 +150,9 @@ public class Post {
     /**
      *
      * @param ripetitore
-     * @param palo
      * @param note
      * @param terra
      * @param alimentatore
-     * @param pozzetto
      * @param tecnologiaLampada
      * @param idComune
      * @param indirizzo
@@ -145,7 +160,6 @@ public class Post {
      * @param tipoLuce
      * @param chiaviCrittografia
      * @param telecontrollo
-     * @param portella
      * @param modello
      * @param lineaAlimentazione
      * @param tipoApparecchiatura
@@ -158,7 +172,12 @@ public class Post {
      */
 
 
-    public Post(String iD, String nome, String tipoLuce, Boolean ripetitore, String note, List<String> chiaviCrittografia, String idComune, String indirizzo, CoordinateGps coordinateGps, String tipoApparecchiatura, String marca, String modello, String infoQuadroElettrico, String palo, Integer altezzaPaloMm, Boolean portella, Boolean pozzetto, Boolean terra, String tecnologiaLampada, Double potenzaLampadaWatt, String alimentatore, String lineaAlimentazione, Boolean telecontrollo) {
+    public Post(String iD, String nome, String tipoLuce, Boolean ripetitore, String note,
+                List<String> chiaviCrittografia, String idComune, String indirizzo, CoordinateGps coordinateGps,
+                String tipoApparecchiatura, String marca, String modello, String infoQuadroElettrico, String identificativoPalo,
+                Integer altezzaPaloMm, String codiceApparecchio, String serialeApparecchio, Integer idProfilo,Integer idConfigurazioneProfilo,
+                Boolean terra, String tecnologiaLampada, Integer potenzaLampadaWatt, String idAlimentatore, String alimentatore,
+                String lineaAlimentazione, Boolean telecontrollo,String serialeQuadroElettrico) {
 
         this.iD = iD;
         this.nome = nome;
@@ -173,16 +192,21 @@ public class Post {
         this.marca = marca;
         this.modello = modello;
         this.infoQuadroElettrico = infoQuadroElettrico;
-        this.palo = palo;
+        this.identificativoPalo = identificativoPalo;
         this.altezzaPaloMm = altezzaPaloMm;
-        this.portella = portella;
-        this.pozzetto = pozzetto;
+        this.codiceApparecchio = codiceApparecchio;
+        this.serialeApparecchio = serialeApparecchio;
+        this.idProfilo = idProfilo;
+        this.idConfigurazioneProfilo = idConfigurazioneProfilo;
         this.terra = terra;
         this.tecnologiaLampada = tecnologiaLampada;
         this.potenzaLampadaWatt = potenzaLampadaWatt;
+        this.idAlimentatore = idAlimentatore;
         this.alimentatore = alimentatore;
         this.lineaAlimentazione = lineaAlimentazione;
         this.telecontrollo = telecontrollo;
+        this.serialeQuadroElettrico = serialeQuadroElettrico;
+
     }
 
 

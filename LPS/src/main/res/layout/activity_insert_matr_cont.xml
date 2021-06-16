@@ -55,7 +55,7 @@
         android:visibility="visible"
         tools:visibility="visible"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
-        android:inputType="numberDecimal" />
+         />
 
 
     <Button

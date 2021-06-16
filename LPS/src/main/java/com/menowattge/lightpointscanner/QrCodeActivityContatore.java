@@ -27,7 +27,9 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
 
     public double latitudine,longitudine;
     public String ldnContatore,citta,indirizzo,cognome,nome,numeroUtenza,numeroContratto,indirizzoUtenza, numeroCivico,
-    numeroSerialeRadio;
+            numeroSerialeRadio;
+
+    String[] etichetta;
 
 
     //PERMESSI CAMERA
@@ -121,57 +123,83 @@ public class QrCodeActivityContatore extends AppCompatActivity implements ZXingS
     @Override
     public void handleResult(Result rawResult) {
 
-        // Salvo la lettura in un array usando i ";" per separare le stringhe
-        String etichetta[] = rawResult.getText().split(";");
 
-        // cognome e nome sono sempre presenti
-        cognome = etichetta[0];
-        nome = etichetta[1];
+        if (rawResult.getText().contains(";")) {
+            try {
+                // Salvo la lettura in un array usando i ";" per separare le stringhe
+                etichetta = rawResult.getText().split(";");
+            } catch (Error e) {
+                e.printStackTrace();
 
-        // questi altri dati possono anche non essere presenti
-        try {
-            numeroUtenza = etichetta[2];
-        }catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-            numeroUtenza="";
-        };
-        try {
-            numeroContratto = etichetta[3];
-        }catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-            numeroContratto="";
-        };
-        try {
-            indirizzoUtenza = etichetta[4];
-        }catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-            indirizzoUtenza="";
-        };
-        try {
-            numeroCivico = etichetta[5];
-        }catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-            numeroCivico="";
-        };
+            }
 
-        Intent intent = new Intent(getApplicationContext(), InsertMatrContActivity.class);
-        putVariables(intent);
+            try {
+                cognome = etichetta[0];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
 
-        startActivity(intent);
-        finish();
+            }
+            ;
+            try {
+                nome = etichetta[1];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
 
 
-        // TEST FATTI OK
+            // questi altri dati possono anche non essere presenti
+            try {
+                numeroUtenza = etichetta[2];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                numeroUtenza = "";
+            }
+            ;
+            try {
+                numeroContratto = etichetta[3];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                numeroContratto = "";
+            }
+            ;
+            try {
+                indirizzoUtenza = etichetta[4];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                indirizzoUtenza = "";
+            }
+            ;
+            try {
+                numeroCivico = etichetta[5];
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                numeroCivico = "";
+            }
+            ;
 
-        Log.d("TEST_cognome", cognome);
-        Log.d("TEST_nome", nome);
-        Log.d("TEST_numeroUtenza", numeroUtenza);
-        Log.d("TEST_numeroContratto", numeroContratto);
-        Log.d("TEST_indirizzoUtente", indirizzoUtenza);
-        Log.d("TEST_numeroCivico", numeroCivico);
+            Intent intent = new Intent(getApplicationContext(), InsertMatrContActivity.class);
+            putVariables(intent);
 
-        Log.d("TEST_LDN", ldnContatore);
+            startActivity(intent);
+            finish();
 
+
+            // TEST FATTI OK
+
+            Log.d("TEST_cognome", cognome);
+            Log.d("TEST_nome", nome);
+            Log.d("TEST_numeroUtenza", numeroUtenza);
+            Log.d("TEST_numeroContratto", numeroContratto);
+            Log.d("TEST_indirizzoUtente", indirizzoUtenza);
+            Log.d("TEST_numeroCivico", numeroCivico);
+
+            Log.d("TEST_LDN", ldnContatore);
+
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Qrcode errato", Toast.LENGTH_LONG).show();
+
+        }
 
         //ripropone all'utente lo scan
         mScannerView.resumeCameraPreview(this);
