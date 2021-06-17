@@ -51,7 +51,7 @@ public class PreQrCodeActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-        Activity mContext = PreQrCodeActivity.this;//change this your activity name
+        Activity mContext = PreQrCodeActivity.this;
         StartLocationAlert startLocationAlert = new StartLocationAlert(mContext);
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );

@@ -3,6 +3,7 @@ package com.menowattge.lightpointscanner;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -100,6 +101,13 @@ public class LoginActivity extends AppCompatActivity {
                         String rc = String.valueOf(response.code());
                         Log.d("http_rc_login : ",rc);
                         Toast.makeText(getApplicationContext(),"Benvenuto", Toast.LENGTH_LONG).show();
+
+                        SharedPreferences sharedPref = getSharedPreferences("credenziali", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("username", email);
+                        editor.putString("password", password);
+                        editor.apply();
+
                         Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class);
                         startActivity(intent);
 

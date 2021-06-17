@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -140,8 +141,9 @@ public class SendDataActivity extends Activity {
 
 
     // API login
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+
+    String username="";
+    String password="";
 
     //FTP server login
     String server ="94.177.203.9";
@@ -366,6 +368,13 @@ public class SendDataActivity extends Activity {
      */
     public void getQrCodeData(){
         try {
+
+            SharedPreferences sharedPreferences = getSharedPreferences("credenziali", MODE_PRIVATE);
+            username = sharedPreferences.getString("username","");
+            password = sharedPreferences.getString("password","");
+
+            Log.d("CREDENZIALI : ",username+" - "+password);
+
             citta = getIntent().getStringExtra("citta");
             indirizzo_ = getIntent().getStringExtra("indirizzo");
             latitudine = getIntent().getDoubleExtra("latitudine", 0);
