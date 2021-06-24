@@ -80,6 +80,8 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         indirizzo = getIntent().getStringExtra("indirizzo");
         latitudine = getIntent().getDoubleExtra("latitudine",0);
         longitudine = getIntent().getDoubleExtra("longitudine",0);
+
+        Log.d("TEST_1", citta);
     }
 
     public void putVariables(Intent intent){
@@ -148,17 +150,15 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             // TODO DOPO gestire BUG dei tre caratteri es : 5A prende anche un terzo ma non dovrebbe, 15A è ok
              nomePuntoLuce  = rawResult.getText().substring(17,21);  // es : 30A
 
-            Intent intent = new Intent(getApplicationContext(), QrCodeActivityDue.class);
+            Intent intent = new Intent(getApplicationContext(), ShowEtichettApparecchio.class);
             // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
             putVariables(intent);
-
-            Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
-
             startActivity(intent);
             finish();
 
 
         }
+        // CONTATORE ACQUA
         else if (d735_MAD.equals(menowattCodeMad)){
 
             // es: MAD0 078719700104
@@ -179,7 +179,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
             // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza
             putVariablesContatore(intent,ldnContatore,indirizzoContatore);
 
-            Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA LA SECONDA ETICHETTA",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"OK, SCANNERIZZA ETICHETTA UTENTE",Toast.LENGTH_LONG).show();
 
             startActivity(intent);
             finish();

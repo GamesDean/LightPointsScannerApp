@@ -53,8 +53,6 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
         CheckPermission();
 
-
-        // TODO PER DEBUG SALTO DALLO SPLASH A QUESTA CLASSE QUINDI PER ORA COMMENTO  : RIPRISTINARE
         // prelevo i dati da QrCodeActivity quindi coordinate e scansione etichetta RLU
         getVariables();
 
@@ -77,8 +75,6 @@ public class QrCodeActivityDue extends AppCompatActivity implements ZXingScanner
 
     public void putVariables(Intent intent){
         // GPS
-        // TODO RIPRISTINARE, ORA COMMENTATO PER DEBUG
-
         intent.putExtra("citta",citta);
         intent.putExtra("indirizzo",indirizzo);
         intent.putExtra("latitudine",latitudine);

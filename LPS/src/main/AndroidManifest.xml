@@ -39,6 +39,26 @@
             android:theme="@style/Theme.AppCompat"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:name=".ShowEtichettaRLU"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ShowEtichettaContatore"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ShowEtichettaPalo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ShowEtichettApparecchio"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".QrCodeActivityTre"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"

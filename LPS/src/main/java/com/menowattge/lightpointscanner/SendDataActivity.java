@@ -106,7 +106,7 @@ public class SendDataActivity extends Activity {
      * EditText containing the "New To Do" text
      */
     public static TextView devid_tw,code_tw,address_tw,latitude_tw,longitude_tw,corrente_tw,
-                           seriale_tw,codice_tw,idConf_tw,tipo_tw,modello_tw,profilo_tw,idPalo_tw;
+            seriale_tw,codice_tw,idConf_tw,tipo_tw,modello_tw,profilo_tw,idPalo_tw;
 
     public CardView recap;
     /**
@@ -175,7 +175,6 @@ public class SendDataActivity extends Activity {
     private String  LineaAlimentazione="" ;
     private boolean Telecontrollo = true;
 
-    // TODO AGGIUNGERE CAMPI MANCANTI SCANSIONE SECONDA E TERZA ETICHETTA
 
 
     //ftp db
@@ -387,9 +386,31 @@ public class SendDataActivity extends Activity {
             // seconda etichetta
             serialeApparecchio = getIntent().getStringExtra("seriale_apparecchio");
             codiceApparecchio = getIntent().getStringExtra("codice_apparecchio");
-            TipoApparecchiatura = getIntent().getStringExtra("tipo");
+
+            TipoApparecchiatura = getIntent().getStringExtra("tipo").trim();
+            if (TipoApparecchiatura.equals("H")){
+                TipoApparecchiatura="Hiperion";
+            }
+            else if (TipoApparecchiatura.equals("G")){
+                TipoApparecchiatura="Giano";
+            }
+            else{
+                TipoApparecchiatura="Meridio";
+            }
+
             idConfigurazione = getIntent().getStringExtra("id_configurazione");
             modello = getIntent().getStringExtra("modello");
+            switch (modello) {
+                case "E" : modello = "Entry Level";break;
+                case "S" : modello = "Small";break;
+                case "J" : modello = "Junior";break;
+                case "M" : modello = "Medium";break;
+                case "L" : modello = "Large";break;
+                case "X" : modello = "Extra-Large";break;
+                case "U" : modello = "Up";break;
+                case "F" : modello = "Full";break;
+            }
+
             potenza = getIntent().getStringExtra("potenza");
             profilo = getIntent().getStringExtra("profilo");
 
@@ -650,7 +671,7 @@ public class SendDataActivity extends Activity {
                                     }
                                 })
                                 .show();
-                                alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
                     }
                     else{
                         pd.dismiss();
@@ -772,7 +793,7 @@ public class SendDataActivity extends Activity {
                 coordinateGps.add(coordinate);
                 // DEBUG
                 //id="D735F7773C956102";  // lo uso per sovrascrivere e testare gli INSERT
-                
+
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -875,7 +896,7 @@ public class SendDataActivity extends Activity {
         Cursor c = db.rawQuery(query,new String[]{id});
         if (c.moveToFirst()){
             do {
-                 conn_string = c.getString(0);
+                conn_string = c.getString(0);
             } while(c.moveToNext());
         }
         c.close();

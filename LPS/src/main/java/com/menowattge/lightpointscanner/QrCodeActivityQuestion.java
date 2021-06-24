@@ -82,7 +82,7 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
                         .setAction("Action", null).show();
 
                 // passo le variabili alla classe che scansiona l'etichetta del palo
-                Intent intent = new Intent(getApplicationContext(), QrCodeActivityTre.class);
+                Intent intent = new Intent(getApplicationContext(), ShowEtichettaPalo.class);
                 // TODO decommentare all'interno
                 putVariables(intent);
                 startActivity(intent);

@@ -26,6 +26,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -108,11 +115,8 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("password", password);
                         editor.apply();
 
-                        Intent intent = new Intent(getApplicationContext(), PreQrCodeActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), InsertOrDeleteActivity.class);
                         startActivity(intent);
-
-                        // TODO passare credenziali d'accesso alle altre activity fino a senddata
-                        // TODO perche le operazioni vanno effettuate con lo stesso utente che logga
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -184,5 +188,14 @@ public class LoginActivity extends AppCompatActivity {
       //  Intent intent = new Intent(this, SignupActivity.class);
       //  startActivity(intent);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }

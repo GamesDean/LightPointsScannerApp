@@ -29,7 +29,7 @@
         android:layout_marginTop="150dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="500dp"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:text="se non si ha la matricola, lasciare in bianco e premere OK">
 
     </TextView>
@@ -50,7 +50,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="370dp"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:ems="10"
         android:visibility="visible"
         tools:visibility="visible"

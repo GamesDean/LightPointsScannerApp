@@ -1,19 +1,21 @@
 package com.menowattge.lightpointscanner;
 
-import android.content.Intent;
-import android.os.Bundle;
+/**
+ *
+ *  Propone a video un esempio di etichetta RLU da scansionare
+ */
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -22,64 +24,57 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
-public class SelectActivity extends AppCompatActivity {
+public class ShowEtichettaContatore extends AppCompatActivity {
 
-    ImageButton buttonLampione;
-    ImageButton buttonContatore;
+   public String citta,indirizzo;
+   public Double latitudine,longitudine;
 
-    public String citta;
-    public String indirizzo;
-    public double latitudine;
-    public double longitudine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_etichetta_contatore);
 
-        buttonLampione = findViewById(R.id.imageButtonLamp);
-        buttonContatore= findViewById(R.id.imageButtonContatore);
-
-        // prendo da GpsStatusFragment citta indirizzo e le coordinate
         getVariables();
 
 
-        buttonLampione.setOnClickListener(new View.OnClickListener() {
+        final Thread timeout = new Thread() {
             @Override
-            public void onClick(View v) {
+            public void run() {
+                super.run();
 
-                Intent intent = new Intent(getApplicationContext(), ShowEtichettaRLU.class);
-                putVariables(intent);
-                startActivity(intent);
+                try {
+
+                    sleep(5000);
+
+                    Intent intent = new Intent(getApplicationContext(), QrCodeActivity.class);
+                    putVariables(intent);
+                    startActivity(intent);
+                    finish();
+
+
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
-        });
+        };
 
+        timeout.start();
 
-        buttonContatore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getApplicationContext(), ShowEtichettaContatore.class);
-               // inoltro i dati raccolti fin qui(coordinate citta indirizzo) alla prossima activity
-               putVariables(intent);
-               startActivity(intent);
-            }
-        });
 
 
     }
-
-    /**
-     * Prende da GPSTestActivity citta indirizzo e coordinate
-     */
 
     public void getVariables(){
         citta = getIntent().getStringExtra("citta");
         indirizzo = getIntent().getStringExtra("indirizzo");
         latitudine = getIntent().getDoubleExtra("latitudine",0);
         longitudine = getIntent().getDoubleExtra("longitudine",0);
+
+        Log.d("TEST_appa", citta);
     }
 
     public void putVariables(Intent intent){
@@ -88,9 +83,8 @@ public class SelectActivity extends AppCompatActivity {
         intent.putExtra("indirizzo", indirizzo);
         intent.putExtra("latitudine", latitudine);
         intent.putExtra("longitudine", longitudine);
-
-        intent.putExtra("delete",false);
     }
+
 
     @Override
     protected void onResume() {
@@ -100,4 +94,8 @@ public class SelectActivity extends AppCompatActivity {
                 SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
+
 }
+
+
+

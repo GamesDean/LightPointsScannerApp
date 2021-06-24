@@ -39,7 +39,6 @@ public class InsertOrDeleteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO goto PreQrCodeActivity
                 // nel caso di inserimento di un device
                 Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
                 startActivity(intent);
@@ -49,12 +48,20 @@ public class InsertOrDeleteActivity extends AppCompatActivity {
         buttonDeleteDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO DeleteDeviceActivity
-                Toast.makeText(getApplicationContext(),"eliminare device",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(),QrCodeActivityDelete.class);
+                Intent intent = new Intent(getApplicationContext(),ShowEtichettaRLU.class);
+                intent.putExtra("delete",true);
                 startActivity(intent);
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // total fullscreen
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION   |
+                SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }
