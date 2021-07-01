@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -281,6 +282,13 @@ public class SendDataContActivity extends Activity {
      */
     public void getQrCodeData(){
         try {
+
+            SharedPreferences sharedPreferences = getSharedPreferences("credenziali", MODE_PRIVATE);
+            username = sharedPreferences.getString("username","");
+            password = sharedPreferences.getString("password","");
+
+            Log.d("CREDENZIALI_CONT : ",username+" - "+password);
+
             citta = getIntent().getStringExtra("citta");
             indirizzo = getIntent().getStringExtra("indirizzo");
             latitudine = getIntent().getDoubleExtra("latitudine", 0);
@@ -1012,20 +1020,10 @@ public class SendDataContActivity extends Activity {
         }
     }
 
-    /**
-     * Add a new item
-     *
-     * @param view
-     *            The view that originated the call
-     */
 
-    public void backToScan(View view){
-        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
-        startActivity(intent);
-    }
 
     public void backToScan(){
-        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
+        Intent intent = new Intent(getApplicationContext(),InsertOrDeleteActivity.class);
         startActivity(intent);
         finish();
     }

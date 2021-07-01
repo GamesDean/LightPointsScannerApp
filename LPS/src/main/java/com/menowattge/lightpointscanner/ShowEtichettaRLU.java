@@ -42,8 +42,6 @@ public class ShowEtichettaRLU extends AppCompatActivity {
         setContentView(R.layout.activity_etichetta_rlu);
 
 
-        getVariables();
-
         final Thread timeout = new Thread() {
             @Override
             public void run() {
@@ -57,6 +55,7 @@ public class ShowEtichettaRLU extends AppCompatActivity {
                             Log.d("DELETE","DELETE");
                         }else{
                              intent = new Intent(getApplicationContext(), QrCodeActivity.class);
+                             getVariables();
                              putVariables(intent);
                             Log.d("NO_DELETE","NO_DELETE");
                         }

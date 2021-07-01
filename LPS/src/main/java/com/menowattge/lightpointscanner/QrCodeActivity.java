@@ -42,7 +42,7 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
     // solo gli ID che iniziano con D735 (in minuscolo perchè nel qr è così) sono accettati in quanto Menowatt
     private String menowattCode = "d735";
     // contatori acqua
-    private String menowattCodeMad = "MAD0"; // TODO vedere se lower o uppercase
+    private String menowattCodeMad = "MAD0";
 
     //PERMESSI CAMERA
     @SuppressLint("NewApi")
@@ -147,8 +147,13 @@ public class QrCodeActivity extends AppCompatActivity implements ZXingScannerVie
         if (d735_MAD.equals(menowattCode)) {
 
              indirizzoRadio = rawResult.getText().substring(0,16); // indirizzo radio D735...
-            // TODO DOPO gestire BUG dei tre caratteri es : 5A prende anche un terzo ma non dovrebbe, 15A è ok
              nomePuntoLuce  = rawResult.getText().substring(17,21);  // es : 30A
+
+            // se finisce con R vuol dire che il nome è compreso tra 0-9 es : 5D ed il 21 esimo char è la R di RLU che NON deve
+            // esserci poiche verrebbe ad es : 5DR , dunque scalo di un char così da tralasciare la R ed ottenere un dato corretto
+            if (nomePuntoLuce.endsWith("R")){
+                nomePuntoLuce  = rawResult.getText().substring(17,20);
+            }
 
             Intent intent = new Intent(getApplicationContext(), ShowEtichettApparecchio.class);
             // invio a QrCodeActivityDue il valore del qrcode letto ed i valori dei dati acquisiti in precedenza

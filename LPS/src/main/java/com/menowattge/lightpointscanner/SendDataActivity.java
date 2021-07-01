@@ -1089,20 +1089,10 @@ public class SendDataActivity extends Activity {
         }
     }
 
-    /**
-     * Add a new item
-     *
-     * @param view
-     *            The view that originated the call
-     */
 
-    public void backToScan(View view){
-        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
-        startActivity(intent);
-    }
 
     public void backToScan(){
-        Intent intent = new Intent(getApplicationContext(),PreQrCodeActivity.class);
+        Intent intent = new Intent(getApplicationContext(),InsertOrDeleteActivity.class);
         startActivity(intent);
         finish();
     }

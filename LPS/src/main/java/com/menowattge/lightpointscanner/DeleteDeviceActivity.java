@@ -622,7 +622,7 @@ public class DeleteDeviceActivity extends Activity {
      * Torna alla classe che permette di scansionare un altro QrCode
      */
     public void backToScan(){
-        Intent intent = new Intent(getApplicationContext(),QrCodeActivityDelete.class);
+        Intent intent = new Intent(getApplicationContext(),InsertOrDeleteActivity.class);
         startActivity(intent);
         finish();
     }

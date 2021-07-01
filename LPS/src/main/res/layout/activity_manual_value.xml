@@ -38,6 +38,7 @@
         android:ems="10"
         android:visibility="visible"
         tools:visibility="visible"
+        android:singleLine="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
           />
 

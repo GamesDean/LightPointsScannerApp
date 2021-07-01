@@ -22,18 +22,15 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="150dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="500dp"
+        android:layout_marginBottom="530dp"
         android:gravity="center_vertical"
         android:text="se non si ha la matricola, lasciare in bianco e premere OK">
 
     </TextView>
-
 
 
     <EditText
@@ -50,12 +47,13 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="370dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:ems="10"
         android:visibility="visible"
         tools:visibility="visible"
+        android:singleLine="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
-         />
+        />
 
 
     <Button
