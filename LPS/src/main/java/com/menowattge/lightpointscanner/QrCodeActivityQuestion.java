@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -40,7 +41,7 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         getVariables();
 
         // NESSUN DATO DA INSERIRE
-        ExtendedFloatingActionButton fabNo = findViewById(R.id.fab_no);
+        Button fabNo = findViewById(R.id.fab_no);
         fabNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,7 +61,7 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         });
 
         //INSERIMENTO MANUALE
-        ExtendedFloatingActionButton fabManual = findViewById(R.id.fab_manual);
+        Button fabManual = findViewById(R.id.fab_manual);
         fabManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +75,7 @@ public class QrCodeActivityQuestion extends AppCompatActivity {
         });
 
         // ETICHETTA PALO PRESENTE
-        ExtendedFloatingActionButton fabSi = findViewById(R.id.fab_si);
+        Button fabSi = findViewById(R.id.fab_si);
         fabSi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

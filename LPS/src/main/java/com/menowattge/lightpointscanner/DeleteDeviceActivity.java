@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -87,7 +88,7 @@ import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 
-public class DeleteDeviceActivity extends Activity {
+public class DeleteDeviceActivity extends AppCompatActivity {
 
     /**
      * Client reference
@@ -321,6 +322,34 @@ public class DeleteDeviceActivity extends Activity {
 
 
     /**
+     *  Mostra a video un Dialog
+     * @param title titolo del messaggio
+     * @param message messaggio
+     */
+    public void createDialogError(String title, String message){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(DeleteDeviceActivity.this,R.style.AlertDialogCustomDelete))
+                .setIcon(android.R.drawable.ic_delete)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Scan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        backToScan();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        quit();
+                    }
+                })
+                .show();
+        alertDialog.setCanceledOnTouchOutside(false);
+    }
+
+
+    /**
      * Effettua il login al portale
      * @param retrofit
      */
@@ -375,11 +404,11 @@ public class DeleteDeviceActivity extends Activity {
 
                 if (!response.isSuccessful()) {
                     Log.d("http_post_rc : ", rc);
+                    createDialogError("Errore:device non trovato","Esegui un'altra SCAN o ESCI");
                     return;
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
-                    createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
                 }
             }
 

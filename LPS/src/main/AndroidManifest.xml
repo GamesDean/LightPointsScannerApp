@@ -26,8 +26,16 @@
         tools:ignore="HardcodedDebugMode">
         <activity android:name=".SendDataContActivity"></activity>
         <activity android:name=".InsertMatrContActivity" />
-        <activity android:name=".QrCodeActivityContatore" />
-        <activity android:name=".DeleteDeviceActivity" />
+        <activity android:name=".QrCodeActivityContatore"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity android:name=".DeleteDeviceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"
+            tools:ignore="LockedOrientationActivity"
+            />
         <activity
             android:name=".QrCodeActivityDelete"
             android:screenOrientation="portrait"
@@ -65,11 +73,11 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".QrCodeActivityQuestion"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".SelectActivity"
             android:label="@string/title_activity_select"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".SplashScreenActivity"
             android:screenOrientation="portrait"

@@ -134,6 +134,15 @@
         <item name="android:background">#4f9e33</item>
     </style>
 
+    <style name="AlertDialogCustomDelete" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">#FFF</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <!-- Used for the background -->
+        <item name="android:background">#e01802</item>
+    </style>
+
     <style name="ProgressDialogCustom" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:background">#4f9e33</item>
