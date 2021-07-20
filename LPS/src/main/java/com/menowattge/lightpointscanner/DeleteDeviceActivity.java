@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -118,17 +119,11 @@ public class DeleteDeviceActivity extends AppCompatActivity {
     private ProgressDialog pd;
 
     public static String name;
-    public static String qrCitta;
-    public static Double qrLatitudine;
-    public static Double qrLongitudine;
-    public static String qrAddress;
-    public static String valoreCorrente;
-    public        String conn_string;
     public        String key="";
 
     // API login
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username="";
+    String password="";
 
 
     // per creare il JSON
@@ -283,6 +278,12 @@ public class DeleteDeviceActivity extends AppCompatActivity {
      */
     public void getQrCodeData(){
 
+        SharedPreferences sharedPreferences = getSharedPreferences("credenziali", MODE_PRIVATE);
+        username = sharedPreferences.getString("username","");
+        password = sharedPreferences.getString("password","");
+
+        Log.d("CREDENZIALI_DEL : ",username+" - "+password);
+
         //prelevo indirizzo radio D735.. e nome 15A
         String qrCodeData = getIntent().getStringExtra("qrCode_delete");
         String name = getIntent().getStringExtra("name_delete").trim();
@@ -392,9 +393,15 @@ public class DeleteDeviceActivity extends AppCompatActivity {
      */
     public void postDeleteData(Retrofit retrofit,String token){
 
-        JsonApi deletePuntoLuce = retrofit.create(JsonApi.class);
+        JsonApi deleteDevice = retrofit.create(JsonApi.class);
 
-        Call<Void> call_pl = deletePuntoLuce.deleteDevices(id,token);
+        Call<Void> call_pl;
+        // se inizia per "D" allora è un punto luce D735, altrimenti un contatore
+        if (id.startsWith("D")) {
+            call_pl = deleteDevice.deletePuntoLuce(id, token);
+        }else {
+            call_pl = deleteDevice.deleteContatore(id, token);
+        }
 
         call_pl.enqueue(new Callback<Void>() {
             @Override
@@ -409,6 +416,7 @@ public class DeleteDeviceActivity extends AppCompatActivity {
                 }
                 else{
                     Log.d("http_ok_post__rc : ", rc);
+                    createDialog("Operazione Completata","Esegui un'altra SCAN o ESCI");
                 }
             }
 
@@ -432,8 +440,13 @@ public class DeleteDeviceActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
 
             try {
+
                 // usate per costruire un oggetto della classe Delete in deleteData() per creare quindi il JSON per l'invio
-                id  = getIntent().getStringExtra("qrCode_delete").toUpperCase();
+                id  = getIntent().getStringExtra("qrCode_delete");
+                // se d allora d735 quindi punto luce e devo inserirlo nel portale in maiuscolo. Il contatore è già maiuscolo
+                if (id.startsWith("d")) {
+                    id  = id.toUpperCase();
+                }
 
                 // debug log http
                 HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

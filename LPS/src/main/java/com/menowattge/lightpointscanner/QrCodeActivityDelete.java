@@ -117,24 +117,32 @@ public class QrCodeActivityDelete  extends AppCompatActivity implements ZXingSca
 
 
         }
+        // CONTATORE ACQUA
         else if (d735_MAD.equals(menowattCodeMad)){
 
-            Log.d("MAD","acqua");
-            // TODO creare LDN a partire dal codice scansionato
-            // MAD0 07 87 19 70 01 04
-            //MAD0 à 2434 poi vai al contrario 04 01 70 19 87 07
-            // String qrCodeData = rawResult.getText().substring(0,16); fare prove per vedere cosa prendere
-            // e come invertire le coppie di numeri
+            // es: MAD0 078719700104
+            // MAD0 -> 2434 poi vai al contrario 2434040170198707
+            String indirizzoContatore = rawResult.getText().substring(0,16);
+            String ldnContatore="2434";
 
-            // ottenuto LDN lo incapsulo con citta,lat,lon ed indirizzo e lo invio a SendDataActivity
-            // che fara un UPDATE dato che LDN e chiavi saranno gia inserite.
+            int k=indirizzoContatore.length(); // lunghezza indirizzo del contatore, 16
+            // ciclo 6 volte perche devo prelevare sei coppie
+            for(int i=6;i>0;i--){
+                ldnContatore += indirizzoContatore.substring(k-2,k); // 14,16 - 12,14, etc
+                k-=2;// sottraggo due perche prelevo delle coppie
+            }
+
+            String name = "CONTATORE ACQUA";
+            Intent intent = new Intent(getApplicationContext(), DeleteDeviceActivity.class);
+            intent.putExtra("qrCode_delete", ldnContatore); // indirizzo 2434
+            intent.putExtra("name_delete", name);
+            startActivity(intent);
+            finish();
 
 
         }
         else {
-            //         Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),"testo : "+rawResult.getText(),Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),"formato : "+rawResult.getBarcodeFormat(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Qr code errato",Toast.LENGTH_LONG).show();
 
         }
         //ripropone all'utente lo scan

@@ -28,7 +28,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="320dp"
         android:contentDescription="TODO"
-        android:src="@drawable/lampione_delete" />
+        android:src="@drawable/lamp_cont_delete" />
 
     <TextView
         android:id="@+id/textView"
@@ -40,8 +40,8 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
 
-        android:text="Selezionare la figura in alto per INSERIRE un PUNTO LUCE o un CONTATORE.
-         \nSelezionare la figura in basso per ELIMINARE un PUNTO LUCE " />
+        android:text="Selezionare la figura in alto per INSERIRE un DISPOSITIVO.
+         \nSelezionare la figura in basso per ELIMINARE un DISPOSITIVO " />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -44,7 +44,11 @@ public interface JsonApi {
 
     // elimino il punto luce
     @DELETE("/api/PuntoLuce")
-    Call<Void> deleteDevices( @Query("idPuntoLuce") String id , @Header("Authorization") String authkey ) ;
+    Call<Void> deletePuntoLuce( @Query("idPuntoLuce") String id , @Header("Authorization") String authkey ) ;
+
+    // elimino il punto luce
+    @DELETE("/api/ContatoreAcquaV2")
+    Call<Void> deleteContatore( @Query("idContatore") String id , @Header("Authorization") String authkey ) ;
 
 
     //-------------------CONTATORI------------------------------------------------------------------------------//

@@ -51,6 +51,19 @@ public class ShowEtichettaRLU extends AppCompatActivity {
                         Intent intent;
                         Intent intentDelete = getIntent();
                         if(intentDelete.getBooleanExtra("delete",false)){
+                            // mostro per 3 secondi il qrcode dell'RLU e per altrettanti quello del contatore
+                            sleep(3000);
+
+                            runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+
+                                    setContentView(R.layout.activity_etichetta_contatore);
+                                }
+                            });
+
+
                              intent = new Intent(getApplicationContext(), QrCodeActivityDelete.class);
                             Log.d("DELETE","DELETE");
                         }else{
@@ -60,7 +73,7 @@ public class ShowEtichettaRLU extends AppCompatActivity {
                             Log.d("NO_DELETE","NO_DELETE");
                         }
 
-                        sleep(5000);
+                        sleep(3000);
 
 
                         startActivity(intent);

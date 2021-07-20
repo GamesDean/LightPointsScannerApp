@@ -133,8 +133,8 @@ public class SendDataContActivity extends Activity {
 
 
     // API login
-    String username="tecnico@citymonitor.it";
-    String password="tecnico";
+    String username="";
+    String password="";
 
     //-------- per creare il JSON------
     public  static String  id ;
