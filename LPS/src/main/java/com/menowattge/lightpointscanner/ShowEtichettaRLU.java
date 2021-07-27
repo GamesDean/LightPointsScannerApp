@@ -39,8 +39,8 @@ public class ShowEtichettaRLU extends AppCompatActivity {
                 SYSTEM_UI_FLAG_LAYOUT_STABLE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
 
-        setContentView(R.layout.activity_etichetta_rlu);
 
+        // a seconda, mostro l'etichetta dell' RLU oppure, nel caso di DELETE, mostro quella con entrambi i device
 
         final Thread timeout = new Thread() {
             @Override
@@ -51,29 +51,36 @@ public class ShowEtichettaRLU extends AppCompatActivity {
                         Intent intent;
                         Intent intentDelete = getIntent();
                         if(intentDelete.getBooleanExtra("delete",false)){
-                            // mostro per 3 secondi il qrcode dell'RLU e per altrettanti quello del contatore
-                            sleep(3000);
 
                             runOnUiThread(new Runnable() {
 
                                 @Override
                                 public void run() {
 
-                                    setContentView(R.layout.activity_etichetta_contatore);
+                                    setContentView(R.layout.activity_etichetta_delete);
                                 }
                             });
 
-
-                             intent = new Intent(getApplicationContext(), QrCodeActivityDelete.class);
+                            intent = new Intent(getApplicationContext(), QrCodeActivityDelete.class);
                             Log.d("DELETE","DELETE");
+
                         }else{
-                             intent = new Intent(getApplicationContext(), QrCodeActivity.class);
-                             getVariables();
-                             putVariables(intent);
+                            runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+
+                                    setContentView(R.layout.activity_etichetta_rlu);
+                                }
+                            });
+
+                            intent = new Intent(getApplicationContext(), QrCodeActivity.class);
+                            getVariables();
+                            putVariables(intent);
                             Log.d("NO_DELETE","NO_DELETE");
                         }
 
-                        sleep(3000);
+                        sleep(5000);
 
 
                         startActivity(intent);
